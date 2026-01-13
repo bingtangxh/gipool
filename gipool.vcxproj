@@ -253,6 +253,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="conmenus.h" />
     <ClInclude Include="giplinfo.h" />
     <ClInclude Include="gipool.h" />
   </ItemGroup>

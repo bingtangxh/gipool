@@ -1,29 +1,29 @@
-#include "giplinfo.h"
 #include <stdio.h>
 #include <time.h>
 #include <windows.h>
 #include <limits.h>
+#include "giplinfo.h"
 
+#define DATE_LENGTH 12
 #define ARRAY_SIZE(arr)                 \
     (                                   \
         sizeof(arr)==0?0:               \
         sizeof(arr)/sizeof((arr)[0])    \
     )
 
-char** localizedNames;
-int charCount,poolCount,longestIndex;
-int* daysPassedSinceLastUP;
-int* arrangedInOrderOfDays;
+char** localizedNames=NULL;
+int charCount=0,poolCount=0,longestIndex=0;
+int* daysPassedSinceLastUP=NULL;
+int* arrangedInOrderOfDays=NULL;
 static const char* month_table[] = {
     "Jan","Feb","Mar","Apr","May","Jun",
     "Jul","Aug","Sep","Oct","Nov","Dec"
 };
+_Bool convertCompileTime(char* date);
 int month_to_number(const char* mon);
 int checkIntegrity(void);
 _Bool isPoolInOrder(int i);
 void initDynamicThings(void);
-void printW(const wchar_t* wstr);
-void putPool(Wish_Pool WishPool1);
 int findLongest(Char_Map CharMap1[]);
 _Bool localizeNames(Char_Map CharMap1[],char* localizedNames[]);
 void getDaysPassedSinceLastUp(void);
@@ -36,13 +36,46 @@ void arrangeByDaysPassedSinceLastUp(void);
 void freeDynamicThings(void);
 int poolEndHour(uint8_t half);
 
+_Bool convertCompileTime(char* date) {
+    int gotten = 0;
+    char month_str[4];
+    unsigned short month;
+    unsigned short day;
+    unsigned int year;
+    if ((gotten =
+#ifdef _MSC_VER
+        sscanf_s(__DATE__, "%3s %hu %u", month_str, 4, &day, &year)
+#else
+        sscanf(__DATE__, "%3s %hu %u", month_str, &day, &year)
+#endif
+        ) == 3
+        &&
+        (month = month_to_number(month_str)) != 0
+        )
+    {
+#ifdef _MSC_VER
+        _snprintf_s(date, DATE_LENGTH, DATE_LENGTH - 1, "%u-%hu-%hu", year, month, day);
+#else
+        snprintf(date, DATE_LENGTH - 1, "%u-%hu-%hu", year, month, day);
+#endif
+        return 0;
+    }
+    else {
+#ifdef _MSC_VER
+        strcpy_s(date, DATE_LENGTH, __DATE__);
+#else
+        strcpy(date, __DATE__);
+#endif
+        return 1;
+    }
+}
+
 int month_to_number(const char* mon)
 {
-    for (int i = 0; i < 12; ++i) {
-        if (strcmp(mon, month_table[i]) == 0)
-            return i + 1; // 1~12
+    for(int i=0;i<12;i++) {
+        if(strcmp(mon,month_table[i])==0) return i+1; // 1~12
     }
-    return 0; // 非法月份
+    return 0; // Invalid month
 }
 
 int checkIntegrity(void){
@@ -85,30 +118,6 @@ void initDynamicThings(void){
     arrangeByDaysPassedSinceLastUp();
 }
 
-void printW(const wchar_t* wstr) {
-    HANDLE hConsole=GetStdHandle(STD_OUTPUT_HANDLE);
-    DWORD written;
-    WriteConsoleW(hConsole,wstr,(DWORD)wcslen(wstr),&written,NULL);
-}
-
-void putPool(Wish_Pool WishPool1)
-{
-    int fiveCount=sizeof(WishPool1.up5)==0?0:(int)(sizeof(WishPool1.up5)/sizeof(WishPool1.up5[0]));
-    int fourCount=sizeof(WishPool1.up4)==0?0:(int)(sizeof(WishPool1.up4)/sizeof(WishPool1.up4[0]));
-    printf("%hu.%hu.%hu\t%u.%hu.%hu\t%u.%hu.%hu\t",WishPool1.major,WishPool1.minor,WishPool1.half,WishPool1.startY,WishPool1.startM,WishPool1.startD,WishPool1.endY,WishPool1.endM,WishPool1.endD);
-    for(int i=0;i<fiveCount&&WishPool1.up5[i]!=0;i++)
-    {
-        //printW(CharMap[WishPool1.up5[i]].name_cn);
-        printf("%s ",localizedNames[WishPool1.up5[i]]);
-    }
-    for(int i=0;i<fourCount&&WishPool1.up4[i]!=0;i++)
-    {
-        //printW(CharMap[WishPool1.up4[i]].name_cn);
-        printf("%s ",localizedNames[WishPool1.up4[i]]);
-    }
-    putchar('\n');
-}
-
 int findLongest(Char_Map CharMap1[]){
     size_t currentLen=0,maxLen=0;
     int maxIndex=-1;
@@ -140,6 +149,10 @@ void getDaysPassedSinceLastUp(void){
     // 因为函数最开始会将 daysPassedSinceLastUP 全局指针变量进行分配
     // 而这个全局变量的释放是由 freeDynamicThings() 进行
     // 所以请勿反复调用此函数
+    // 现在本程序规定未分配或 free 过的指针应当值是 NULL
+    // 因此这个函数在检测到 daysPassedSinceLastUP 不是 NULL 就会直接 free
+    // 然后直接再次分配，没有其他情况检测
+    if(daysPassedSinceLastUP!=NULL) free(daysPassedSinceLastUP);
     daysPassedSinceLastUP=(int*)malloc(sizeof(int)*charCount);
     for (int c=0;c<charCount;c++)
     {
@@ -229,7 +242,7 @@ void quickSort(int days[],int indices[],int low,int high) {
 }
 
 void arrangeByDaysPassedSinceLastUp() {
-    // 包装函数，在 initDynamicThings() 中调用  
+    // 这个是包装函数，在 initDynamicThings() 中调用  
     // 对 arrangedInOrderOfDays 进行快速排序
     // 排序依据是 daysPassedSinceLastUP[arrangedInOrderOfDays[i]] 降序
     if(charCount>0) quickSort(daysPassedSinceLastUP,arrangedInOrderOfDays,0,charCount-1);
@@ -242,6 +255,8 @@ void freeDynamicThings(void){
     free(localizedNames);
     free(daysPassedSinceLastUP);
     free(arrangedInOrderOfDays);
+    localizedNames=NULL;
+    daysPassedSinceLastUP=arrangedInOrderOfDays=NULL;
 }
 
 int poolEndHour(uint8_t half){

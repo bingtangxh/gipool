@@ -15,11 +15,14 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="giplinfo.h">
-      <Filter>源文件</Filter>
-    </ClInclude>
     <ClInclude Include="gipool.h">
-      <Filter>源文件</Filter>
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="giplinfo.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="conmenus.h">
+      <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
