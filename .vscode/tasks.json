@@ -1,0 +1,327 @@
+{
+    "tasks": [
+        {
+            "type": "shell",
+            "label": "C/C++: cl.exe 生成活动文件喵 UTF-8 的哦",
+            "command": "cl.exe",
+            "args": [
+                "/nologo",
+                "/Z7",
+                "/GF",
+                "/FS",
+                "/EHsc",
+                "/W3",
+                "/utf-8",
+                "/Fe:",
+                "C:\\cproglexefile\\${fileBasenameNoExtension}_x64.exe",
+                "${file}",
+                "/Fo\"C:\\\\cproglExefile\\\\${fileBasenameNoExtension}_x64\"",
+                "/link",
+                "/OUT:C:\\cproglExefile\\${fileBasenameNoExtension}_x64.exe",
+                "&&",
+                "del",
+                "C:\\cproglexefile\\${fileBasenameNoExtension}_x64.obj",
+                "&&",
+                "del",
+                "C:\\cproglexefile\\${fileBasenameNoExtension}_x64.ilk",
+                "&&",
+                "del",
+                "C:\\cproglexefile\\${fileBasenameNoExtension}_x64.pdb",
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}",
+                "shell":
+                {
+                    "executable":
+                    "C:\\Windows\\System32\\cmd.exe",
+                    "args":[
+                        "/v:on",
+                        "/c",
+                        "vcvarsall.bat",
+                        "x64",
+                        "10.0.22621.0",
+                        "&&",
+                    ]
+                }
+            },
+            "problemMatcher": [
+                "$msCompile"
+            ],
+            "group": {
+                "kind": "build",
+            },
+            "detail": "使用生成工具编译生成 x64 的二进制文件喵，还是 UTF-8 的"
+        },
+        {
+            "type": "shell",
+            "label": "C/C++: cl.exe 生成活动文件喵 UTF-8 的哦 DEBUG",
+            "command": "cl.exe",
+            "args": [
+                "/nologo",
+                "/Z7",
+                "/GF",
+                "/DEBUG",
+                "/FS",
+                "/EHsc",
+                "/W3",
+                "/utf-8",
+                "/Fe:",
+                "C:\\cproglexefile\\${fileBasenameNoExtension}_x64.exe",
+                "${file}",
+                "/Fo\"C:\\\\cproglExefile\\\\${fileBasenameNoExtension}_x64\"",
+                "/link",
+                "/OUT:C:\\cproglExefile\\${fileBasenameNoExtension}_x64.exe",
+                "&&",
+                "del",
+                "C:\\cproglexefile\\${fileBasenameNoExtension}_x64.obj",
+                "&&",
+                "del",
+                "C:\\cproglexefile\\${fileBasenameNoExtension}_x64.ilk",
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}",
+                "shell":
+                {
+                    "executable":
+                    "C:\\Windows\\System32\\cmd.exe",
+                    "args":[
+                        "/v:on",
+                        "/c",
+                        "vcvarsall.bat",
+                        "x64",
+                        "10.0.22621.0",
+                        "&&",
+                    ]
+                }
+            },
+            "problemMatcher": [
+                "$msCompile"
+            ],
+            "group": {
+            },
+            "detail": "使用生成工具编译生成 x64 的二进制文件喵，还是 UTF-8 的"
+        },
+        {
+            "type": "shell",
+            "label": "C/C++: cl.exe 生成活动文件喵  x86 UTF-8",
+            "command": "cl.exe",
+            "args": [
+                "/nologo",
+                "/Z7",
+                "/GF",
+                "/FS",
+                "/EHsc",
+                "/utf-8",
+                "/W3",
+                "/Fe:",
+                "C:\\cproglexefile\\${fileBasenameNoExtension}_x86.exe",
+                "${file}",
+                "/Fo\"C:\\\\cproglExefile\\\\${fileBasenameNoExtension}_x86\"",
+                "/link",
+                "/OUT:C:\\cproglExefile\\${fileBasenameNoExtension}_x86.exe",
+                "&&",
+                "del",
+                "C:\\cproglexefile\\${fileBasenameNoExtension}_x86.obj",
+                "&&",
+                "del",
+                "C:\\cproglexefile\\${fileBasenameNoExtension}_x86.ilk",
+                "&&",
+                "del",
+                "C:\\cproglexefile\\${fileBasenameNoExtension}_x86.pdb",
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}",
+                "shell":
+                {
+                    "executable":
+                    "C:\\Windows\\System32\\cmd.exe",
+                    "args":[
+                        "/v:on",
+                        "/c",
+                        "vcvarsall.bat",
+                        "AMD64_x86",
+                        "10.0.22621.0",
+                        "&&",
+                    ]
+                }
+            },
+            "problemMatcher": [
+                "$msCompile"
+            ],
+            "group": {
+                "kind": "build",
+            },
+            "detail": "使用生成工具编译生成 x86 的二进制文件喵"
+        },
+        {
+            "type": "shell",
+            "label": "C/C++: cl.exe 生成活动文件喵  ARM UTF-8",
+            "command": "cl.exe",
+            "args": [
+                "/nologo",
+                "/Z7",
+                "/GF",
+                "/FS",
+                "/utf-8",
+                "/EHsc",
+                "/W3",
+                "/Fe:",
+                "C:\\cproglexefile\\${fileBasenameNoExtension}_ARM.exe",
+                "${file}",
+                "/Fo\"C:\\\\cproglExefile\\\\${fileBasenameNoExtension}_ARM\"",
+                "/link",
+                "/OUT:C:\\cproglExefile\\${fileBasenameNoExtension}_ARM.exe",
+                "&&",
+                "del",
+                "C:\\cproglexefile\\${fileBasenameNoExtension}_ARM.obj",
+                "&&",
+                "del",
+                "C:\\cproglexefile\\${fileBasenameNoExtension}_ARM.ilk",
+                "&&",
+                "del",
+                "C:\\cproglexefile\\${fileBasenameNoExtension}_ARM.pdb",
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}",
+                "shell":
+                {
+                    "executable":
+                    "C:\\Windows\\System32\\cmd.exe",
+                    "args":[
+                        "/v:on",
+                        "/c",
+                        "vcvarsall.bat",
+                        "AMD64_ARM",
+                        "10.0.22621.0",
+                        "&&",
+                    ]
+                }
+            },
+            "problemMatcher": [
+                "$msCompile"
+            ],
+            "group": {
+                "kind": "build",
+            },
+            "detail": "使用生成工具编译生成 ARM 的二进制文件喵"
+        },
+        {
+            "type": "shell",
+            "label": "C/C++: cl.exe 生成活动文件喵  ARM64 UTF-8",
+            "command": "cl.exe",
+            "args": [
+                "/nologo",
+                "/Z7",
+                "/GF",
+                "/FS",
+                "/EHsc",
+                "/utf-8",
+                "/W3",
+                "/Fe:",
+                "C:\\cproglexefile\\${fileBasenameNoExtension}_ARM64.exe",
+                "${file}",
+                "/I",
+                "\"C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.44.35207\\include\"",
+                "/Fo\"C:\\\\cproglExefile\\\\${fileBasenameNoExtension}_ARM64\"",
+                "/link",
+                "/OUT:C:\\cproglExefile\\${fileBasenameNoExtension}_ARM64.exe",
+                "/LIBPATH:\"C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.44.35207\\lib\\onecore\\arm64\"",
+                "&&",
+                "del",
+                "C:\\cproglexefile\\${fileBasenameNoExtension}_ARM64.obj",
+                "&&",
+                "del",
+                "C:\\cproglexefile\\${fileBasenameNoExtension}_ARM64.ilk",
+                "&&",
+                "del",
+                "C:\\cproglexefile\\${fileBasenameNoExtension}_ARM64.pdb",
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}",
+                "shell":
+                {
+                    "executable":
+                    "C:\\Windows\\System32\\cmd.exe",
+                    "args":[
+                        "/v:on",
+                        "/c",
+                        "vcvarsall.bat",
+                        "x64_ARM64",
+                        "10.0.22621.0",
+                        "&&",
+                        "echo",
+                        "%cd%",
+                        "&&"
+                    ]
+                }
+            },
+            "problemMatcher": [
+                "$msCompile"
+            ],
+            "group": {
+                "kind": "build",
+            },
+            "detail": "使用生成工具编译生成 ARM64 的二进制文件喵"
+        },
+        {
+            "type": "cppbuild",
+            "label": "C/C++: gcc.exe 生成活动文件 gcc.exe UTF-8",
+            "command": "gcc.exe",
+            "args": [
+                "-fdiagnostics-color=always",
+                "-g",
+                "${file}",
+                "-o",
+                "C:\\cproglExefile\\${fileBasenameNoExtension}.exe",
+                "-fexec-charset=UTF-8",
+                "-lole32",
+            ],
+            "options": {
+                "cwd": "${fileDirname}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+            },
+            "detail": "调试器生成的任务。"
+        },
+        {
+            "type": "cppbuild",
+            "label": "C/C++: g++.exe 生成活动文件 g++.exe UTF-8",
+            "command": "g++.exe",
+            "args": [
+                "-fdiagnostics-color=always",
+                "-g",
+                "${file}",
+                "-o",
+                "C:\\cproglExefile\\${fileBasenameNoExtension}.exe",
+                "-fexec-charset=UTF-8",
+                "-lole32"
+            ],
+            "options": {
+                "cwd": "${fileDirname}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+            },
+            "detail": "调试器生成的任务。"
+        },
+        {
+            "label": "删除调试符号",
+            "type": "shell",
+            "command": "cmd",
+            "args": [
+              "/c",
+              "del",
+              "C:\\cproglexefile\\${fileBasenameNoExtension}_x64.pdb"
+            ],
+            "problemMatcher": []
+        }
+    ],
+    "version": "2.0.0"
+}
