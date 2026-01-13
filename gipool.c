@@ -14,7 +14,13 @@ int main()
         putPool(WishPool[i]);
     }
     for(int i=0;i<charCount;i++){
-        if((1||daysPassedSinceLastUP[arrangedInOrderOfDays[i]])&&((CharMap[arrangedInOrderOfDays[i]].attrib==9)||(CharMap[arrangedInOrderOfDays[i]].attrib==5))){
+        if((1||
+            daysPassedSinceLastUP[arrangedInOrderOfDays[i]]
+            )&&((
+                    CharMap[arrangedInOrderOfDays[i]].attrib==9
+                )||(
+                    CharMap[arrangedInOrderOfDays[i]].attrib==5
+            ))){
             printf("%12s\t%d\n",localizedNames[arrangedInOrderOfDays[i]],daysPassedSinceLastUP[arrangedInOrderOfDays[i]]);
         } else {
             // printf("%12s\t%u\n",localizedNames[arrangedInOrderOfDays[i]],CharMap[arrangedInOrderOfDays[i]].attrib);
