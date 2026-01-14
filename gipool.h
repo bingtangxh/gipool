@@ -1,11 +1,9 @@
 #include <stdio.h>
 #include <time.h>
 #include <limits.h>
+#include "giplinfo.h"
 #include <string.h>
 #include <stdlib.h>
-#include "giplinfo.h"
-#include "confunc.h"
-#include "allglo.h"
 
 #define DATE_LENGTH 12
 #define ARRAY_SIZE(arr)                 \
@@ -36,8 +34,6 @@ void quickSort(int days[],int indices[],int low,int high);
 void arrangeByDaysPassedSinceLastUp(void);
 void freeDynamicThings(void);
 int poolEndHour(uint8_t half);
-_Bool localizeNames(Char_Map CharMap1[], char* localizedNames[]);
-void freeLocalizedNames();
 
 _Bool convertCompileTime(char* date) {
     int gotten = 0;
@@ -261,28 +257,5 @@ int poolEndHour(uint8_t half){
         default:{
             return INT_MIN;
         }
-    }
-}
-
-_Bool localizeNames(Char_Map CharMap1[], char* localizedNames[]) {
-    _Bool result = 0;
-    for (int i = 0, conved = 0; i < charCount; i++) {
-        localizedNames[i] = localize(CharMap1[i].name_cn);
-        if (localizedNames[i] == NULL) result = 1;
-    }
-    return result;
-    // result 返回 1 为未完成，返回 0 为成功完成。
-}
-
-void freeLocalizedNames() {
-    if (localizedNames != NULL) {
-        for (int i = 0; i < charCount; i++) {
-            if (localizedNames[i] != NULL) {
-                free(localizedNames[i]);
-                localizedNames[i] = NULL;
-            }
-        }
-        free(localizedNames);
-        localizedNames = NULL;
     }
 }

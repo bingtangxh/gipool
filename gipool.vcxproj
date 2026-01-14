@@ -253,8 +253,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="allglo.h" />
-    <ClInclude Include="confunc.h" />
     <ClInclude Include="conmenus.h" />
     <ClInclude Include="giplinfo.h" />
     <ClInclude Include="gipool.h" />
