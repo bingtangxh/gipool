@@ -27,6 +27,12 @@
     <ClInclude Include="localize.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="confunc.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="allglo.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="gipool.c">
