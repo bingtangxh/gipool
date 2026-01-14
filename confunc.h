@@ -106,7 +106,7 @@ redisplayMenu:
         }
         for (int i = 0; i < itemCount; i++) {
             printW(L"║");
-            gaptoMax_num = longestIndexLength - printf(" [%d] ", i + 1) + 4;
+            gaptoMax_num = longestIndexLength - printf(" [%d] ",i==itemCount-1?0:i+1)+4;
             for (int j = 0; j < gaptoMax_num; j++) SPACE;
             // printf(" %*d ", longestIndexLength, i + 1);
             printW(L"│");
@@ -132,7 +132,7 @@ redisplayMenu:
         localizedItemNames = NULL;
         free(localizedTitle);
         localizedTitle = NULL;
-        int choice = 0;
+        int choice = INT_MIN;
         char current = '\0';
         do {
             GETNUM(choice);
@@ -140,7 +140,7 @@ redisplayMenu:
                 CLS;
                 goto redisplayMenu;
             }
-            else if (choice < 1 || choice > itemCount) {
+            else if (choice < 0 || choice > itemCount) {
                 clearInputBuffer();
                 printf("Invalid choice. Type -1 to redisplay the menu. (1-%d): ", itemCount);
             }

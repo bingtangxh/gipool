@@ -11,6 +11,10 @@ Global
 		Debug|ARM64 = Debug|ARM64
 		Debug|x64 = Debug|x64
 		Debug|x86 = Debug|x86
+		PackRelease|ARM = PackRelease|ARM
+		PackRelease|ARM64 = PackRelease|ARM64
+		PackRelease|x64 = PackRelease|x64
+		PackRelease|x86 = PackRelease|x86
 		Release|ARM = Release|ARM
 		Release|ARM64 = Release|ARM64
 		Release|x64 = Release|x64
@@ -25,6 +29,14 @@ Global
 		{2C25F763-5CCD-44FB-AD78-7B36F42A2650}.Debug|x64.Build.0 = Debug|x64
 		{2C25F763-5CCD-44FB-AD78-7B36F42A2650}.Debug|x86.ActiveCfg = Debug|Win32
 		{2C25F763-5CCD-44FB-AD78-7B36F42A2650}.Debug|x86.Build.0 = Debug|Win32
+		{2C25F763-5CCD-44FB-AD78-7B36F42A2650}.PackRelease|ARM.ActiveCfg = PackRelease|ARM
+		{2C25F763-5CCD-44FB-AD78-7B36F42A2650}.PackRelease|ARM.Build.0 = PackRelease|ARM
+		{2C25F763-5CCD-44FB-AD78-7B36F42A2650}.PackRelease|ARM64.ActiveCfg = PackRelease|ARM64
+		{2C25F763-5CCD-44FB-AD78-7B36F42A2650}.PackRelease|ARM64.Build.0 = PackRelease|ARM64
+		{2C25F763-5CCD-44FB-AD78-7B36F42A2650}.PackRelease|x64.ActiveCfg = PackRelease|x64
+		{2C25F763-5CCD-44FB-AD78-7B36F42A2650}.PackRelease|x64.Build.0 = PackRelease|x64
+		{2C25F763-5CCD-44FB-AD78-7B36F42A2650}.PackRelease|x86.ActiveCfg = PackRelease|Win32
+		{2C25F763-5CCD-44FB-AD78-7B36F42A2650}.PackRelease|x86.Build.0 = PackRelease|Win32
 		{2C25F763-5CCD-44FB-AD78-7B36F42A2650}.Release|ARM.ActiveCfg = Release|ARM
 		{2C25F763-5CCD-44FB-AD78-7B36F42A2650}.Release|ARM.Build.0 = Release|ARM
 		{2C25F763-5CCD-44FB-AD78-7B36F42A2650}.Release|ARM64.ActiveCfg = Release|ARM64

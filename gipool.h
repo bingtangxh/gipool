@@ -12,10 +12,18 @@
         sizeof(arr)/sizeof((arr)[0])    \
     )
 
+
+#ifdef _MSC_VER
+#define PAUSE ending = _getch(); 
+#else
+#define PAUSE ending = getch();
+#endif
+
 int charCount=0,poolCount=0,longestIndex=0;
 int* daysPassedSinceLastUP=NULL;
 int* arrangedInOrderOfDays=NULL;
 char** localizedNames = NULL;
+char ending = '\0',current='\0';
 static const char* month_table[] = {
     "Jan","Feb","Mar","Apr","May","Jun",
     "Jul","Aug","Sep","Oct","Nov","Dec"
@@ -35,6 +43,7 @@ void quickSort(int days[],int indices[],int low,int high);
 void arrangeByDaysPassedSinceLastUp(void);
 void freeDynamicThings(void);
 int poolEndHour(uint8_t half);
+void pause();
 
 _Bool convertCompileTime(char* date) {
     int gotten = 0;
@@ -259,4 +268,14 @@ int poolEndHour(uint8_t half){
             return INT_MIN;
         }
     }
+}
+
+void pause()
+{
+    char ending = '\0';
+#ifdef _MSC_VER
+    ending = _getch();
+#else
+    ending = getch();
+#endif
 }
