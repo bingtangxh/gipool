@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include <time.h>
 #include <limits.h>
-#include "giplinfo.h"
 #include <string.h>
 #include <stdlib.h>
+#include "giplinfo.h"
 
 #define DATE_LENGTH 12
 #define ARRAY_SIZE(arr)                 \
@@ -15,6 +15,7 @@
 int charCount=0,poolCount=0,longestIndex=0;
 int* daysPassedSinceLastUP=NULL;
 int* arrangedInOrderOfDays=NULL;
+char** localizedNames = NULL;
 static const char* month_table[] = {
     "Jan","Feb","Mar","Apr","May","Jun",
     "Jul","Aug","Sep","Oct","Nov","Dec"
