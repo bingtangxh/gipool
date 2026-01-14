@@ -194,9 +194,9 @@ Char_Map CharMap[]={
     {106,L"奈芙尔","Nefer",DENDRO,5},
     {107,L"雅柯达","Jahoda",ANEMO,4},
     {108,L"杜林","Durin",PYRO,5},
-    {109,L"叶洛亚","Illgua",GEO,ROLE_TYPE_UNKNOWN},
-    {110,L"兹白","Zibai",GEO,ROLE_TYPE_UNKNOWN},
-    {111,L"哥伦比娅·希珀塞莱尼娅","Columbina Hyposelenia",HYDRO,ROLE_TYPE_UNKNOWN},
+    {109,L"叶洛亚","Illgua",GEO,4},
+    {110,L"兹白","Zibai",GEO,5},
+    {111,L"哥伦比娅·希珀塞莱尼娅","Columbina Hyposelenia",HYDRO,5},
     
 };
 

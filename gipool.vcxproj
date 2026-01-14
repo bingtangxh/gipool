@@ -256,6 +256,7 @@
     <ClInclude Include="conmenus.h" />
     <ClInclude Include="giplinfo.h" />
     <ClInclude Include="gipool.h" />
+    <ClInclude Include="localize.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="gipool.c" />

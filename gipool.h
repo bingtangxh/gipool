@@ -1,8 +1,9 @@
 #include <stdio.h>
 #include <time.h>
-#include <windows.h>
 #include <limits.h>
 #include "giplinfo.h"
+#include <string.h>
+#include <stdlib.h>
 
 #define DATE_LENGTH 12
 #define ARRAY_SIZE(arr)                 \
@@ -11,7 +12,6 @@
         sizeof(arr)/sizeof((arr)[0])    \
     )
 
-char** localizedNames=NULL;
 int charCount=0,poolCount=0,longestIndex=0;
 int* daysPassedSinceLastUP=NULL;
 int* arrangedInOrderOfDays=NULL;
@@ -25,7 +25,6 @@ int checkIntegrity(void);
 _Bool isPoolInOrder(int i);
 void initDynamicThings(void);
 int findLongest(Char_Map CharMap1[]);
-_Bool localizeNames(Char_Map CharMap1[],char* localizedNames[]);
 void getDaysPassedSinceLastUp(void);
 time_t makeTimeFromYMDHMS(uint16_t y,uint8_t m,uint8_t d,int hour,int min,int sec);
 int daysSinceSinglePoolEnds(const Wish_Pool pool);
@@ -108,8 +107,6 @@ void initDynamicThings(void){
     charCount=(int)ARRAY_SIZE(CharMap);
     poolCount=(int)ARRAY_SIZE(WishPool);
     longestIndex=findLongest(CharMap);
-    localizedNames=(char**)malloc(charCount*sizeof(char*));
-    localizeNames(CharMap,localizedNames);
     getDaysPassedSinceLastUp();
     arrangedInOrderOfDays=(int*)malloc(charCount*sizeof(int));
     for(int i=0;i<charCount;i++){
@@ -130,18 +127,6 @@ int findLongest(Char_Map CharMap1[]){
         }
     }
     return maxIndex;
-}
-
-_Bool localizeNames(Char_Map CharMap1[],char* localizedNames[]){
-    _Bool result=0;
-    for(int i=0,conved=0;i<charCount;i++){
-        int destSize=WideCharToMultiByte(CP_ACP,0,CharMap1[i].name_cn,-1,NULL,0,NULL,NULL);
-        localizedNames[i]=(char*)malloc(sizeof(char)*(destSize+0));
-        conved=WideCharToMultiByte(CP_ACP,0,CharMap1[i].name_cn,-1,localizedNames[i],destSize,NULL,NULL);
-        if(conved==0) result=1;
-    }
-    return result;
-    // result 返回 1 为未完成，返回 0 为成功完成。
 }
 
 void getDaysPassedSinceLastUp(void){
@@ -249,13 +234,8 @@ void arrangeByDaysPassedSinceLastUp() {
 }
 
 void freeDynamicThings(void){
-    for(int i=0;i<charCount;i++){
-        free(localizedNames[i]);
-    }
-    free(localizedNames);
     free(daysPassedSinceLastUP);
     free(arrangedInOrderOfDays);
-    localizedNames=NULL;
     daysPassedSinceLastUP=arrangedInOrderOfDays=NULL;
 }
 

@@ -24,6 +24,9 @@
     <ClInclude Include="conmenus.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="localize.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="gipool.c">
