@@ -160,7 +160,7 @@ void getDaysPassedSinceLastUp(void){
         {
             if (lastPoolIndex >= 0)daysPassedSinceLastUP[c] = daysSinceSinglePoolEnds(WishPool[lastPoolIndex]);
             // 从未 UP 过（常驻 / 联动 / 特殊）
-            else daysPassedSinceLastUP[c] = -1;
+            else daysPassedSinceLastUP[c] = INT_MIN;
         }
     }
 }

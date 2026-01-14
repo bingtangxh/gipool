@@ -38,6 +38,7 @@ int main(int argc,char** argv)
 {
     initConsole();
     initDynamicThings();
+    do { localizedNames = (char**)malloc(charCount * sizeof(char*)); } while (localizedNames == NULL);
     localizeNames(CharMap, localizedNames);
 	printTestInfo();
     ENDL;
@@ -85,8 +86,8 @@ void printTestInfo(){
         putPool(WishPool[i]);
     }
     for(int i=0;i<charCount;i++){
-        if((1||
-                    daysPassedSinceLastUP[arrangedInOrderOfDays[i]]
+        if((
+                    daysPassedSinceLastUP[arrangedInOrderOfDays[i]]!=INT_MIN
             )&&((
                     CharMap[arrangedInOrderOfDays[i]].attrib==9
                 )||(
