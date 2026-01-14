@@ -32,27 +32,18 @@ void beforeTerminate();
 const int choiceMenu(const wchar_t* menuItems[], int itemCount, const wchar_t* title);
 _Bool localizeNames(Char_Map CharMap1[], char* localizedNames[]);
 void clearInputBuffer();
+void freeLocalizedNames();
 
 int main(int argc,char** argv)
 {
     initConsole();
     initDynamicThings();
-    localizedNames = (char**)malloc(charCount * sizeof(char*));
     localizeNames(CharMap, localizedNames);
 	printTestInfo();
     ENDL;
 	printCompileTime();
     freeDynamicThings();
-    if (localizedNames != NULL) {
-        for (int i = 0; i < charCount; i++) {
-            if (localizedNames[i] != NULL) {
-                free(localizedNames[i]);
-                localizedNames[i] = NULL;
-            }
-        }
-        free(localizedNames);
-        localizedNames = NULL;
-    }
+    freeLocalizedNames();
     printf("Count of characters and pool info with errors: %d\n",checkIntegrity());
     ENDL;
 	choiceMenu(mainMenu, ARRAY_SIZE(mainMenu), L"原神祈愿卡池信息工具我不管我就要让它变长看看能不能正常工作");
@@ -111,96 +102,105 @@ void printTestInfo(){
 
 void beforeTerminate(){
     puts("Press any key to exit...");
+	char ending = '\0';
 #ifdef _MSC_VER
-    _getch();
+    ending=_getch();
 #else
-    getch();
+    ending=getch();
 #endif
 }
 
 const int choiceMenu(const wchar_t* menuItems[], int itemCount, const wchar_t* title) {
-    redisplayMenu:
-    size_t currentExpectedLength = 0,maxItemLength = 0, longestItemIndex = 0, gaptoMax = 0, gaptoMax_num = 0, longestIndexLength = 0, destSize = 0,titleLineSpaces=0;
-    int ;
-    char** localizedItemNames = NULL;
-    for (int temp = itemCount; temp > 0; temp /= 10) { longestIndexLength++; }
-	localizedItemNames = (char**)malloc(itemCount * sizeof(char*));
-    for(int i=0;i<itemCount;i++){
-        if((currentExpectedLength=localizedLen(menuItems[i]))>maxItemLength) {
-            maxItemLength=currentExpectedLength;
-            longestItemIndex=i;
+redisplayMenu:
+    {
+        size_t currentExpectedLength = 0, maxItemLength = 0, longestItemIndex = 0, gaptoMax = 0, gaptoMax_num = 0, longestIndexLength = 0, destSize = 0, titleLineSpaces = 0;
+        char** localizedItemNames = NULL;
+        for (int temp = itemCount; temp > 0; temp /= 10) { longestIndexLength++; }
+        localizedItemNames = (char**)malloc(itemCount * sizeof(char*));
+        for (int i = 0; i < itemCount; i++) {
+            if ((currentExpectedLength = localizedLen(menuItems[i])) > maxItemLength) {
+                maxItemLength = currentExpectedLength;
+                longestItemIndex = i;
+            }
         }
-	}
-    for(int i=0;i<itemCount;i++){
-		localizedItemNames[i] = localize(menuItems[i]);
-	}
-    
-	char* localizedTitle = localize(title);
-    if (localizedTitle != NULL) {
-        if (strlen(localizedTitle) - 5 > maxItemLength) {
-            maxItemLength = strlen(localizedTitle) - 5;
+        if (localizedItemNames != NULL) {
+            for (int i = 0; i < itemCount; i++) {
+                localizedItemNames[i] = localize(menuItems[i]);
+            }
         }
-        titleLineSpaces = maxItemLength + 5 - strlen(localizedTitle)+longestIndexLength;
-        printW(L"╔");
-        for (int i = 0; i < longestIndexLength + maxItemLength + 7; i++) { printW(L"═"); }
-        printW(L"╗"); ENDL;
 
-        printW(L"║"); SPACE;
-        for (int i = 0; i < titleLineSpaces / 2 + titleLineSpaces % 2; i++) SPACE;
-        printf("%s",localizedTitle);
-        for (int i = 0; i < titleLineSpaces / 2; i++) SPACE;
-        printW(L" ║\n");
-        printW(L"╟");
-        for (int i = 0; i < longestIndexLength + 4; i++) printW(L"─");
-        printW(L"┬");
-        for (int i = 0; i < maxItemLength + 2; i++) printW(L"─");
-        printW(L"╢\n");
+        char* localizedTitle = localize(title);
+        if (localizedTitle != NULL) {
+            if (strlen(localizedTitle) - 5 > maxItemLength) {
+                maxItemLength = strlen(localizedTitle) - 5;
+            }
+            titleLineSpaces = maxItemLength + 5 - strlen(localizedTitle) + longestIndexLength;
+            printW(L"╔");
+            for (int i = 0; i < longestIndexLength + maxItemLength + 7; i++) { printW(L"═"); }
+            printW(L"╗"); ENDL;
+
+            printW(L"║"); SPACE;
+            for (int i = 0; i < titleLineSpaces / 2 + titleLineSpaces % 2; i++) SPACE;
+            printf("%s", localizedTitle);
+            for (int i = 0; i < titleLineSpaces / 2; i++) SPACE;
+            printW(L" ║\n");
+            printW(L"╟");
+            for (int i = 0; i < longestIndexLength + 4; i++) printW(L"─");
+            printW(L"┬");
+            for (int i = 0; i < maxItemLength + 2; i++) printW(L"─");
+            printW(L"╢\n");
+        }
+        else {
+            printW(L"╔");
+            for (int i = 0; i < longestIndexLength + 4; i++) { printW(L"═"); }
+            printW(L"╤");
+            for (int i = 0; i < maxItemLength + 2; i++) { printW(L"═"); }
+            printW(L"╗"); ENDL;
+        }
+        for (int i = 0; i < itemCount; i++) {
+            printW(L"║");
+            gaptoMax_num = longestIndexLength - printf(" [%d] ", i + 1) + 4;
+            for (int j = 0; j < gaptoMax_num; j++) SPACE;
+            // printf(" %*d ", longestIndexLength, i + 1);
+            printW(L"│");
+            if (localizedItemNames[i] != NULL) {
+                printf(" %s ", localizedItemNames[i]);
+                gaptoMax = maxItemLength - strlen(localizedItemNames[i]);
+                for (int j = 0; j < gaptoMax; j++) SPACE;
+                printW(L"║\n");
+            }
+            else ENDL;
+        }
+        printW(L"╚");
+        for (int i = 0; i < longestIndexLength + 4; i++) printW(L"═");
+        printW(L"╧");
+        for (int i = 0; i < maxItemLength + 2; i++) printW(L"═");
+        printW(L"╝\n"); ENDL;
+        printf("Please select an option (1-%d) and press ENTER: ", itemCount);
+        for (int i = 0; i < itemCount; i++) {
+            free(localizedItemNames[i]);
+            localizedItemNames[i] = NULL;
+        }
+        free(localizedItemNames);
+        localizedItemNames = NULL;
+        free(localizedTitle);
+        localizedTitle = NULL;
+        int choice = 0;
+        char current = '\0';
+        do {
+            GETNUM(choice);
+            if (choice == -1) {
+                CLS;
+                goto redisplayMenu;
+            }
+            else if (choice < 1 || choice > itemCount) {
+                clearInputBuffer();
+                printf("Invalid choice. Type -1 to redisplay the menu. (1-%d): ", itemCount);
+            }
+            else { break; }
+        } while (1);
+        return choice;
     }
-    else {
-        printW(L"╔");
-        for (int i = 0; i < longestIndexLength + maxItemLength + 7; i++) { printW(L"═"); }
-        printW(L"╗"); ENDL;
-    }
-    for (int i = 0; i < itemCount; i++) {
-        printW(L"║");
-        gaptoMax_num=longestIndexLength-printf(" [%d] ", i+1)+4;
-        for (int j = 0; j < gaptoMax_num; j++) SPACE;
-        // printf(" %*d ", longestIndexLength, i + 1);
-        printW(L"│");
-        printf(" %s ",localizedItemNames[i]);
-        if (localizedItemNames[i]!=NULL) {
-            gaptoMax = maxItemLength - strlen(localizedItemNames[i]);
-            for (int j = 0; j < gaptoMax; j++) SPACE;
-            printW(L"║\n");
-        } else ENDL;
-    }
-    printW(L"╚");
-    for (int i = 0; i < longestIndexLength + 4; i++) printW(L"═");
-    printW(L"╧");
-    for (int i = 0; i < maxItemLength + 2; i++) printW(L"═");
-    printW(L"╝\n"); ENDL;
-    printf("Please select an option (1-%d) and press ENTER: ", itemCount);
-    for (int i = 0; i < itemCount; i++) {
-        free(localizedItemNames[i]);
-        localizedItemNames[i]=NULL;
-    }
-    free(localizedItemNames);
-	localizedItemNames = NULL;
-    free(localizedTitle);
-	localizedTitle = NULL;
-    int choice = 0;
-    char current = '\0';
-    do {
-		GETNUM(choice);
-        if (choice == -1) {
-            CLS;
-            goto redisplayMenu;
-        }else if (choice < 1 || choice > itemCount) {
-			clearInputBuffer();
-            printf("Invalid choice. Type -1 to redisplay the menu. (1-%d): ", itemCount);
-        } else { break; }
-	} while (1);
-	return choice;
 }
 
 _Bool localizeNames(Char_Map CharMap1[], char* localizedNames[]) {
@@ -220,4 +220,17 @@ void clearInputBuffer() {
     do {
         current = getchar();                        
     } while (current != '\n' && current != EOF && current != '\0');
+}
+
+void freeLocalizedNames() {
+    if (localizedNames != NULL) {
+        for (int i = 0; i < charCount; i++) {
+            if (localizedNames[i] != NULL) {
+                free(localizedNames[i]);
+                localizedNames[i] = NULL;
+            }
+        }
+        free(localizedNames);
+        localizedNames = NULL;
+    }
 }

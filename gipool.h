@@ -108,7 +108,7 @@ void initDynamicThings(void){
     poolCount=(int)ARRAY_SIZE(WishPool);
     longestIndex=findLongest(CharMap);
     getDaysPassedSinceLastUp();
-    arrangedInOrderOfDays=(int*)malloc(charCount*sizeof(int));
+	do { arrangedInOrderOfDays = (int*)malloc(charCount * sizeof(int)); } while (arrangedInOrderOfDays == NULL);
     for(int i=0;i<charCount;i++){
         arrangedInOrderOfDays[i]=i;
     }
@@ -138,7 +138,8 @@ void getDaysPassedSinceLastUp(void){
     // 因此这个函数在检测到 daysPassedSinceLastUP 不是 NULL 就会直接 free
     // 然后直接再次分配，没有其他情况检测
     if(daysPassedSinceLastUP!=NULL) free(daysPassedSinceLastUP);
-    daysPassedSinceLastUP=(int*)malloc(sizeof(int)*charCount);
+    do { daysPassedSinceLastUP = (int*)malloc(sizeof(int) * charCount);
+        }while (daysPassedSinceLastUP == NULL);
     for (int c=0;c<charCount;c++)
     {
         int lastPoolIndex=-1;
@@ -155,9 +156,12 @@ void getDaysPassedSinceLastUp(void){
             }
         }
     FOUND:
-        if (lastPoolIndex>=0)daysPassedSinceLastUP[c]=daysSinceSinglePoolEnds(WishPool[lastPoolIndex]);
-        // 从未 UP 过（常驻 / 联动 / 特殊）
-        else daysPassedSinceLastUP[c]=-1;
+        if (daysPassedSinceLastUP != NULL)
+        {
+            if (lastPoolIndex >= 0)daysPassedSinceLastUP[c] = daysSinceSinglePoolEnds(WishPool[lastPoolIndex]);
+            // 从未 UP 过（常驻 / 联动 / 特殊）
+            else daysPassedSinceLastUP[c] = -1;
+        }
     }
 }
 
