@@ -8,7 +8,7 @@ void _mainMenu()
 {
     while (1) {
         switch (
-            choiceMenu(mainMenu, ARRAY_SIZE(mainMenu), L"祈愿卡池信息工具我不管我就要让它变长看看能不能正常工作")
+            choiceMenu(mainMenu, ARRAY_SIZE(mainMenu), L"原神祈愿卡池信息工具")
             )
         {
         case 1:

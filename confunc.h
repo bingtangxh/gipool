@@ -123,7 +123,7 @@ redisplayMenu:
         printW(L"╧");
         for (int i = 0; i < maxItemLength + 1; i++) printW(L"═");
         printW(L"╝\n"); ENDL;
-        printf("Please select an option (1-%d) and press ENTER: ", itemCount);
+        printf("Please select an option (0-%d) and press ENTER: ", itemCount-1);
         for (int i = 0; i < itemCount; i++) {
             free(localizedItemNames[i]);
             localizedItemNames[i] = NULL;
@@ -140,9 +140,9 @@ redisplayMenu:
                 CLS;
                 goto redisplayMenu;
             }
-            else if (choice < 0 || choice > itemCount) {
+            else if (choice < 0 || choice > itemCount-1) {
                 clearInputBuffer();
-                printf("Invalid choice. Type -1 to redisplay the menu. (1-%d): ", itemCount);
+                printf("Invalid choice. Type -1 to redisplay the menu. (0-%d): ", itemCount-1);
             }
             else { break; }
         } while (1);

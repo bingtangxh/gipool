@@ -418,9 +418,6 @@
   <ItemGroup>
     <ResourceCompile Include="gipool.rc" />
   </ItemGroup>
-  <ItemGroup>
-    <Image Include="..\..\Users\ruu\OneDrive\Develop\个性化\图标\原神\VentiSleep.ico" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
