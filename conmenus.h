@@ -1,3 +1,16 @@
+#define CONMENUS
+#ifndef GIPOOL
+#include "gipool.h"
+#endif
+#ifndef LOCALIZE
+#include "localize.h"
+#endif
+#ifndef CONFUNC
+#include "confunc.h"
+#endif
+#ifndef CONUSAGE
+#include "conusage.h"
+#endif
 const wchar_t* mainMenu[] = {
         L"查询所有卡池",
         L"查询所有角色距离上次复刻已过天数",
@@ -13,29 +26,14 @@ void _mainMenu()
         {
         case 1:
         {
-            for (int i = 0; i < poolCount; i++) {
-                putPool(WishPool[i]);
-            }
+            printAllPools();
             ENDL;
             puts("The above is all wish pool info, press any key to go back.");
             break;
         }
         case 2:
         {
-            for (int i = 0; i < charCount; i++) {
-                if ((
-                    daysPassedSinceLastUP[arrangedInOrderOfDays[i]] != INT_MIN
-                    ) && ((
-                        CharMap[arrangedInOrderOfDays[i]].attrib == 9
-                        ) || (
-                            CharMap[arrangedInOrderOfDays[i]].attrib == 5
-                            ))) {
-                    printf("%12s\t%d\n", localizedNames[arrangedInOrderOfDays[i]], daysPassedSinceLastUP[arrangedInOrderOfDays[i]]);
-                }
-                else {
-                    // printf("%12s\t%u\n",localizedNames[arrangedInOrderOfDays[i]],CharMap[arrangedInOrderOfDays[i]].attrib);
-                }
-            }
+            printDaysofAllLimited5StarCharacters();
             ENDL;
             puts("The above is days of all limited 5 star characters, press any key to go back.");
             break;

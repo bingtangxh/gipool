@@ -5,19 +5,13 @@
 #include <stdlib.h>
 #include "giplinfo.h"
 
+#define GIPOOL
 #define DATE_LENGTH 12
 #define ARRAY_SIZE(arr)                 \
     (                                   \
         sizeof(arr)==0?0:               \
         sizeof(arr)/sizeof((arr)[0])    \
     )
-
-
-#ifdef _MSC_VER
-#define PAUSE ending = _getch(); 
-#else
-#define PAUSE ending = getch();
-#endif
 
 int charCount=0,poolCount=0,longestIndex=0;
 int* daysPassedSinceLastUP=NULL;

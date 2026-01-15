@@ -23,22 +23,33 @@ typedef uint32_t RoleMeta;
 // 末两位均为 1 时，即模 4 余 3 时一律算作常驻五星
 
 // 编码池信息（常驻五星时才有意义）
-#define ENCODE_POOL_VERSION(major,minor,half) \
-    (((major)<<6)|((minor)<<2)|((half)&0x3))
+#define ENCODE_POOL_VERSION_FOR_PERMANENT_5_STAR(major,minor,half) \
+    (((major)<<6)|(((minor)&0xF)<<2)|((half)&0x3))
 
 // 构造 RoleMeta：常驻五星 = (encoded << 3) | 3（3表示常驻五星）
 // 只看最后两位，如果是 3 ，表示是常驻五星，再去解码
 // 如果往前全是 0 ，说明是开服常驻，从未 UP （刻晴是特殊情况）
-#define MAKE_ROLE_META(major,minor,half) \
-    ((ENCODE_POOL_VERSION((major),(minor),(half))<<3)|3)
+#define MAKE_ROLE_META_P(major,minor,half) \
+    ((ENCODE_POOL_VERSION_FOR_PERMANENT_5_STAR((major),(minor),(half))<<3)|3)
 
 // 提取 roleType
 #define GET_ROLE_TYPE(meta) ((meta)&0x7)
 
 // 提取常驻五星的首次UP信息（前提是 GET_ROLE_TYPE(meta)==3）
-#define GET_MAJOR(meta) (((meta)>>9)&0xFF)
-#define GET_MINOR(meta) (((meta)>>5)&0x0F)
-#define GET_HALF(meta)  (((meta)>>3)&0x03)
+#define GET_MAJOR_P(meta) (((meta)>>9)&0xFF)
+#define GET_MINOR_P(meta) (((meta)>>5)&0x0F)
+#define GET_HALF_P(meta)  (((meta)>>3)&0x03)
+
+// 编码链表池信息 /
+// （可能用不到，有可能链表卡池信息会用3个uint_8，不进行编码存放进uint_32，
+// 因为反正链表为了存next指针需要是结构体了）
+#define ENCODE_POOL_INFO_LL(major,minor,half)\
+    (((major)<<24)|((minor)<<16)|((half)<<8))
+
+// 提取链表池信息中的具体信息
+#define GET_MAJOR_LL(meta) (((meta)>>24)&0xFF)
+#define GET_MINOR_LL(meta) (((meta)>>16)&0xFF)
+#define GET_HALF_LL(meta) (((meta)>>8)&0xFF)
 
 typedef struct characterMap {
     const unsigned int id;
@@ -104,7 +115,7 @@ Char_Map CharMap[]={
     {17,L"迪卢克","Diluc",PYRO,3},
     {18,L"七七","Qiqi",CRYO,3},
     {19,L"莫娜","Mona",HYDRO,3},
-    {20,L"刻晴","Keqing",ELECTRO,MAKE_ROLE_META(1,3,2)},
+    {20,L"刻晴","Keqing",ELECTRO,MAKE_ROLE_META_P(1,3,2)},
 
     {21,L"温迪","Venti",ANEMO,5},
     {22,L"可莉","Klee",PYRO,5},
@@ -138,7 +149,7 @@ Char_Map CharMap[]={
     {50,L"久岐忍","Kuki Shinobu",ELECTRO,4},
     {51,L"鹿野院平藏","Shikanoin Heizou",ANEMO,4},
     {52,L"柯莱","Collei",DENDRO,4},
-    {53,L"提纳里","Tighnari",DENDRO,MAKE_ROLE_META(3,0,1)},
+    {53,L"提纳里","Tighnari",DENDRO,MAKE_ROLE_META_P(3,0,1)},
     {54,L"多莉","Dori",ELECTRO,4},
     {55,L"坎蒂丝","Candace",HYDRO,4},
     {56,L"赛诺","Cyno",ELECTRO,5},
@@ -149,7 +160,7 @@ Char_Map CharMap[]={
     {61,L"流浪者","Wanderer",ANEMO,5},
     {62,L"瑶瑶","Yao Yao",DENDRO,4},
     {63,L"艾尔海森","Alhaitham",DENDRO,5},
-    {64,L"迪希雅","Dehya",PYRO,MAKE_ROLE_META(3,5,1)},
+    {64,L"迪希雅","Dehya",PYRO,MAKE_ROLE_META_P(3,5,1)},
     {65,L"米卡","Mika",CRYO,4},
     {66,L"卡维","Kaveh",DENDRO,4},
     {67,L"白术","Baizhu",DENDRO,5},
@@ -180,7 +191,7 @@ Char_Map CharMap[]={
     {92,L"茜特菈莉","Citlali",CRYO,5},
     {93,L"玛薇卡","Mavuika",PYRO,5},
     {94,L"蓝砚","Lan Yan",ANEMO,4},
-    {95,L"梦见月瑞希","Yumemizuki Mizuki",ANEMO,MAKE_ROLE_META(5,4,1)},
+    {95,L"梦见月瑞希","Yumemizuki Mizuki",ANEMO,MAKE_ROLE_META_P(5,4,1)},
     {96,L"伊安珊","Iansan",ELECTRO,4},
     {97,L"瓦雷莎","Varesa",ELECTRO,5},
     {98,L"伊法","Ifa",ANEMO,4},

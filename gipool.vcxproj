@@ -407,6 +407,7 @@
   <ItemGroup>
     <ClInclude Include="confunc.h" />
     <ClInclude Include="conmenus.h" />
+    <ClInclude Include="conusage.h" />
     <ClInclude Include="giplinfo.h" />
     <ClInclude Include="gipool.h" />
     <ClInclude Include="localize.h" />
