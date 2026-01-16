@@ -117,7 +117,7 @@ Char_Map CharMap[]={
     {13,L"诺艾尔","Noelle",GEO,4},
     {14,L"重云","Chongyun",CRYO,4},
     {15,L"砂糖","Sucrose",ANEMO,4},
-    
+
     {16,L"琴","Jean",ANEMO,3},
     {17,L"迪卢克","Diluc",PYRO,3},
     {18,L"七七","Qiqi",CRYO,3},
@@ -215,7 +215,7 @@ Char_Map CharMap[]={
     {109,L"叶洛亚","Illgua",GEO,4},
     {110,L"兹白","Zibai",GEO,5},
     {111,L"哥伦比娅·希珀塞莱尼娅","Columbina Hyposelenia",HYDRO,5},
-    
+
 };
 
 Wish_Pool WishPool[]={

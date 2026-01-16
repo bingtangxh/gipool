@@ -12,9 +12,9 @@ int main(int argc,char** argv)
 {
     initConsole();
     initDynamicThings();
-    do { localizedNames = (char**)malloc(charCount * sizeof(char*)); } while (localizedNames == NULL);
-    localizeNames(CharMap, localizedNames);
-	printCompileTime();
+    do { localizedNames=(char**) malloc(charCount*sizeof(char*)); } while (localizedNames==NULL);
+    localizeNames(CharMap,localizedNames);
+    printCompileTime();
     ENDL;
     printf("Count of characters and pool info with errors: %d\n",checkIntegrity());
     ENDL;
@@ -26,7 +26,7 @@ int main(int argc,char** argv)
 }
 
 void printTestInfo(){
-    
+
 }
 
 void beforeTerminate(){
