@@ -15,7 +15,6 @@ const wchar_t* mainMenu[] = {
         L"查询所有卡池",
         L"查询所有角色距离上次复刻已过天数",
         L"查询每一次单独角色卡池",
-        L"测试分类选取角色",
         L"退出"
 };
 
@@ -56,27 +55,28 @@ void _mainMenu()
         {
         case 1:
         {
+            prevSlt = 0;
             printAllPools();
             ENDL;
             puts("The above is all wish pool info, press any key to go back.");
-            prevSlt = 0;
             break;
         }
         case 2:
         {
+            prevSlt = 0;
             printDaysofAllLimited5StarCharacters();
             ENDL;
             puts("The above is days of all limited 5 star characters, press any key to go back.");
-            prevSlt = 0;
             break;
         }
         case 3:
         {
             do {
-                int choice = choiceOneCharacter4Test();
+                int choice = choiceOneCharacter();
                 if (choice == -1) { prevSlt = 0; goto mainMenu; }
                 else {
                     buildPoolLinkList(choice, WishPool);
+                    printf("\n%s: ", CharMap[choice].name);
                     printPoolLinkList(PoolLinkLists[choice]);
                     ENDL;
                     printf("The above is all %s wish pool info, press any key for another character.", CharMap[choice].name);
@@ -86,15 +86,6 @@ void _mainMenu()
                     continue;
                 }
             } while (1);
-		}
-        case 4:
-        {
-            int choice=choiceOneCharacter();
-            if (choice == -1) {
-                prevSlt = 0;
-                continue;
-            }
-            break;
         }
         case 0:
         default:
@@ -110,6 +101,7 @@ exit_mainMenu:
 int choiceOneCharacter() {
     static int prevSlt = 0;
     do {
+        choiceOneCharacter:
         if (prevSlt == 0 || prevSlt == -1)
         {
             ENDL;
@@ -118,12 +110,52 @@ int choiceOneCharacter() {
         switch (prevSlt) {
         case 1:
         {
-
+            ENDL;
+            printf("Please type how long the Chinese name is and press ENTER, type 0 for go back (0-20): ");
+            int length = 0;
+            do {
+                GETNUM(length);
+                clearInputBuffer();
+                if (length == 0) {
+                    prevSlt = 0;
+                    goto choiceOneCharacter;
+                } else if (length <= 0 || length > 20) {
+                    printf("Invalid choice. Type 0 to go back. (0-20): ");
+                } else { break; }
+            } while (1);
+            CLS;
+            for (int i = 0; i < charCount; i++) {
+                if (wcslen(CharMap[i].name_cn) == length) {
+                    printf("%d\t%s\t%s", i, localizedNames[i], CharMap[i].name);
+                    ENDL;
+                }
+            }
             break;
         }
         case 2:
         {
-
+            ENDL;
+            printf("Please type how long the English name is and press ENTER, type 0 for go back (0-40): ");
+            int length = 0;
+            do {
+                GETNUM(length);
+                clearInputBuffer();
+                if (length == 0) {
+                    prevSlt = 0;
+                    goto choiceOneCharacter;
+                }
+                else if (length <= 0 || length > 40) {
+                    printf("Invalid choice. Type 0 to go back. (0-40): ");
+                }
+                else { break; }
+            } while (1);
+            CLS;
+            for (int i = 0; i < charCount; i++) {
+                if (strlen(CharMap[i].name) == length) {
+                    printf("%d\t%s\t%s", i, CharMap[i].name, localizedNames[i]);
+                    ENDL;
+                }
+            }
             break;
         }
         case 3:
@@ -158,30 +190,31 @@ int choiceOneCharacter() {
                 prevSlt = 0;
                 continue;
             }
-            ENDL;
+            CLS;
             for (int i = 0; i < charCount; i++) {
                 if (CharMap[i].vision == visionSelection) {
-                    printf("%s %s", localizedNames[i], CharMap[i].name);
+                    printf("%d %s %s", i, localizedNames[i], CharMap[i].name);
                     ENDL;
                 }
             }
+            
             break;
         }
         case 4:
         {
-            int selection = -1;
-            selection=choiceOneCharacter4Test();
-            if (selection == -1) { 
-                prevSlt = 0;
-                continue; 
-            }
-            else return selection;
             break;
         }
         case 0:
         default:
             return -1;
         }
+        int selection = -1;
+        selection = choiceOneCharacter4Test();
+        if (selection == -1) {
+            prevSlt = 0;
+            continue;
+        }
+        else return selection;
         PAUSE;
         CLS;
         continue;
