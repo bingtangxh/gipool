@@ -92,6 +92,13 @@ typedef struct wishPool {
     uint8_t endD;
 } Wish_Pool;
 
+typedef struct poolNode {
+    uint8_t major;
+    uint8_t minor;
+    uint8_t half;
+    struct poolNode* next;
+}PoolNode,*PoolLinkList,**PoolLinkListArray;
+
 Char_Map CharMap[]={
     {0,L"空","Aether",VISION_OTHER,0},
     {1,L"荧","Lumine",VISION_OTHER,1},
@@ -225,7 +232,7 @@ Wish_Pool WishPool[]={
     {{24},{5,11,31},{0},1,4,2,2021,4,6,2021,4,27},
     {{26},{32,13,23},{0},1,5,1,2021,4,28,2021,5,18},
     {{33},{9,8,25},{0},1,5,2,2021,5,18,2021,6,8},
-    {{21},{11,15,5},{0},1,6,1,2021,6,9,2021,6,29},
+    {{22},{11,15,5},{0},1,6,1,2021,6,9,2021,6,29},
     {{34},{31,6,12},{0},1,6,2,2021,6,29,2021,7,20},
     {{35},{14,10,32},{0},2,0,1,2021,7,21,2021,8,10},
     {{37},{23,36,25},{0},2,0,2,2021,8,10,2021,8,31},

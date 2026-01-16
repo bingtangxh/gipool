@@ -13,6 +13,7 @@
         sizeof(arr)/sizeof((arr)[0])    \
     )
 
+PoolLinkList* PoolLinkLists = NULL;
 int charCount=0,poolCount=0,longestIndex=0;
 int* daysPassedSinceLastUP=NULL;
 int* arrangedInOrderOfDays=NULL;
@@ -38,6 +39,8 @@ void arrangeByDaysPassedSinceLastUp(void);
 void freeDynamicThings(void);
 int poolEndHour(uint8_t half);
 void pause();
+_Bool buildPoolLinkList(size_t index,Wish_Pool WishPool1[]);
+PoolLinkList createPoolNode(Wish_Pool WishPool1);
 
 _Bool convertCompileTime(char* date) {
     int gotten = 0;
@@ -117,6 +120,10 @@ void initDynamicThings(void){
         arrangedInOrderOfDays[i]=i;
     }
     arrangeByDaysPassedSinceLastUp();
+    do { PoolLinkLists = (PoolLinkList*)malloc(sizeof(PoolLinkList) * charCount); } while (PoolLinkLists == NULL);
+    for (int i = 0; i < charCount; i++) {
+        PoolLinkLists[i] = NULL;
+    }
 }
 
 int findLongest(Char_Map CharMap1[]){
@@ -242,9 +249,23 @@ void arrangeByDaysPassedSinceLastUp() {
 }
 
 void freeDynamicThings(void){
+    PoolLinkList currentNode = NULL,currentNext=NULL;
     free(daysPassedSinceLastUP);
     free(arrangedInOrderOfDays);
     daysPassedSinceLastUP=arrangedInOrderOfDays=NULL;
+    if (PoolLinkLists != NULL)
+    {
+        for (int i = 0; i < charCount; i++) {
+            if (PoolLinkLists[i] != NULL) {
+                currentNode = PoolLinkLists[i];
+                while (currentNode != NULL) {
+                    currentNext = currentNode->next;
+                    free(currentNode);
+                    currentNode = currentNext;
+                }
+            }
+        }
+    }
 }
 
 int poolEndHour(uint8_t half){
@@ -272,4 +293,69 @@ void pause()
 #else
     ending = getch();
 #endif
+}
+
+_Bool buildPoolLinkList(size_t index,Wish_Pool WishPools[]) {
+    PoolLinkList current=NULL,currentNext=NULL;
+    int fiveCount = sizeof(WishPools[0].up5) == 0 ? 0 : (int)(sizeof(WishPools[0].up5) / sizeof(WishPools[0].up5[0]));
+    int fourCount = sizeof(WishPools[0].up4) == 0 ? 0 : (int)(sizeof(WishPools[0].up4) / sizeof(WishPools[0].up4[0]));
+    if (PoolLinkLists == NULL) return 1;
+    if (PoolLinkLists[index] != NULL) {
+        current = PoolLinkLists[index];
+        do {
+            currentNext = current->next;
+            free(current);
+            current = currentNext;
+        } while (currentNext != NULL);
+        PoolLinkLists[index] = current = currentNext = NULL;
+    }
+    if (CharMap[index].attrib == 5) {
+        for (int i = 0; i < poolCount; i++) {
+            for (int j = 0; j < fiveCount && WishPools[i].up5[j] != 0; j++) {
+                if (WishPools[i].up5[j] == index) {
+                    do { currentNext = createPoolNode(WishPools[i]); } while (currentNext == NULL);
+                    if (PoolLinkLists[index] == NULL) { 
+                        PoolLinkLists[index] = current = currentNext;
+                    }
+                    else {
+                        current->next = currentNext;
+                        current = current->next;
+                    }
+
+                }
+            }
+        }
+        return 0;
+    } else if (CharMap[index].attrib == 4) {
+        for (int i = 0; i < poolCount; i++) {
+            for (int j = 0; j < fourCount && WishPools[i].up4[j] != 0; j++) {
+                if (WishPools[i].up4[j] == index) {
+                    do { currentNext = createPoolNode(WishPools[i]); } while (currentNext == NULL);
+                    if (PoolLinkLists[index] == NULL) {
+                        PoolLinkLists[index] = current = currentNext;
+                    }
+                    else {
+                        current->next = currentNext;
+                        current = current->next;
+                    }
+                }
+            }
+        }
+        return 0;
+    }
+    else return 1;
+
+}
+
+PoolLinkList createPoolNode(Wish_Pool WishPool1) {
+    PoolLinkList target = NULL;
+    target = (PoolLinkList)malloc(sizeof(PoolNode));
+    if (target == NULL) return NULL;
+    else {
+        target->major = WishPool1.major;
+        target->minor = WishPool1.minor;
+        target->half = WishPool1.half;
+        target->next = NULL;
+        return target;
+    }
 }
