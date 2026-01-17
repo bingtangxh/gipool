@@ -1,2 +1,2 @@
 # gipool
-Query Genshin Imapce wish pool info
+Query Genshin Impact wish pool info
