@@ -3,6 +3,12 @@
 #include <limits.h>
 #include <string.h>
 #include <stdlib.h>
+
+#ifndef _WIN32
+#include <stddef.h>
+#include <wchar.h>
+#endif
+
 #include "giplinfo.h"
 
 #define GIPOOL
@@ -123,6 +129,9 @@ void initDynamicThings(void){
     for (int i=0; i<charCount; i++) {
         PoolLinkLists[i]=NULL;
     }
+#ifndef _WIN32
+    // initscr();
+#endif
 }
 
 int findLongest(Char_Map CharMap1[]){
@@ -266,6 +275,9 @@ void freeDynamicThings(void){
             }
         }
     }
+#ifndef _WIN32
+    // endwin();
+#endif
 }
 
 int poolEndHour(uint8_t half){

@@ -1,4 +1,8 @@
+#ifdef _WIN32
 #include <conio.h>
+#else
+// #include <ncurses.h>
+#endif
 #include <locale.h>
 #include "gipool.h"
 #include "localize.h"
@@ -16,7 +20,8 @@ int main(int argc,char** argv)
     localizeNames(CharMap,localizedNames);
     printCompileTime();
     ENDL;
-    printf("Count of characters and pool info with errors: %d\n",checkIntegrity());
+    printf("Count of characters and pool info with errors: %d",checkIntegrity());
+    ENDL;
     ENDL;
     _mainMenu();
     freeDynamicThings();

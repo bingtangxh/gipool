@@ -16,13 +16,22 @@
 #define GETNUM(num) scanf("%d",&num)
 #endif
 
+#ifdef _WIN32
 #define ENDL putchar('\n')
+#else
+#define ENDL printf("\r\n")
+#endif
 #define SPACE putchar(' ')
 
 #ifdef _MSC_VER
 #define PAUSE ending = _getch(); 
 #else
 #define PAUSE ending = getch();
+#endif
+
+#ifndef _WIN32
+#define getche() \
+    getchar()
 #endif
 
 void initConsole();
@@ -60,13 +69,14 @@ void putPool(Wish_Pool WishPool1)
         //printW(CharMap[WishPool1.up4[i]].name_cn);
         printf("%s ",localizedNames[WishPool1.up4[i]]==NULL ? "" : localizedNames[WishPool1.up4[i]]);
     }
-    putchar('\n');
+    ENDL;
 }
 
 void printCompileTime() {
     char date[DATE_LENGTH]=__DATE__;
     convertCompileTime(date);
-    printf("Compiled at %s %s\n",date,__TIME__);
+    printf("Compiled at %s %s",date,__TIME__);
+    ENDL;
 }
 
 const int typeMenu(const wchar_t* menuItems[],int itemCount,const wchar_t* title) {
@@ -255,12 +265,16 @@ const int choiceMenu(const wchar_t* menuItems[],int itemCount,const wchar_t* tit
         localizedTitle=NULL;
         char choice=-1;
         do {
+#ifndef _WIN32
+            fflush(stdout);
+#endif
             choice=
 #ifdef _MSC_VER
                 _getche();
 #else
                 getche();
 #endif
+            
             if ('A'<=choice&&choice<='Z') {
                 choice-='A';
                 choice+=10;
@@ -319,7 +333,7 @@ void freeLocalizedNames() {
 }
 
 void printPoolLinkList(PoolLinkList current) {
-    if (current==NULL) puts("\nThis character have't been UP yet.");
+    if (current==NULL) { ENDL; puts("This character have't been UP yet."); }
     for (int i=0; current!=NULL; i++) {
         if (i%3==0) ENDL;
         printf("%hu.%hu.%hu\t",current->major,current->minor,current->half);

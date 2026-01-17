@@ -76,7 +76,8 @@ void _mainMenu()
                     int choice=choiceOneCharacter();
                     if (choice==-1) { CLS;  prevSlt=0; goto mainMenu; } else {
                         buildPoolLinkList(choice,WishPool);
-                        printf("\n%s: ",CharMap[choice].name);
+                        ENDL;
+                        printf("%s: ",CharMap[choice].name);
                         printPoolLinkList(PoolLinkLists[choice]);
                         ENDL;
                         printf("The above is all %s wish pool info, press any key for another character.",CharMap[choice].name);

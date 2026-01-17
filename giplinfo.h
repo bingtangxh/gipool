@@ -214,7 +214,8 @@ Char_Map CharMap[]={
     {108,L"杜林","Durin",PYRO,5},
     {109,L"叶洛亚","Illgua",GEO,4},
     {110,L"兹白","Zibai",GEO,5},
-    {111,L"哥伦比娅·希珀塞莱尼娅","Columbina Hyposelenia",HYDRO,5},
+    //{111,L"哥伦比娅·希珀塞莱尼娅","Columbina Hyposelenia",HYDRO,5},
+    {111,L"哥伦比娅","Columbina Hyposelenia",HYDRO,5 },
 
 };
 

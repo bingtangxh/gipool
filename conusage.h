@@ -29,16 +29,20 @@ void printDaysofAllLimited5StarCharacters() {
                 )||(
                     CharMap[arrangedInOrderOfDays[i]].attrib==5
                     ))) {
-            printf("%12s\t%d\n",localizedNames[arrangedInOrderOfDays[i]],daysPassedSinceLastUP[arrangedInOrderOfDays[i]]);
+            printf("%12s\t%d",localizedNames[arrangedInOrderOfDays[i]],daysPassedSinceLastUP[arrangedInOrderOfDays[i]]);
+            ENDL;
         } else {
-            // printf("%12s\t%u\n",localizedNames[arrangedInOrderOfDays[i]],CharMap[arrangedInOrderOfDays[i]].attrib);
+            // printf("%12s\t%u",localizedNames[arrangedInOrderOfDays[i]],CharMap[arrangedInOrderOfDays[i]].attrib);
+            // ENDL;
         }
     }
 }
 
 int choiceOneCharacter4Test() {
     int result;
-    printf("\ncharCount = %d\n",charCount);
+    // ENDL;
+    // printf("charCount = %d",charCount);
+    // ENDL;
     ENDL;
     fputs("Please type a char index number, type -1 to go back: ",stdout);
     do {
