@@ -24,13 +24,15 @@
 #define SPACE putchar(' ')
 
 #ifdef _MSC_VER
-#define PAUSE ending = _getch(); 
+#define PAUSE ending = _getch();
 #else
-#define PAUSE ending = getch();
+#define PAUSE clearInputBuffer(); ending = getch();
 #endif
 
 #ifndef _WIN32
 #define getche() \
+    getchar()
+#define getch() \
     getchar()
 #endif
 
@@ -51,7 +53,6 @@ void initConsole() {
 #else
     setlocale(LC_CTYPE,"");
 #endif
-
 }
 
 void putPool(Wish_Pool WishPool1)
@@ -274,7 +275,7 @@ const int choiceMenu(const wchar_t* menuItems[],int itemCount,const wchar_t* tit
 #else
                 getche();
 #endif
-            
+            clearInputBuffer();
             if ('A'<=choice&&choice<='Z') {
                 choice-='A';
                 choice+=10;
