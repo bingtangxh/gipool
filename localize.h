@@ -3,7 +3,12 @@
 #ifdef _WIN32
 #include <windows.h>
 #endif
-size_t localizedLen(const wchar_t*);
+#ifndef _WIN32
+#include <wchar.h>
+#endif
+
+size_t localizedMemLen(const wchar_t*);
+size_t localizedVisualLen(const wchar_t*);
 char* localize(const wchar_t*);
 void printW(const wchar_t*);
 
@@ -11,7 +16,7 @@ void printW(const wchar_t*);
 
 
 
-size_t localizedLen(const wchar_t* source) {
+size_t localizedMemLen(const wchar_t* source) {
     // 注意该函数的返回值包括最后的 '\0' 字符，返回0表示出错。
     // 主要是因为 size_t 是 unsigned long long，所以不能返回 -1。
 #ifdef _WIN32
@@ -19,6 +24,31 @@ size_t localizedLen(const wchar_t* source) {
 #else
     // On non-Windows platforms, we can use wcstombs to estimate the length
     return wcstombs(NULL,source,0)+1;
+#endif
+}
+
+size_t localizedVisualLen(const wchar_t* source) {
+    // 该函数返回字符串的可视长度（不包括最后的 '\0' 字符），返回0表示出错。
+#ifdef _WIN32
+    LPWORD widthArray=malloc(sizeof(WORD)*(wcslen(source))+1);
+    if (widthArray==NULL) return 0;
+    size_t result=GetStringTypeW(CT_CTYPE3,source,(int)wcslen(source),widthArray);
+    if (result==0) { 
+        free(widthArray);
+        return 0; 
+    }
+    size_t visualLen=0;
+    for (size_t i=0; i<wcslen(source); i++) {
+        if (widthArray[i]&C3_FULLWIDTH) visualLen+=2;
+        else if (widthArray[i]&C3_HALFWIDTH) visualLen+=1;
+        else if (widthArray[i]&C3_IDEOGRAPH) visualLen+=2;
+        else visualLen+=1;
+        // printf("%hu ",widthArray[i]);
+    }
+    free(widthArray);
+    return visualLen;
+#else
+    return wcswidth(source,wcslen(source));
 #endif
 }
 

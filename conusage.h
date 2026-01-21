@@ -29,7 +29,7 @@ void printDaysofAllLimited5StarCharacters() {
                 )||(
                     CharMap[arrangedInOrderOfDays[i]].attrib==5
                     ))) {
-            printf("%12s\t%d",localizedNames[arrangedInOrderOfDays[i]],daysPassedSinceLastUP[arrangedInOrderOfDays[i]]);
+            printf("%12s\t%d",localizedNames[arrangedInOrderOfDays[i]],daysPassedSinceLastUP[arrangedInOrderOfDays[i]]/*,localizedVisualLen(CharMap[arrangedInOrderOfDays[i]].name_cn)*/);
             ENDL;
         } else {
             // printf("%12s\t%u",localizedNames[arrangedInOrderOfDays[i]],CharMap[arrangedInOrderOfDays[i]].attrib);

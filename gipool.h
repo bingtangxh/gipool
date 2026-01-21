@@ -1,8 +1,8 @@
-#include <stdio.h>
-#include <time.h>
 #include <limits.h>
-#include <string.h>
+#include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <time.h>
 
 #ifndef _WIN32
 #include <stddef.h>
@@ -304,10 +304,16 @@ int poolEndHour(uint8_t half){
 void pause()
 {
     char ending='\0';
+#ifdef _WIN32
 #ifdef _MSC_VER
     ending=_getch();
 #else
     ending=getch();
+#endif
+#else
+    do {
+        ending=getchar();
+    } while (ending!='\n'&&ending!=EOF&&ending!='\0');
 #endif
 }
 
