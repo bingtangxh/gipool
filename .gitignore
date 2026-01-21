@@ -50,7 +50,12 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
-gipool_temp/
+PackRelease/
+gipool_*/
 Debug/
 Release/
 .vs/
+a.out
+
+# other
+*.zip
