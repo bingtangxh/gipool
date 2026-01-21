@@ -106,25 +106,25 @@ const int typeMenu(const wchar_t* menuItems[],int itemCount,const wchar_t* title
             }
             titleLineSpaces=maxItemLength+5-localizedVisualLen(title)+longestIndexLength;
             printW(L"╔");
-            for (int i=0; i<longestIndexLength+maxItemLength+7; i++) { printW(L"═"); }
+            for (size_t i=0; i<longestIndexLength+maxItemLength+7; i++) { printW(L"═"); }
             printW(L"╗"); ENDL;
 
             printW(L"║"); SPACE;
-            for (int i=0; i<titleLineSpaces/2+titleLineSpaces%2; i++) { SPACE; }
+            for (size_t i=0; i<titleLineSpaces/2+titleLineSpaces%2; i++) { SPACE; }
             printf("%s",localizedTitle);
-            for (int i=0; i<titleLineSpaces/2; i++) { SPACE; }
+            for (size_t i=0; i<titleLineSpaces/2; i++) { SPACE; }
             SPACE;
             printW(L"║"); ENDL;
             printW(L"╟");
-            for (int i=0; i<longestIndexLength+4; i++) { printW(L"─"); }
+            for (size_t i=0; i<longestIndexLength+4; i++) { printW(L"─"); }
             printW(L"┬");
-            for (int i=0; i<maxItemLength+2; i++) { printW(L"─"); }
+            for (size_t i=0; i<maxItemLength+2; i++) { printW(L"─"); }
             printW(L"╢"); ENDL;
         } else {
             printW(L"╔");
-            for (int i=0; i<longestIndexLength+4; i++) { printW(L"═"); }
+            for (size_t i=0; i<longestIndexLength+4; i++) { printW(L"═"); }
             printW(L"╤");
-            for (int i=0; i<maxItemLength+2; i++) { printW(L"═"); }
+            for (size_t i=0; i<maxItemLength+2; i++) { printW(L"═"); }
             printW(L"╗"); ENDL;
         }
         for (int i=0,currentIndexColLen=0; i<itemCount; i++) {
@@ -132,20 +132,20 @@ const int typeMenu(const wchar_t* menuItems[],int itemCount,const wchar_t* title
             currentIndexColLen=printf(" [%d] ",i==itemCount-1 ? 0 : i+1);
             currentIndexColLen=currentIndexColLen<0 ? 0 : currentIndexColLen;
             gaptoMax_num=longestIndexLength-currentIndexColLen+4;
-            for (int j=0; j<gaptoMax_num; j++) SPACE;
+            for (size_t j=0; j<gaptoMax_num; j++) SPACE;
             // printf(" %*d ", longestIndexLength, i + 1);
             printW(L"│");
             if (localizedItemNames[i]!=NULL) {
                 printf(" %s ",localizedItemNames[i]);
                 gaptoMax=maxItemLength-localizedVisualLen(menuItems[i]);
-                for (int j=0; j<gaptoMax; j++) SPACE;
+                for (size_t j=0; j<gaptoMax; j++) SPACE;
                 printW(L"║"); ENDL;
             } else ENDL;
         }
         printW(L"╚");
-        for (int i=0; i<longestIndexLength+4; i++) { printW(L"═"); }
+        for (size_t i=0; i<longestIndexLength+4; i++) { printW(L"═"); }
         printW(L"╧");
-        for (int i=0; i<maxItemLength+2; i++) { printW(L"═"); }
+        for (size_t i=0; i<maxItemLength+2; i++) { printW(L"═"); }
         printW(L"╝"); ENDL;
         ENDL;
         printf("Please select an option (0-%d) and press ENTER: ",itemCount-1);
@@ -198,25 +198,25 @@ const int choiceMenu(const wchar_t* menuItems[],int itemCount,const wchar_t* tit
             }
             titleLineSpaces=maxItemLength+5-localizedVisualLen(title)+longestIndexLength;
             printW(L"╔");
-            for (int i=0; i<longestIndexLength+maxItemLength+7; i++) { printW(L"═"); }
+            for (size_t i=0; i<longestIndexLength+maxItemLength+7; i++) { printW(L"═"); }
             printW(L"╗"); ENDL;
 
             printW(L"║"); SPACE;
-            for (int i=0; i<titleLineSpaces/2+titleLineSpaces%2; i++) { SPACE; }
+            for (size_t i=0; i<titleLineSpaces/2+titleLineSpaces%2; i++) { SPACE; }
             printf("%s",localizedTitle);
-            for (int i=0; i<titleLineSpaces/2; i++) { SPACE; }
+            for (size_t i=0; i<titleLineSpaces/2; i++) { SPACE; }
             SPACE;
             printW(L"║"); ENDL;
             printW(L"╟");
-            for (int i=0; i<longestIndexLength+4; i++) { printW(L"─"); }
+            for (size_t i=0; i<longestIndexLength+4; i++) { printW(L"─"); }
             printW(L"┬");
-            for (int i=0; i<maxItemLength+2; i++) { printW(L"─"); }
+            for (size_t i=0; i<maxItemLength+2; i++) { printW(L"─"); }
             printW(L"╢"); ENDL;
         } else {
             printW(L"╔");
-            for (int i=0; i<longestIndexLength+4; i++) { printW(L"═"); }
+            for (size_t i=0; i<longestIndexLength+4; i++) { printW(L"═"); }
             printW(L"╤");
-            for (int i=0; i<maxItemLength+2; i++) { printW(L"═"); }
+            for (size_t i=0; i<maxItemLength+2; i++) { printW(L"═"); }
             printW(L"╗"); ENDL;
         }
         for (int i=0,currentIndexColLen=0; i<itemCount; i++) {
@@ -235,21 +235,21 @@ const int choiceMenu(const wchar_t* menuItems[],int itemCount,const wchar_t* tit
                 }
                 currentIndexColLen=currentIndexColLen<0 ? 0 : currentIndexColLen;
                 gaptoMax_num=longestIndexLength-currentIndexColLen+4;
-                for (int j=0; j<gaptoMax_num; j++) SPACE;
+                for (size_t j=0; j<gaptoMax_num; j++) SPACE;
                 // printf(" %*d ", longestIndexLength, i + 1);
                 printW(L"│");
                 if (localizedItemNames[i]!=NULL) {
                     printf(" %s ",localizedItemNames[i]);
                     gaptoMax=maxItemLength-localizedVisualLen(menuItems[i]);
-                    for (int j=0; j<gaptoMax; j++) SPACE;
+                    for (size_t j=0; j<gaptoMax; j++) SPACE;
                     printW(L"║"); ENDL;
                 } else ENDL;
             }
         }
         printW(L"╚");
-        for (int i=0; i<longestIndexLength+4; i++) { printW(L"═"); }
+        for (size_t i=0; i<longestIndexLength+4; i++) { printW(L"═"); }
         printW(L"╧");
-        for (int i=0; i<maxItemLength+2; i++) { printW(L"═"); }
+        for (size_t i=0; i<maxItemLength+2; i++) { printW(L"═"); }
         printW(L"╝"); ENDL;
         ENDL;
         printf("Please select an option (0-%c): ",

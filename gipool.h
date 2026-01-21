@@ -5,6 +5,7 @@
 #include <time.h>
 
 #ifndef _WIN32
+#define __USE_XOPEN
 #include <stddef.h>
 #include <wchar.h>
 #endif
