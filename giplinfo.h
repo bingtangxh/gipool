@@ -216,7 +216,7 @@ Char_Map CharMap[]={
     {110,L"兹白","Zibai",GEO,5},
     //{111,L"哥伦比娅·希珀塞莱尼娅","Columbina Hyposelenia",HYDRO,5},
     {111,L"哥伦比娅","Columbina Hyposelenia",HYDRO,5 },
-
+    {112,L"法尔伽","Varka",ANEMO,5},
 };
 
 Wish_Pool WishPool[]={
