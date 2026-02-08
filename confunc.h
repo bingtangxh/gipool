@@ -95,7 +95,7 @@ const int typeMenu(const wchar_t* menuItems[],int itemCount,const wchar_t* title
         }
         if (localizedItemNames!=NULL) {
             for (int i=0; i<itemCount; i++) {
-                if ((localizedItemNames[i]=localize(menuItems[i]))==NULL) localizedItemNames[i]="";
+                if ((localizedItemNames[i]=localize(menuItems[i]))==NULL) localizedItemNames[i]=NULL;
             }
         }
 
@@ -187,7 +187,7 @@ const int choiceMenu(const wchar_t* menuItems[],int itemCount,const wchar_t* tit
         }
         if (localizedItemNames!=NULL) {
             for (int i=0; i<itemCount; i++) {
-                if ((localizedItemNames[i]=localize(menuItems[i]))==NULL) localizedItemNames[i]="";
+                if ((localizedItemNames[i]=localize(menuItems[i]))==NULL) localizedItemNames[i]=NULL;
             }
         }
 

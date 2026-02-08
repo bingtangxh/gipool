@@ -214,8 +214,7 @@ Char_Map CharMap[]={
     {108,L"杜林","Durin",PYRO,5},
     {109,L"叶洛亚","Illgua",GEO,4},
     {110,L"兹白","Zibai",GEO,5},
-    //{111,L"哥伦比娅·希珀塞莱尼娅","Columbina Hyposelenia",HYDRO,5},
-    {111,L"哥伦比娅","Columbina Hyposelenia",HYDRO,5 },
+    {111,L"哥伦比娅"/*"哥伦比娅·希珀塞莱尼娅"*/,"Columbina Hyposelenia"/*"Columbina Hyposelenia"*/,HYDRO,5 },
     {112,L"法尔伽","Varka",ANEMO,5},
 };
 
@@ -321,6 +320,6 @@ Wish_Pool WishPool[]={
     {{110,72},{109,103,43},{0},6,3,2,2026,2,3,2026,2,24}/*,
     {{,},{,,},{0},6,4,1,2026,2,25,2026,3,},
     {{,},{,,},{0},6,4,2,2026,3,,2026,4,}
-    
+
     */
 };

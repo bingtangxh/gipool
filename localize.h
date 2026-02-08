@@ -26,7 +26,7 @@ size_t localizedMemLen(const wchar_t* source) {
 size_t localizedVisualLen(const wchar_t* source) {
     // 该函数返回字符串的可视长度（不包括最后的 '\0' 字符），返回0表示出错。
 #ifdef _WIN32
-    LPWORD widthArray=malloc(sizeof(WORD)*(wcslen(source))+1);
+    LPWORD widthArray=(LPWORD)malloc(sizeof(WORD)*(wcslen(source))+1);
     if (widthArray==NULL) return 0;
     size_t result=GetStringTypeW(CT_CTYPE3,source,(int)wcslen(source),widthArray);
     if (result==0) { 
