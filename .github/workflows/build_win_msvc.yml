@@ -28,9 +28,13 @@ jobs:
         with:
           arch: ${{ matrix.arch }}
 
+      - name: Compile resources
+        run: |
+          rc.exe /nologo gipool.rc
+
       - name: Build
         run: |
-          cl.exe /nologo /O1 /W3 /WX /Z7 /GF /FS /EHsc /utf-8 gipool.c /link /OUT:gipool_${{ matrix.arch }}.exe
+          cl.exe /nologo /O1 /W3 /WX /Z7 /GF /FS /EHsc /utf-8 gipool.c gipool.res /link /OUT:gipool_${{ matrix.arch }}.exe
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -41,12 +45,12 @@ jobs:
       - name: Prepare release
         if: startsWith(github.ref, 'refs/tags/')
         run: |
-          ren gipool_${{ matrix.arch }}.exe onsyuri_${{ github.ref_name }}_${{ matrix.arch }}_win.exe
+          ren gipool_${{ matrix.arch }}.exe gipool_${{ github.ref_name }}_${{ matrix.arch }}_win.exe
 
       - name: Create release
         if: startsWith(github.ref, 'refs/tags/')
         uses: ncipollo/release-action@v1
         with:
-          artifacts: onsyuri_${{ github.ref_name }}_${{ matrix.arch }}_win.exe
+          artifacts: gipool_${{ github.ref_name }}_${{ matrix.arch }}_win.exe
           allowUpdates: true
           token: ${{ secrets.GITHUB_TOKEN }}
