@@ -14,7 +14,7 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        arch: [x86, x64, ARM64]
+        arch: [x86, x64]
 
     steps:
       - uses: actions/checkout@v4
@@ -26,17 +26,7 @@ jobs:
 
       - name: Build
         run: |
-          cl /nologo /O2 /W4 /WX ^
-             /DUNICODE /D_UNICODE ^
-             /nologo ^
-             /Z7 ^
-             /GF ^
-             /FS ^
-             /EHsc ^
-             /W3 ^
-             /utf-8 ^
-             gipool.c ^
-             /link /OUT:gipool_${{ matrix.arch }}.exe
+          cl.exe /nologo /O2 /W4 /WX /Z7 /GF /FS /EHsc /W3 /utf-8 gipool.c /link /OUT:gipool_${{ matrix.arch }}.exe
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
