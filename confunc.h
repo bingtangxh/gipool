@@ -83,7 +83,8 @@ void printCompileTime() {
 const int typeMenu(const wchar_t* menuItems[],int itemCount,const wchar_t* title) {
     do
     {
-        size_t currentExpectedLength=0,maxItemLength=0,longestItemIndex=0,gaptoMax=0,gaptoMax_num=0,longestIndexLength=0,destSize=0,titleLineSpaces=0;
+        size_t currentExpectedLength=0,maxItemLength=0,longestItemIndex=0,gaptoMax=0,gaptoMax_num=0,longestIndexLength=0,titleLineSpaces=0;
+        // size_t destSize=0;
         char** localizedItemNames=NULL;
         for (int temp=itemCount; temp>0; temp/=10) { longestIndexLength++; }
         localizedItemNames=(char**) malloc(itemCount*sizeof(char*));
@@ -175,7 +176,8 @@ const int typeMenu(const wchar_t* menuItems[],int itemCount,const wchar_t* title
 
 const int choiceMenu(const wchar_t* menuItems[],int itemCount,const wchar_t* title) {
     do {
-        size_t currentExpectedLength=0,maxItemLength=0,longestItemIndex=0,gaptoMax=0,gaptoMax_num=0,longestIndexLength=1,destSize=0,titleLineSpaces=0;
+        size_t currentExpectedLength=0,maxItemLength=0,longestItemIndex=0,gaptoMax=0,gaptoMax_num=0,longestIndexLength=1,titleLineSpaces=0;
+        // size_t destSize=0;
         char** localizedItemNames=NULL;
         // for (int temp = itemCount; temp > 0; temp /= 10) { longestIndexLength++; }
         localizedItemNames=(char**) malloc(itemCount*sizeof(char*));
@@ -264,7 +266,7 @@ const int choiceMenu(const wchar_t* menuItems[],int itemCount,const wchar_t* tit
         localizedItemNames=NULL;
         free(localizedTitle);
         localizedTitle=NULL;
-        char choice=-1;
+        int choice=-1;
         do {
 #ifndef _WIN32
             fflush(stdout);
@@ -304,17 +306,17 @@ const int choiceMenu(const wchar_t* menuItems[],int itemCount,const wchar_t* tit
 }
 
 
-_Bool localizeNames(Char_Map CharMap1[],char* localizedNames[]) {
+_Bool localizeNames(Char_Map CharMap1[],char* _localizedNames[]) {
     _Bool result=0;
-    for (int i=0,conved=0; i<charCount; i++) {
-        if ((localizedNames[i]=localize(CharMap1[i].name_cn))==NULL) result=1;
+    for (int i=0; i<charCount; i++) {
+        if ((_localizedNames[i]=localize(CharMap1[i].name_cn))==NULL) result=1;
     }
     return result;
     // result 返回 1 为未完成，返回 0 为成功完成。
 }
 
 void clearInputBuffer() {
-    char current='\0';
+    int current='\0';
     do {
         current=getchar();
     } while (current!='\n'&&current!=EOF&&current!='\0');

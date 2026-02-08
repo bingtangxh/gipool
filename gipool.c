@@ -15,6 +15,12 @@ void beforeTerminate();
 int main(int argc,char** argv)
 {
     initConsole();
+    if(argc>1) {
+        if (!strcmp(argv[1],"/?")) {
+            help();
+            return 0;
+        }
+    }
     initDynamicThings();
     do { localizedNames=(char**) malloc(charCount*sizeof(char*)); } while (localizedNames==NULL);
     localizeNames(CharMap,localizedNames);

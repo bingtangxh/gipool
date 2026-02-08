@@ -25,13 +25,13 @@ int charCount=0,poolCount=0,longestIndex=0;
 int* daysPassedSinceLastUP=NULL;
 int* arrangedInOrderOfDays=NULL;
 char** localizedNames=NULL;
-char ending='\0',current='\0';
+int ending='\0';
 static const char* month_table[]={
     "Jan","Feb","Mar","Apr","May","Jun",
     "Jul","Aug","Sep","Oct","Nov","Dec"
 };
 _Bool convertCompileTime(char* date);
-int month_to_number(const char* mon);
+unsigned short shortmonth_to_number(const char* mon);
 int checkIntegrity(void);
 _Bool isPoolInOrder(int i);
 void initDynamicThings(void);
@@ -48,6 +48,7 @@ int poolEndHour(uint8_t half);
 void pause();
 _Bool buildPoolLinkList(size_t index,Wish_Pool WishPool1[]);
 PoolLinkList createPoolNode(Wish_Pool WishPool1);
+void help(void);
 
 _Bool convertCompileTime(char* date) {
     int gotten=0;
@@ -63,7 +64,7 @@ _Bool convertCompileTime(char* date) {
 #endif
          )==3
         &&
-        (month=month_to_number(month_str))!=0
+        (month=shortmonth_to_number(month_str))!=0
         )
     {
 #ifdef _MSC_VER
@@ -82,9 +83,9 @@ _Bool convertCompileTime(char* date) {
     }
 }
 
-int month_to_number(const char* mon)
+unsigned short shortmonth_to_number(const char* mon)
 {
-    for (int i=0; i<12; i++) {
+    for (unsigned short i=0; i<12; i++) {
         if (strcmp(mon,month_table[i])==0) return i+1; // 1~12
     }
     return 0; // Invalid month
@@ -92,7 +93,7 @@ int month_to_number(const char* mon)
 
 int checkIntegrity(void){
     int errorlevel=0;
-    for (int i=0; i<(int) ARRAY_SIZE(CharMap); i++) {
+    for (unsigned int i=0; i<(int) ARRAY_SIZE(CharMap); i++) {
         if (
             CharMap[i].id!=i
             ) errorlevel++;
@@ -304,12 +305,12 @@ int poolEndHour(uint8_t half){
 
 void pause()
 {
-    char ending='\0';
+    ending='\0';
 #ifdef _WIN32
 #ifdef _MSC_VER
     ending=_getch();
 #else
-    ending=getch();
+    ending=(char)getch();
 #endif
 #else
     do {
@@ -378,4 +379,12 @@ PoolLinkList createPoolNode(Wish_Pool WishPool1) {
         target->next=NULL;
         return target;
     }
+}
+
+void help(void) {
+    puts("Genshin Impact Wish Pool Information Tool\r");
+    puts("\r");
+    puts("Copyright (c) 2025-2026 BingtangXH.\r");
+    puts("May the Anemo God bless you.\r");
+    puts("\r");
 }

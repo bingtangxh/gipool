@@ -221,8 +221,9 @@ int choiceOneCharacter() {
             if (prevSlt==4) prevSlt=0;
             continue;
         } else return selection;
-        PAUSE;
+        // 下面这个会导致错误 warning C4702: 无法访问的代码
+        /*PAUSE;
         CLS;
-        continue;
+        continue;*/
     } while (1);
 }
