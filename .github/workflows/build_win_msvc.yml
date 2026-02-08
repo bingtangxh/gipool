@@ -14,19 +14,25 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        arch: [x86, x64, x64_ARM64]
-        # x64_ARM results in following error:
-        # C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt\corecrt.h(205):
-        # fatal error C1189: 
-        # #error:  Compiling Desktop applications for the ARM platform is not supported.
-        sdk: [10.0.22621.0]
+        include:
+          - arch: x86
+            msvc_arch: x86
+          - arch: x64
+            msvc_arch: x64
+          - arch: ARM64
+            msvc_arch: x64_ARM64
+            # x64_ARM results in following error:
+            # C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt\corecrt.h(205):
+            # fatal error C1189: 
+            # #error:  Compiling Desktop applications for the ARM platform is not supported.
+            sdk: [10.0.22621.0]
     steps:
       - uses: actions/checkout@v4
 
       - name: Setup MSVC
         uses: ilammy/msvc-dev-cmd@v1
         with:
-          arch: ${{ matrix.arch }}
+          arch: ${{ matrix.msvc_arch }}
 
       - name: Compile resources
         run: |
