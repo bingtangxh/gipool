@@ -36,9 +36,9 @@
 
 #ifndef _WIN32
 #define getche() \
-    getchar();  clearInputBuffer();
+    ending = getchar(); if(ending!=EOF&&ending!='\0'&&ending!='\n') {clearInputBuffer();}
 #define getch() \
-    getchar();  clearInputBuffer();
+    ending = getchar(); if(ending!=EOF&&ending!='\0'&&ending!='\n') {clearInputBuffer();}
 #endif
 
 void initConsole();
