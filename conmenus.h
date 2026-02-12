@@ -117,7 +117,7 @@ int choiceOneCharacter() {
                 int length=0;
                 do {
                     GETNUM(length);
-                    clearInputBuffer();
+                    // clearInputBuffer();
                     if (length==0) {
                         CLS;
                         prevSlt=0;
@@ -142,7 +142,7 @@ int choiceOneCharacter() {
                 int length=0;
                 do {
                     GETNUM(length);
-                    clearInputBuffer();
+                    // clearInputBuffer();
                     if (length==0) {
                         CLS;
                         prevSlt=0;

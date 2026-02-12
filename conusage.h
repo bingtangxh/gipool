@@ -47,7 +47,7 @@ int choiceOneCharacter4Test() {
     fputs("Please type a char index number, type -1 to go back: ",stdout);
     do {
         GETNUM(result);
-        clearInputBuffer();
+        // clearInputBuffer();
         if (result==-1) {
             CLS;
             break;

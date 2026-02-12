@@ -11,9 +11,9 @@
 #endif
 
 #ifdef _MSC_VER
-#define GETNUM(num) scanf_s("%d",&num)
+#define GETNUM(num) scanf_s("%d",&num); clearInputBuffer();
 #else
-#define GETNUM(num) scanf("%d",&num)
+#define GETNUM(num) scanf("%d",&num); clearInputBuffer();
 #endif
 
 #ifdef _WIN32
@@ -21,19 +21,24 @@
 #else
 #define ENDL printf("\r\n")
 #endif
+
 #define SPACE putchar(' ')
 
 #ifdef _MSC_VER
 #define PAUSE ending = _getch();
 #else
-#define PAUSE clearInputBuffer(); ending = getch();
+#ifdef _WIN32
+#define PAUSE ending = getch();
+#else
+#define PAUSE ending = getchar(); clearInputBuffer();
+#endif
 #endif
 
 #ifndef _WIN32
 #define getche() \
-    getchar()
+    getchar();  clearInputBuffer();
 #define getch() \
-    getchar()
+    getchar();  clearInputBuffer();
 #endif
 
 void initConsole();
@@ -161,7 +166,7 @@ const int typeMenu(const wchar_t* menuItems[],int itemCount,const wchar_t* title
         int choice=INT_MIN;
         do {
             GETNUM(choice);
-            clearInputBuffer();
+            // clearInputBuffer();
             if (choice==-1) {
                 CLS;
                 break;
@@ -254,7 +259,12 @@ const int choiceMenu(const wchar_t* menuItems[],int itemCount,const wchar_t* tit
         for (size_t i=0; i<maxItemLength+2; i++) { printW(L"═"); }
         printW(L"╝"); ENDL;
         ENDL;
-        printf("Please select an option (0-%c): ",
+        printf(
+#ifdef _WIN32
+            "Please select an option (0-%c): ",
+#else
+            "Please select an option and press ENTER (0-%c): ",
+#endif
                itemCount<=10 ? itemCount-1+'0' :
                itemCount<=35 ? itemCount-11+'A' : 'Z'
         );
@@ -277,7 +287,6 @@ const int choiceMenu(const wchar_t* menuItems[],int itemCount,const wchar_t* tit
 #else
                 getche();
 #endif
-            clearInputBuffer();
             if ('A'<=choice&&choice<='Z') {
                 choice-='A';
                 choice+=10;
