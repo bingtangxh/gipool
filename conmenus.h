@@ -58,7 +58,11 @@ void _mainMenu()
                 prevSlt=0;
                 printAllPools();
                 ENDL;
+#ifdef _WIN32
                 puts("The above is all wish pool info, press any key to go back.");
+#else
+                puts("The above is all wish pool info, press ENTER to go back.");
+#endif
                 break;
             }
             case 2:
@@ -66,7 +70,11 @@ void _mainMenu()
                 prevSlt=0;
                 printDaysofAllLimited5StarCharacters();
                 ENDL;
+#ifdef _WIN32
                 puts("The above is days of all limited 5 star characters, press any key to go back.");
+#else
+                puts("The above is days of all limited 5 star characters, press ENTER to go back.");
+#endif
                 break;
             }
             case 3:
@@ -80,7 +88,13 @@ void _mainMenu()
                         printf("%s: ",CharMap[choice].name);
                         printPoolLinkList(PoolLinkLists[choice]);
                         ENDL;
-                        printf("The above is all %s wish pool info, press any key for another character.",CharMap[choice].name);
+                        printf(
+#ifdef _WIN32
+                            "The above is all %s wish pool info, press any key for another character.",
+#else
+                            "The above is all %s wish pool info, press ENTER for another character.",
+#endif
+                            CharMap[choice].name);
                         ENDL;
                         PAUSE;
                         CLS;

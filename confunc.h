@@ -30,7 +30,7 @@
 #ifdef _WIN32
 #define PAUSE ending = getch();
 #else
-#define PAUSE ending = getchar(); clearInputBuffer();
+#define PAUSE ending = getchar(); if(ending!=EOF&&ending!='\0'&&ending!='\n') {clearInputBuffer();}
 #endif
 #endif
 

@@ -41,6 +41,10 @@ void printTestInfo(){
 }
 
 void beforeTerminate(){
+#ifdef _WIN32
     puts("Press any key to exit...");
+#else
+    puts("Press ENTER to exit...");
+#endif
     PAUSE;
 }
