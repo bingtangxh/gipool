@@ -128,7 +128,7 @@ int choiceOneCharacter() {
             {
                 ENDL;
                 printf("Please type how long the Chinese name is and press ENTER, type 0 for go back (0-20): ");
-                int length=0;
+                int length=-1;
                 do {
                     GETNUM(length);
                     // clearInputBuffer();
@@ -153,7 +153,7 @@ int choiceOneCharacter() {
             {
                 ENDL;
                 printf("Please type how long the English name is and press ENTER, type 0 for go back (0-40): ");
-                int length=0;
+                int length=-1;
                 do {
                     GETNUM(length);
                     // clearInputBuffer();

@@ -39,7 +39,7 @@ void printDaysofAllLimited5StarCharacters() {
 }
 
 int choiceOneCharacter4Test() {
-    int result;
+    int result=-2;
     // ENDL;
     // printf("charCount = %d",charCount);
     // ENDL;
