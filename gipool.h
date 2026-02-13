@@ -3,9 +3,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <errno.h>
 
 #ifndef _WIN32
-#define __USE_XOPEN
 #include <stddef.h>
 #include <wchar.h>
 #endif

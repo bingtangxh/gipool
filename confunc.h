@@ -10,10 +10,12 @@
 #define CLS system("clear")
 #endif
 
+#if 0
 #ifdef _MSC_VER
 #define GETNUM(num) scanf_s("%d",&num); clearInputBuffer();
 #else
 #define GETNUM(num) scanf("%d",&num); clearInputBuffer();
+#endif
 #endif
 
 #ifdef _WIN32
@@ -50,6 +52,7 @@ _Bool localizeNames(Char_Map CharMap1[],char* localizedNames[]);
 void clearInputBuffer();
 void freeLocalizedNames();
 void printPoolLinkList(PoolLinkList current);
+int readIntInRange(int min,int max,const int* _default);
 
 void initConsole() {
 #ifdef _WIN32
@@ -165,7 +168,7 @@ const int typeMenu(const wchar_t* menuItems[],int itemCount,const wchar_t* title
         localizedTitle=NULL;
         int choice=INT_MIN;
         do {
-            GETNUM(choice);
+            choice=readIntInRange(-1,itemCount-1,NULL);
             // clearInputBuffer();
             if (choice==-1) {
                 CLS;
@@ -352,4 +355,50 @@ void printPoolLinkList(PoolLinkList current) {
         current=current->next;
     }
     ENDL;
+}
+
+int readIntInRange(int min,int max,const int* _default)
+{
+    char buf[64],*end;
+    long val;
+    while (1)
+    {
+        if (!fgets(buf,sizeof(buf),stdin))
+        {
+            if (feof(stdin))
+            {
+                ENDL;
+                printf("EOF detected. Exiting.");
+                ENDL;
+                exit(1);
+            }
+            clearerr(stdin);
+            continue;
+        }
+        if (buf[0]=='\n')
+        {
+            if (_default!=NULL) { return *_default; }
+            printf("Empty input. Enter a number between %d and %d: ",min,max);
+            continue;
+        }
+        if (!strchr(buf,'\n'))
+        {
+            printf("Input too long. Enter a number between %d and %d: ",min,max);
+            clearInputBuffer();
+            continue;
+        }
+        errno=0;
+        val=strtol(buf,&end,10);
+        if (end==buf||(*end!='\n'&&*end!='\0'))
+        {
+            printf("Invalid input. Enter a valid integer between %d and %d: ",min,max);
+            continue;
+        }
+        if (errno==ERANGE||val < min||val > max)
+        {
+            printf("Out of range. Enter a number between %d and %d: ",min,max);
+            continue;
+        }
+        return (int) val;
+    }
 }

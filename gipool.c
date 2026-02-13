@@ -2,6 +2,7 @@
 #include <conio.h>
 #else
 // #include <ncurses.h>
+#define _XOPEN_SOURCE 700
 #endif
 #include <locale.h>
 #include "gipool.h"

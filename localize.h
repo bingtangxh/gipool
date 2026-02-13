@@ -3,9 +3,6 @@
 #ifdef _WIN32
 #include <windows.h>
 #endif
-#ifndef _WIN32
-#include <wchar.h>
-#endif
 
 size_t localizedMemLen(const wchar_t*);
 size_t localizedVisualLen(const wchar_t*);

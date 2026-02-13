@@ -39,14 +39,14 @@ void printDaysofAllLimited5StarCharacters() {
 }
 
 int choiceOneCharacter4Test() {
-    int result=-2;
+    int result=-1;
     // ENDL;
     // printf("charCount = %d",charCount);
     // ENDL;
     ENDL;
     fputs("Please type a char index number, type -1 to go back: ",stdout);
     do {
-        GETNUM(result);
+        result=readIntInRange(INT_MIN,INT_MAX,NULL);
         // clearInputBuffer();
         if (result==-1) {
             CLS;
