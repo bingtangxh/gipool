@@ -1,9 +1,9 @@
+#include <errno.h>
 #include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-#include <errno.h>
 
 #ifndef _WIN32
 #include <stddef.h>
@@ -357,8 +357,19 @@ _Bool buildPoolLinkList(size_t index,Wish_Pool WishPools[]) {
                     if (PoolLinkLists[index]==NULL) {
                         PoolLinkLists[index]=current=currentNext;
                     } else {
-                        current->next=currentNext;
-                        current=current->next;
+                        if (current!=NULL){
+                            current->next=currentNext;
+                            current=current->next;
+                        } else {
+                            // 为啥这里处理四星的时候还想到了 current==NULL 的情况，而五星的时候没有？
+                            // 因为 Visual Studio 在上面 current->next=currentNext; 这一行给我报了个警告“取消对 NULL 指针"current"的引用。”
+                            // 而五星的那里没有报这个警告
+                            // 所以只有四星这里加了这个东西
+                            // 但是我都又生成了一遍了，这个警告还没有消失。谁知道咋回事，先这样吧。
+                            puts("Error: 'current' is NULL while building pool link list for 4-star character. This should not happen.\r\nPlease report this bug to the developer.\r");
+                            free(currentNext);
+                            return 1;
+                        }
                     }
                 }
             }
