@@ -1,13 +1,20 @@
 #pragma once
+#ifndef CONFUNC
 #define CONFUNC
 #ifndef GIPOOL
 #include "gipool.h"
 #endif
 
 #ifdef _WIN32
+#include <conio.h>
 #define CLS system("cls")
+#define ENDL putchar('\n')
+#define putws(wstr) printW(wstr); putwchar(L'\n');
 #else
 #define CLS system("clear")
+#define ENDL printf("\r\n")
+#define puts(str) puts(str); putchar('\r');
+#define putws(wstr) printW(wstr); putwchar(L'\r'); putwchar(L'\n');
 #endif
 
 #if 0
@@ -16,12 +23,6 @@
 #else
 #define GETNUM(num) scanf("%d",&num); clearInputBuffer();
 #endif
-#endif
-
-#ifdef _WIN32
-#define ENDL putchar('\n')
-#else
-#define ENDL printf("\r\n")
 #endif
 
 #define SPACE putchar(' ')
@@ -53,6 +54,8 @@ void clearInputBuffer();
 void freeLocalizedNames();
 void printPoolLinkList(PoolLinkList current);
 int readIntInRange(int min,int max,const int* _default);
+void pause();
+void printW(const wchar_t*);
 
 void initConsole() {
 #ifdef _WIN32
@@ -402,3 +405,33 @@ int readIntInRange(int min,int max,const int* _default)
         return (int) val;
     }
 }
+
+void pause()
+{
+    ending='\0';
+#ifdef _WIN32
+#ifdef _MSC_VER
+    ending=_getch();
+#else
+    ending=(char) getch();
+#endif
+#else
+    do {
+        ending=getchar();
+    } while (ending!='\n'&&ending!=EOF&&ending!='\0');
+#endif
+}
+
+
+void printW(const wchar_t* wstr) {
+#ifdef _WIN32
+    HANDLE hConsole=GetStdHandle(STD_OUTPUT_HANDLE);
+    DWORD written;
+    WriteConsoleW(hConsole,wstr,(DWORD) wcslen(wstr),&written,NULL);
+#else
+    printf("%ls",wstr);
+#endif
+}
+
+
+#endif

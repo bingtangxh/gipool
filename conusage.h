@@ -1,4 +1,5 @@
 #pragma once
+#ifndef CONUSAGE
 #define CONUSAGE
 #ifndef CONFUNC
 #include "confunc.h"
@@ -10,7 +11,6 @@
 void printAllPools();
 void printDaysofAllLimited5StarCharacters();
 int choiceOneCharacter4Test();
-
 
 void printAllPools() {
     CLS;
@@ -57,3 +57,5 @@ int choiceOneCharacter4Test() {
     } while (1);
     return result;
 }
+
+#endif

@@ -1,7 +1,4 @@
-#ifdef _WIN32
-#include <conio.h>
-#else
-// #include <ncurses.h>
+#ifndef _WIN32
 #define _XOPEN_SOURCE 700
 #endif
 #include <locale.h>

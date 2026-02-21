@@ -18,7 +18,7 @@ typedef uint32_t RoleMeta;
 #define ROLE_TYPE_COLLAB            2
 #define ROLE_TYPE_FOUR_STAR         4
 #define ROLE_TYPE_LIMITED_FIVE_STAR 5
-#define ROLE_TYPE_UNKNOWN           6
+#define ROLE_TYPE_UNKNOWN           6   
 #define ROLE_TYPE_EXCLUDED          256
 // 末两位均为 1 时，即模 4 余 3 时一律算作常驻五星
 

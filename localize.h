@@ -1,4 +1,5 @@
 #pragma once
+#ifndef LOCALIZE
 #define LOCALIZE
 #ifdef _WIN32
 #include <windows.h>
@@ -7,7 +8,6 @@
 size_t localizedMemLen(const wchar_t*);
 size_t localizedVisualLen(const wchar_t*);
 char* localize(const wchar_t*);
-void printW(const wchar_t*);
 
 size_t localizedMemLen(const wchar_t* source) {
     // 注意该函数的返回值包括最后的 '\0' 字符，返回0表示出错。
@@ -70,12 +70,4 @@ char* localize(const wchar_t* source) {
 #endif
 }
 
-void printW(const wchar_t* wstr) {
-#ifdef _WIN32
-    HANDLE hConsole=GetStdHandle(STD_OUTPUT_HANDLE);
-    DWORD written;
-    WriteConsoleW(hConsole,wstr,(DWORD) wcslen(wstr),&written,NULL);
-#else
-    printf("%ls",wstr);
 #endif
-}

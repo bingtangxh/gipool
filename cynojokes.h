@@ -1,4 +1,6 @@
-char *questions[7][6] =
+#include "confunc.h"
+
+const char *questions[][6] =
     {
         // 1 ↓
         {"提瓦特哪个国家的建筑最不牢固？",
@@ -56,7 +58,7 @@ char *questions[7][6] =
         }}
         ;
 
-char *answers[][7] =
+const char *answers[][6] =
     {
         // 1 ↓
         {"须弥，因为须弥墙危（须弥蔷薇）",
@@ -113,3 +115,33 @@ char *answers[][7] =
          "因为水神没了，只剩六个神了，六神（花露水）可以驱蚊"
         }}
         ;
+
+int cynoJoke(void)
+{
+    int index1=0,index2=0;
+    char current;
+    while (1)
+    {
+        system("cls");
+        index1=rand()%7;
+        index2=rand()%6;
+        if (
+            index1>=5&&index2==5
+            )continue;
+        puts(questions[index1][index2]);
+        ENDL;
+        puts("Press any key to see the answer...");
+        PAUSE;
+        ENDL;
+        puts(answers[index1][index2]);
+        ENDL;
+        puts("Press space or ^Z or ^C to exit, or other thing to continue...");
+        ENDL;
+        current=getch();
+        if (
+            current==EOF||current==' '
+            ) break;
+        else continue;
+    }
+    return 0;
+}

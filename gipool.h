@@ -1,3 +1,6 @@
+#pragma once
+#ifndef GIPOOL
+#define GIPOOL
 #include <errno.h>
 #include <limits.h>
 #include <stdio.h>
@@ -12,7 +15,6 @@
 
 #include "giplinfo.h"
 
-#define GIPOOL
 #define DATE_LENGTH 12
 #define ARRAY_SIZE(arr)                 \
     (                                   \
@@ -45,7 +47,6 @@ void quickSort(int days[],int indices[],int low,int high);
 void arrangeByDaysPassedSinceLastUp(void);
 void freeDynamicThings(void);
 int poolEndHour(uint8_t half);
-void pause();
 _Bool buildPoolLinkList(size_t index,Wish_Pool WishPool1[]);
 PoolLinkList createPoolNode(Wish_Pool WishPool1);
 void help(void);
@@ -303,22 +304,6 @@ int poolEndHour(uint8_t half){
     }
 }
 
-void pause()
-{
-    ending='\0';
-#ifdef _WIN32
-#ifdef _MSC_VER
-    ending=_getch();
-#else
-    ending=(char)getch();
-#endif
-#else
-    do {
-        ending=getchar();
-    } while (ending!='\n'&&ending!=EOF&&ending!='\0');
-#endif
-}
-
 _Bool buildPoolLinkList(size_t index,Wish_Pool WishPools[]) {
     PoolLinkList current=NULL,currentNext=NULL;
     int fiveCount=sizeof(WishPools[0].up5)==0 ? 0 : (int) (sizeof(WishPools[0].up5)/sizeof(WishPools[0].up5[0]));
@@ -399,3 +384,4 @@ void help(void) {
     puts("May the Anemo God bless you.\r");
     puts("\r");
 }
+#endif

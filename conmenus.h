@@ -1,3 +1,5 @@
+#pragma once
+#ifndef CONMENUS
 #define CONMENUS
 #ifndef GIPOOL
 #include "gipool.h"
@@ -15,6 +17,7 @@ const wchar_t* mainMenu[]={
         L"查询所有卡池",
         L"查询所有角色距离上次复刻已过天数",
         L"查询每一次单独角色卡池",
+        L"显示一个赛诺冷笑话",
         L"退出"
 };
 
@@ -101,6 +104,15 @@ void _mainMenu()
                         continue;
                     }
                 } while (1);
+            }
+            case 4:
+            {
+                prevSlt=0;
+                ENDL;
+                ENDL;
+                puts("How about we explore the area ahead of us later?");
+                putws(L"前面的区域，以后再来探索吧？");
+                break;
             }
             case 0:
             default:
@@ -241,3 +253,5 @@ int choiceOneCharacter() {
         continue;*/
     } while (1);
 }
+
+#endif
