@@ -3,6 +3,7 @@
 #define GIPOOL
 #include <errno.h>
 #include <limits.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -94,10 +95,18 @@ unsigned short shortmonth_to_number(const char* mon)
 
 int checkIntegrity(void){
     int errorlevel=0;
+    size_t excludedPoolIndex=0;
     for (unsigned int i=0; i<(int) ARRAY_SIZE(CharMap); i++) {
+        if (CharMap[i].attrib==ROLE_TYPE_EXCLUDED) { 
+            excludedPoolIndex++;
+            continue;
+        }
         if (
-            CharMap[i].id!=i
-            ) errorlevel++;
+            CharMap[i].id!=i-excludedPoolIndex
+            ) {
+            errorlevel++;
+            excludedPoolIndex++;
+        }
     }
     for (int i=0; i+1<(int) ARRAY_SIZE(WishPool); i++) {
         if (

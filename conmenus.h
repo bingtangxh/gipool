@@ -13,6 +13,9 @@
 #ifndef CONUSAGE
 #include "conusage.h"
 #endif
+#ifndef CYNOJOKES
+#include "cynojokes.h"
+#endif
 const wchar_t* mainMenu[]={
         L"查询所有卡池",
         L"查询所有角色距离上次复刻已过天数",
@@ -66,6 +69,7 @@ void _mainMenu()
 #else
                 puts("The above is all wish pool info, press ENTER to go back.");
 #endif
+                PAUSE;
                 break;
             }
             case 2:
@@ -78,6 +82,7 @@ void _mainMenu()
 #else
                 puts("The above is days of all limited 5 star characters, press ENTER to go back.");
 #endif
+                PAUSE;
                 break;
             }
             case 3:
@@ -109,16 +114,16 @@ void _mainMenu()
             {
                 prevSlt=0;
                 ENDL;
-                ENDL;
-                puts("How about we explore the area ahead of us later?");
-                putws(L"前面的区域，以后再来探索吧？");
+                //ENDL;
+                //puts("How about we explore the area ahead of us later?");
+                //putws(L"前面的区域，以后再来探索吧？");
+                cynoJoke();
                 break;
             }
             case 0:
             default:
                 goto exit_mainMenu;
         }
-        PAUSE;
         CLS;
     }
 exit_mainMenu:

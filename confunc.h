@@ -7,42 +7,37 @@
 
 #ifdef _WIN32
 #include <conio.h>
+#include <minwindef.h>
 #define CLS system("cls")
 #define ENDL putchar('\n')
 #define putws(wstr) printW(wstr); putwchar(L'\n');
+#ifdef _MSC_VER
+#define PAUSE ending = _getch();
+#define getch() _getch()
+#define getche() _getche()
+#else
+#define PAUSE ending = getch();
+#endif
 #else
 #define CLS system("clear")
 #define ENDL printf("\r\n")
 #define puts(str) puts(str); putchar('\r');
 #define putws(wstr) printW(wstr); putwchar(L'\r'); putwchar(L'\n');
-#endif
-
-#if 0
-#ifdef _MSC_VER
-#define GETNUM(num) scanf_s("%d",&num); clearInputBuffer();
-#else
-#define GETNUM(num) scanf("%d",&num); clearInputBuffer();
-#endif
+#define getche() \
+    ending = getchar(); if(ending!=EOF&&ending!='\0'&&ending!='\n') {clearInputBuffer();}
+#define getch() \
+    ending = getchar(); if(ending!=EOF&&ending!='\0'&&ending!='\n') {clearInputBuffer();}
+#define PAUSE ending = getchar(); if(ending!=EOF&&ending!='\0'&&ending!='\n') {clearInputBuffer();}
 #endif
 
 #define SPACE putchar(' ')
 
 #ifdef _MSC_VER
-#define PAUSE ending = _getch();
+#define GETNUM(num) scanf_s("%d",&num); clearInputBuffer();
 #else
-#ifdef _WIN32
-#define PAUSE ending = getch();
-#else
-#define PAUSE ending = getchar(); if(ending!=EOF&&ending!='\0'&&ending!='\n') {clearInputBuffer();}
-#endif
+#define GETNUM(num) scanf("%d",&num); clearInputBuffer();
 #endif
 
-#ifndef _WIN32
-#define getche() \
-    ending = getchar(); if(ending!=EOF&&ending!='\0'&&ending!='\n') {clearInputBuffer();}
-#define getch() \
-    ending = getchar(); if(ending!=EOF&&ending!='\0'&&ending!='\n') {clearInputBuffer();}
-#endif
 
 void initConsole();
 void putPool(Wish_Pool WishPool1);
@@ -55,7 +50,11 @@ void freeLocalizedNames();
 void printPoolLinkList(PoolLinkList current);
 int readIntInRange(int min,int max,const int* _default);
 void pause();
-void printW(const wchar_t*);
+#ifdef _WIN32
+DWORD printW(const wchar_t*);
+#else
+int printW(const wchar_t* wstr);
+#endif
 
 void initConsole() {
 #ifdef _WIN32
@@ -423,15 +422,18 @@ void pause()
 }
 
 
-void printW(const wchar_t* wstr) {
 #ifdef _WIN32
+DWORD printW(const wchar_t* wstr) {
     HANDLE hConsole=GetStdHandle(STD_OUTPUT_HANDLE);
     DWORD written;
     WriteConsoleW(hConsole,wstr,(DWORD) wcslen(wstr),&written,NULL);
-#else
-    printf("%ls",wstr);
-#endif
+    return written;
 }
+#else
+int printW(const wchar_t* wstr) {
+     return printf("%ls",wstr);
+}
+#endif
 
 
 #endif
