@@ -123,6 +123,7 @@ int cynoJoke(void)
 {
     int index1=0,index2=0;
     int current;
+    srand((unsigned int) time(NULL));
     while (1)
     {
         CLS;
