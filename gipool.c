@@ -26,7 +26,6 @@ int main(int argc,char** argv)
     ENDL;
     printf("Count of characters and pool info with errors: %d",checkIntegrity());
     ENDL;
-    ENDL;
     _mainMenu();
     freeDynamicThings();
     freeLocalizedNames();

@@ -20,8 +20,8 @@
 #endif
 #else
 #define CLS system("clear")
-#define ENDL printf("\r\n")
-#define puts(str) puts(str); putchar('\r');
+#define ENDL putchar('\n')
+// #define puts(str) puts(str); putchar('\r');
 #define putws(wstr) printW(wstr); putwchar(L'\r'); putwchar(L'\n');
 #define getche() \
     ending = getchar(); if(ending!=EOF&&ending!='\0'&&ending!='\n') {clearInputBuffer();}
