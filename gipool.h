@@ -38,18 +38,18 @@ unsigned short shortmonth_to_number(const char* mon);
 int checkIntegrity(void);
 _Bool isPoolInOrder(int i);
 void initDynamicThings(void);
-int findLongest(Char_Map CharMap1[]);
+int findLongest(_CharMap CharMap1[]);
 void getDaysPassedSinceLastUp(void);
 time_t makeTimeFromYMDHMS(uint16_t y,uint8_t m,uint8_t d,int hour,int min,int sec);
-int daysSinceSinglePoolEnds(const Wish_Pool pool);
+int daysSinceSinglePoolEnds(const _WishPool pool);
 void swap(int* a,int* b);
 int partition(int days[],int indices[],int low,int high);
 void quickSort(int days[],int indices[],int low,int high);
 void arrangeByDaysPassedSinceLastUp(void);
 void freeDynamicThings(void);
 int poolEndHour(uint8_t half);
-_Bool buildPoolLinkList(size_t index,Wish_Pool WishPool1[]);
-PoolLinkList createPoolNode(Wish_Pool WishPool1);
+_Bool buildPoolLinkList(size_t index,_WishPool WishPool1[]);
+PoolLinkList createPoolNode(_WishPool WishPool1);
 void help(void);
 
 _Bool convertCompileTime(char* date) {
@@ -146,7 +146,7 @@ void initDynamicThings(void){
 #endif
 }
 
-int findLongest(Char_Map CharMap1[]){
+int findLongest(_CharMap CharMap1[]){
     size_t currentLen=0,maxLen=0;
     int maxIndex=-1;
     for (int i=0; i<charCount; i++){
@@ -210,7 +210,7 @@ time_t makeTimeFromYMDHMS(uint16_t y,uint8_t m,uint8_t d,int hour,int min,int se
     return mktime(&t);
 }
 
-int daysSinceSinglePoolEnds(const Wish_Pool pool)
+int daysSinceSinglePoolEnds(const _WishPool pool)
 {
     // 这个函数仅计算单个卡池的已结束天数
     time_t now=time(NULL);
@@ -313,7 +313,7 @@ int poolEndHour(uint8_t half){
     }
 }
 
-_Bool buildPoolLinkList(size_t index,Wish_Pool WishPools[]) {
+_Bool buildPoolLinkList(size_t index,_WishPool WishPools[]) {
     PoolLinkList current=NULL,currentNext=NULL;
     int fiveCount=sizeof(WishPools[0].up5)==0 ? 0 : (int) (sizeof(WishPools[0].up5)/sizeof(WishPools[0].up5[0]));
     int fourCount=sizeof(WishPools[0].up4)==0 ? 0 : (int) (sizeof(WishPools[0].up4)/sizeof(WishPools[0].up4[0]));
@@ -373,9 +373,9 @@ _Bool buildPoolLinkList(size_t index,Wish_Pool WishPools[]) {
 
 }
 
-PoolLinkList createPoolNode(Wish_Pool WishPool1) {
+PoolLinkList createPoolNode(_WishPool WishPool1) {
     PoolLinkList target=NULL;
-    target=(PoolLinkList) malloc(sizeof(PoolNode));
+    target=(PoolLinkList) malloc(sizeof(_PoolNode));
     if (target==NULL) return NULL;
     else {
         target->major=WishPool1.major;

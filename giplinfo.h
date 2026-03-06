@@ -51,7 +51,7 @@ typedef uint32_t RoleMeta;
 #define GET_MINOR_LL(meta) (((meta)>>16)&0xFF)
 #define GET_HALF_LL(meta) (((meta)>>8)&0xFF)
 
-typedef struct characterMap {
+typedef struct _characterMap {
     const unsigned int id;
     const wchar_t name_cn[20];
     const char name[40];
@@ -67,17 +67,17 @@ typedef struct characterMap {
     6: Unknown
     if mod 4 equals to 3 then it is permanent 5 star
     */
-}Char_Map;
+}_CharMap;
 
-typedef struct weaponMap {
+typedef struct _weaponMap {
     const unsigned int id;
     const wchar_t name_cn[20];
     const char name[40];
     const unsigned int stars;
     const uint8_t type;
-} WeaponMap;
+} _WeaponMap;
 
-typedef struct wishPool {
+typedef struct _wishPool {
     unsigned int up5[24];
     unsigned int up4[24];
     unsigned int weapon[24];
@@ -90,16 +90,16 @@ typedef struct wishPool {
     uint16_t endY;
     uint8_t endM;
     uint8_t endD;
-} Wish_Pool;
+} _WishPool;
 
-typedef struct poolNode {
+typedef struct _poolNode {
     uint8_t major;
     uint8_t minor;
     uint8_t half;
-    struct poolNode* next;
-}PoolNode,*PoolLinkList,**PoolLinkListArray;
+    struct _poolNode* next;
+}_PoolNode,*PoolLinkList,**PoolLinkListArray;
 
-Char_Map CharMap[]={
+_CharMap CharMap[]={
     {0,L"空","Aether",VISION_OTHER,0},
     {1,L"荧","Lumine",VISION_OTHER,1},
     // {UINT_MAX,L"戴因斯雷布","Dainsleif",VISION_OTHER,256},
@@ -217,11 +217,14 @@ Char_Map CharMap[]={
     {108,L"杜林","Durin",PYRO,5},
     {109,L"叶洛亚","Illgua",GEO,4},
     {110,L"兹白","Zibai",GEO,5},
-    {111,L"哥伦比娅"/*"哥伦比娅·希珀塞莱尼娅"*/,"Columbina"/*"Columbina Hyposelenia"*/,HYDRO,5},
+    {111,L"哥伦比娅"/*"哥伦比娅·希珀塞莱尼娅"*/,
+        "Columbina"/*"Columbina Hyposelenia"*/,HYDRO,5},
     {112,L"法尔伽","Varka",ANEMO,5},
+    {113,L"洛恩","Lohen",VISION_UNKNOWN,5},
+    {114,L"莉奈娅","Linnea",GEO,5},
 };
 
-Wish_Pool WishPool[]={
+_WishPool WishPool[]={
     {{21},{11,7,5},{0},1,0,1,2020,9,28,2020,10,18},
     {{22},{15,9,13},{0},1,0,2,2020,10,20,2020,11,10},
     {{24},{8,10,23},{0},1,1,1,2020,11,11,2020,12,1},

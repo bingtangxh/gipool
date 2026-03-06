@@ -40,11 +40,11 @@
 
 
 void initConsole();
-void putPool(Wish_Pool WishPool1);
+void putPool(_WishPool WishPool1);
 void printCompileTime();
 const int typeMenu(const wchar_t* menuItems[],int itemCount,const wchar_t* title);
 const int choiceMenu(const wchar_t* menuItems[],int itemCount,const wchar_t* title);
-_Bool localizeNames(Char_Map CharMap1[],char* localizedNames[]);
+_Bool localizeNames(_CharMap CharMap1[],char* localizedNames[]);
 void clearInputBuffer();
 void freeLocalizedNames();
 void printPoolLinkList(PoolLinkList current);
@@ -65,7 +65,7 @@ void initConsole() {
 #endif
 }
 
-void putPool(Wish_Pool WishPool1)
+void putPool(_WishPool WishPool1)
 {
     int fiveCount=sizeof(WishPool1.up5)==0 ? 0 : (int) (sizeof(WishPool1.up5)/sizeof(WishPool1.up5[0]));
     int fourCount=sizeof(WishPool1.up4)==0 ? 0 : (int) (sizeof(WishPool1.up4)/sizeof(WishPool1.up4[0]));
@@ -320,7 +320,7 @@ const int choiceMenu(const wchar_t* menuItems[],int itemCount,const wchar_t* tit
 }
 
 
-_Bool localizeNames(Char_Map CharMap1[],char* _localizedNames[]) {
+_Bool localizeNames(_CharMap CharMap1[],char* _localizedNames[]) {
     _Bool result=0;
     for (int i=0; i<charCount; i++) {
         if ((_localizedNames[i]=localize(CharMap1[i].name_cn))==NULL) result=1;
