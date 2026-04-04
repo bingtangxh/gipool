@@ -3,23 +3,28 @@
 
 typedef uint32_t RoleMeta;
 
-#define VISION_OTHER   0
-#define PYRO           1
-#define HYDRO          2
-#define ANEMO          3
-#define ELECTRO        4
-#define DENDRO         5
-#define CRYO           6
-#define GEO            7
-#define VISION_UNKNOWN 8
+typedef enum vision{
+    VISION_OTHER   ,
+    PYRO           ,
+    HYDRO          ,
+    ANEMO          ,
+    ELECTRO        ,
+    DENDRO         ,
+    CRYO           ,
+    GEO            ,
+    VISION_UNKNOWN
+} Vision;
 
-#define ROLE_TYPE_TRAVELER_AETHER   0
-#define ROLE_TYPE_TRAVELER_LUMINE   1
-#define ROLE_TYPE_COLLAB            2
-#define ROLE_TYPE_FOUR_STAR         4
-#define ROLE_TYPE_LIMITED_FIVE_STAR 5
-#define ROLE_TYPE_UNKNOWN           6   
-#define ROLE_TYPE_EXCLUDED          256
+typedef enum roleType{
+    ROLE_TYPE_TRAVELER_AETHER         ,
+    ROLE_TYPE_TRAVELER_LUMINE         ,
+    ROLE_TYPE_COLLAB                  ,
+    ROLE_TYPE_FOUR_STAR           = 4 ,
+    ROLE_TYPE_LIMITED_FIVE_STAR       ,
+    ROLE_TYPE_UNKNOWN                 ,   
+    ROLE_TYPE_EXCLUDED          = 256
+} RoleType;
+
 // 末两位均为 1 时，即模 4 余 3 时一律算作常驻五星
 
 // 编码池信息（常驻五星时才有意义）
