@@ -44,6 +44,8 @@
 char putRightAlignFormat[PUT_RIGHT_ALIGN_STAR_CHARACTER_NAME_FORMAT_LENGTH]="";
 char putLeftAlignFormat[PUT_LEFT_ALIGN_STAR_CHARACTER_NAME_FORMAT_LENGTH]="";
 const char splitLine[]="-------------------------------------------------------------------------------------------------------";
+CONSOLE_SCREEN_BUFFER_INFO original;
+
 void initConsole();
 void putPool(_WishPool WishPool1);
 void printCompileTime();
@@ -72,6 +74,9 @@ void initConsole() {
 
 void putPool(_WishPool WishPool1)
 {
+#ifdef _WIN32
+    HANDLE hConsole=GetStdHandle(STD_OUTPUT_HANDLE);
+#endif
     if (WishPool1.half>=10) { puts(splitLine); }
     size_t fiveCount=sizeof(WishPool1.up5)==0 ? 0 : (int) (sizeof(WishPool1.up5)/sizeof(WishPool1.up5[0]));
     for(size_t i=0; i<fiveCount; i++) {
@@ -116,7 +121,18 @@ void putPool(_WishPool WishPool1)
     for (size_t i=0; i<fiveCount&&WishPool1.up5[i]!=0; i++)
     {
         //printW(CharMap[WishPool1.up5[i]].name_cn);
+#ifdef _WIN32
+        GetConsoleScreenBufferInfo(hConsole,&original);
+        CharMap[WishPool1.up5[i]].vision;
+        SetConsoleTextAttribute(hConsole,visionColor[CharMap[WishPool1.up5[i]].vision]);
+#else
+
+#endif
         printf(putRightAlignFormat,localizedNames[WishPool1.up5[i]]==NULL ? "" : localizedNames[WishPool1.up5[i]]);
+#ifdef _WIN32
+        SetConsoleTextAttribute(hConsole,original.wAttributes);
+#else
+#endif
         if (WishPool1.half<10) { printf("| "); }
     }
     for (size_t i=0; i<fourCount&&WishPool1.up4[i]!=0; i++)

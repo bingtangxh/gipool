@@ -1,5 +1,9 @@
 #include <stdbool.h>
 #include <stdint.h>
+#ifdef _WIN32
+#include <Windows.h>
+#else
+#endif
 
 typedef uint32_t RoleMeta;
 
@@ -14,6 +18,22 @@ typedef enum vision{
     GEO            ,
     VISION_UNKNOWN
 } Vision;
+
+
+#ifdef _WIN32
+int visionColor[]={
+    0, // OTHER
+    FOREGROUND_RED|FOREGROUND_INTENSITY, // PYRO
+    FOREGROUND_BLUE, // HYDRO
+    FOREGROUND_BLUE|FOREGROUND_GREEN, // ANEMO
+    FOREGROUND_RED|FOREGROUND_BLUE, // ELECTRO
+    FOREGROUND_GREEN|FOREGROUND_INTENSITY, // DENDRO
+    FOREGROUND_BLUE|FOREGROUND_INTENSITY, // CRYO
+    FOREGROUND_GREEN|FOREGROUND_RED, // GEO
+    FOREGROUND_BLUE|FOREGROUND_GREEN|FOREGROUND_RED  // UNKNOWN
+};
+#else
+#endif
 
 typedef enum roleType{
     ROLE_TYPE_TRAVELER_AETHER         ,
