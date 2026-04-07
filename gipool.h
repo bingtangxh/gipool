@@ -24,21 +24,23 @@
     )
 
 PoolLinkList* PoolLinkLists=NULL;
-int charCount=0,poolCount=0,longestIndex=0;
+size_t charCount=0,poolCount=0,longestChineseIndex=0,longestChineseNameLength=0,longestEnglishIndex=0,longestEnglishNameLength=0;
+int ending='\0';
 int* daysPassedSinceLastUP=NULL;
 int* arrangedInOrderOfDays=NULL;
 char** localizedNames=NULL;
-int ending='\0';
 static const char* month_table[]={
     "Jan","Feb","Mar","Apr","May","Jun",
     "Jul","Aug","Sep","Oct","Nov","Dec"
 };
+const int maxCharactersInCharPool=2;
 _Bool convertCompileTime(char* date);
 unsigned short shortmonth_to_number(const char* mon);
 int checkIntegrity(void);
 _Bool isPoolInOrder(int i);
 void initDynamicThings(void);
 int findLongest(_CharMap CharMap1[]);
+int findLongestEnglish(_CharMap CharMap1[]);
 void getDaysPassedSinceLastUp(void);
 time_t makeTimeFromYMDHMS(uint16_t y,uint8_t m,uint8_t d,int hour,int min,int sec);
 int daysSinceSinglePoolEnds(const _WishPool pool);
@@ -130,15 +132,18 @@ _Bool isPoolInOrder(int i){
 void initDynamicThings(void){
     charCount=(int) ARRAY_SIZE(CharMap);
     poolCount=(int) ARRAY_SIZE(WishPool);
-    longestIndex=findLongest(CharMap);
-    getDaysPassedSinceLastUp();
+    longestChineseIndex=findLongest(CharMap);
+    longestChineseNameLength=(size_t) wcslen(CharMap[longestChineseIndex].name_cn);
+    longestEnglishIndex=findLongestEnglish(CharMap);
+    longestEnglishNameLength=(size_t) strlen(CharMap[longestEnglishIndex].name);
+     getDaysPassedSinceLastUp();
     do { arrangedInOrderOfDays=(int*) malloc(charCount*sizeof(int)); } while (arrangedInOrderOfDays==NULL);
-    for (int i=0; i<charCount; i++){
+    for (size_t i=0; i<charCount; i++){
         arrangedInOrderOfDays[i]=i;
     }
     arrangeByDaysPassedSinceLastUp();
     do { PoolLinkLists=(PoolLinkList*) malloc(sizeof(PoolLinkList)*charCount); } while (PoolLinkLists==NULL);
-    for (int i=0; i<charCount; i++) {
+    for (size_t i=0; i<charCount; i++) {
         PoolLinkLists[i]=NULL;
     }
 #ifndef _WIN32
@@ -149,8 +154,22 @@ void initDynamicThings(void){
 int findLongest(_CharMap CharMap1[]){
     size_t currentLen=0,maxLen=0;
     int maxIndex=-1;
-    for (int i=0; i<charCount; i++){
+    for (size_t i=0; i<charCount; i++){
         currentLen=wcslen(CharMap1[i].name_cn);
+        if (currentLen>maxLen)
+        {
+            maxIndex=i;
+            maxLen=currentLen;
+        }
+    }
+    return maxIndex;
+}
+
+int findLongestEnglish(_CharMap CharMap1[]){
+    size_t currentLen=0,maxLen=0;
+    int maxIndex=-1;
+    for (size_t i=0; i<charCount; i++){
+        currentLen=strlen(CharMap1[i].name);
         if (currentLen>maxLen)
         {
             maxIndex=i;
@@ -172,13 +191,17 @@ void getDaysPassedSinceLastUp(void){
     do {
         daysPassedSinceLastUP=(int*) malloc(sizeof(int)*charCount);
     } while (daysPassedSinceLastUP==NULL);
-    for (int c=0; c<charCount; c++)
+    for (size_t c=0; c<charCount; c++)
     {
         int lastPoolIndex=-1;
+        if(poolCount<=0) {
+            daysPassedSinceLastUP[c]=INT_MIN;
+            continue;
+        }
         // 从后往前找，最近一次包含该角色的池
-        for (int p=poolCount-1; p>=0; p--)
+        for (size_t p=poolCount-1; p+1!=0; p--)
         {
-            for (int i=0; i<24&&(CharMap[c].attrib==4 ? WishPool[p].up4[i] : WishPool[p].up5[i])!=0; i++)
+            for (size_t i=0; i<24&&(CharMap[c].attrib==4 ? WishPool[p].up4[i] : WishPool[p].up5[i])!=0; i++)
             {
                 if ((CharMap[c].attrib==4 ? WishPool[p].up4[i] : WishPool[p].up5[i])==CharMap[c].id)
                 {
@@ -276,7 +299,7 @@ void freeDynamicThings(void){
     daysPassedSinceLastUP=arrangedInOrderOfDays=NULL;
     if (PoolLinkLists!=NULL)
     {
-        for (int i=0; i<charCount; i++) {
+        for (size_t i=0; i<charCount; i++) {
             if (PoolLinkLists[i]!=NULL) {
                 currentNode=PoolLinkLists[i];
                 while (currentNode!=NULL) {
@@ -315,8 +338,8 @@ int poolEndHour(uint8_t half){
 
 _Bool buildPoolLinkList(size_t index,_WishPool WishPools[]) {
     PoolLinkList current=NULL,currentNext=NULL;
-    int fiveCount=sizeof(WishPools[0].up5)==0 ? 0 : (int) (sizeof(WishPools[0].up5)/sizeof(WishPools[0].up5[0]));
-    int fourCount=sizeof(WishPools[0].up4)==0 ? 0 : (int) (sizeof(WishPools[0].up4)/sizeof(WishPools[0].up4[0]));
+    size_t fiveCount=sizeof(WishPools[0].up5)==0 ? 0 : (int) (sizeof(WishPools[0].up5)/sizeof(WishPools[0].up5[0]));
+    size_t fourCount=sizeof(WishPools[0].up4)==0 ? 0 : (int) (sizeof(WishPools[0].up4)/sizeof(WishPools[0].up4[0]));
     if (PoolLinkLists==NULL) return 1;
     if (PoolLinkLists[index]!=NULL) {
         current=PoolLinkLists[index];
@@ -328,8 +351,8 @@ _Bool buildPoolLinkList(size_t index,_WishPool WishPools[]) {
         PoolLinkLists[index]=current=currentNext=NULL;
     }
     if (CharMap[index].attrib==5) {
-        for (int i=0; i<poolCount; i++) {
-            for (int j=0; j<fiveCount&&WishPools[i].up5[j]!=0; j++) {
+        for (size_t i=0; i<poolCount; i++) {
+            for (size_t j=0; j<fiveCount&&WishPools[i].up5[j]!=0; j++) {
                 if (WishPools[i].up5[j]==index) {
                     do { currentNext=createPoolNode(WishPools[i]); } while (currentNext==NULL);
                     if (PoolLinkLists[index]==NULL) {
@@ -344,8 +367,8 @@ _Bool buildPoolLinkList(size_t index,_WishPool WishPools[]) {
         }
         return 0;
     } else if (CharMap[index].attrib==4) {
-        for (int i=0; i<poolCount; i++) {
-            for (int j=0; j<fourCount&&WishPools[i].up4[j]!=0; j++) {
+        for (size_t i=0; i<poolCount; i++) {
+            for (size_t j=0; j<fourCount&&WishPools[i].up4[j]!=0; j++) {
                 if (WishPools[i].up4[j]==index) {
                     do { currentNext=createPoolNode(WishPools[i]); } while (currentNext==NULL);
                     if (PoolLinkLists[index]==NULL) {

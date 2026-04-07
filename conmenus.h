@@ -45,6 +45,8 @@ const wchar_t* splitByVisionType[]={
 
 // int prevSlt = 0;
 
+#define PUT_LEFT_ALIGN_SPLIT_BY_VISION_TYPE_FORMAT_LENGTH 20
+char putSplitByVisionTypeFormat[PUT_LEFT_ALIGN_SPLIT_BY_VISION_TYPE_FORMAT_LENGTH]="";
 void _mainMenu();
 int choiceOneCharacter();
 
@@ -132,6 +134,15 @@ exit_mainMenu:
 
 int choiceOneCharacter() {
     static int prevSlt=0;
+#ifdef _MSC_VER
+    strcpy_s(putSplitByVisionTypeFormat,PUT_LEFT_ALIGN_SPLIT_BY_VISION_TYPE_FORMAT_LENGTH,"%3u | %");
+    sprintf_s(putSplitByVisionTypeFormat+strlen(putSplitByVisionTypeFormat),PUT_LEFT_ALIGN_SPLIT_BY_VISION_TYPE_FORMAT_LENGTH-strlen(putSplitByVisionTypeFormat),"%u",strlen(localizedNames[longestChineseIndex]));
+    strcat_s(putSplitByVisionTypeFormat,PUT_LEFT_ALIGN_SPLIT_BY_VISION_TYPE_FORMAT_LENGTH,"s | %s");
+#else
+    strcpy(putSplitByVisionTypeFormat,"%3u | %");
+    sprintf(putSplitByVisionTypeFormat+strlen(putSplitByVisionTypeFormat),"%u",strlen(localizedNames[longestChineseIndex]));
+    strcat(putSplitByVisionTypeFormat,"s | %s");
+#endif
     do {
     choiceOneCharacter:
         if (prevSlt==0||prevSlt==-1)
@@ -158,9 +169,9 @@ int choiceOneCharacter() {
                     } else { break; }
                 } while (1);
                 CLS;
-                for (int i=0; i<charCount; i++) {
+                for (size_t i=0; i<charCount; i++) {
                     if (wcslen(CharMap[i].name_cn)==length) {
-                        printf("%d\t%s\t%s",i,localizedNames[i],CharMap[i].name);
+                        printf("%u\t%s\t%s",i,localizedNames[i],CharMap[i].name);
                         ENDL;
                     }
                 }
@@ -183,9 +194,9 @@ int choiceOneCharacter() {
                     } else { break; }
                 } while (1);
                 CLS;
-                for (int i=0; i<charCount; i++) {
+                for (size_t i=0; i<charCount; i++) {
                     if (strlen(CharMap[i].name)==length) {
-                        printf("%d\t%s\t%s",i,CharMap[i].name,localizedNames[i]);
+                        printf("%u\t%s\t%s",i,CharMap[i].name,localizedNames[i]);
                         ENDL;
                     }
                 }
@@ -225,9 +236,9 @@ int choiceOneCharacter() {
                         continue;
                 }
                 CLS;
-                for (int i=0; i<charCount; i++) {
+                for (size_t i=0; i<charCount; i++) {
                     if (CharMap[i].vision==visionSelection) {
-                        printf("%d %s %s",i,localizedNames[i],CharMap[i].name);
+                        printf(putSplitByVisionTypeFormat,i,localizedNames[i],CharMap[i].name);
                         ENDL;
                     }
                 }

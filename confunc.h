@@ -5,6 +5,9 @@
 #include "gipool.h"
 #endif
 
+#define PUT_RIGHT_ALIGN_STAR_CHARACTER_NAME_FORMAT_LENGTH 10
+#define PUT_LEFT_ALIGN_STAR_CHARACTER_NAME_FORMAT_LENGTH  11
+
 #ifdef _WIN32
 #include <conio.h>
 #include <minwindef.h>
@@ -38,7 +41,9 @@
 #define GETNUM(num) scanf("%d",&num); clearInputBuffer();
 #endif
 
-
+char putRightAlignFormat[PUT_RIGHT_ALIGN_STAR_CHARACTER_NAME_FORMAT_LENGTH]="";
+char putLeftAlignFormat[PUT_LEFT_ALIGN_STAR_CHARACTER_NAME_FORMAT_LENGTH]="";
+const char splitLine[]="-------------------------------------------------------------------------------------------------------";
 void initConsole();
 void putPool(_WishPool WishPool1);
 void printCompileTime();
@@ -67,20 +72,60 @@ void initConsole() {
 
 void putPool(_WishPool WishPool1)
 {
-    int fiveCount=sizeof(WishPool1.up5)==0 ? 0 : (int) (sizeof(WishPool1.up5)/sizeof(WishPool1.up5[0]));
-    int fourCount=sizeof(WishPool1.up4)==0 ? 0 : (int) (sizeof(WishPool1.up4)/sizeof(WishPool1.up4[0]));
-    printf("%hu.%hu.%hu\t%u.%hu.%hu\t%u.%hu.%hu\t",WishPool1.major,WishPool1.minor,WishPool1.half,WishPool1.startY,WishPool1.startM,WishPool1.startD,WishPool1.endY,WishPool1.endM,WishPool1.endD);
-    for (int i=0; i<fiveCount&&WishPool1.up5[i]!=0; i++)
+    if (WishPool1.half>=10) { puts(splitLine); }
+    size_t fiveCount=sizeof(WishPool1.up5)==0 ? 0 : (int) (sizeof(WishPool1.up5)/sizeof(WishPool1.up5[0]));
+    for(size_t i=0; i<fiveCount; i++) {
+        if (WishPool1.up5[i]==0) {
+            fiveCount=i;
+            break;
+        }
+    }
+    size_t fourCount=sizeof(WishPool1.up4)==0 ? 0 : (int) (sizeof(WishPool1.up4)/sizeof(WishPool1.up4[0]));
+    printf("%hu.%hu.%hu\t%u.%hu.%hu\t%u.%hu.%hu\t | ",WishPool1.major,WishPool1.minor,WishPool1.half,WishPool1.startY,WishPool1.startM,WishPool1.startD,WishPool1.endY,WishPool1.endM,WishPool1.endD);
+
+#ifdef _MSC_VER
+    strcpy_s(putRightAlignFormat,PUT_RIGHT_ALIGN_STAR_CHARACTER_NAME_FORMAT_LENGTH,"%");
+    if (WishPool1.half<10){
+        sprintf_s(putRightAlignFormat+strlen(putRightAlignFormat),PUT_RIGHT_ALIGN_STAR_CHARACTER_NAME_FORMAT_LENGTH-strlen(putRightAlignFormat),"%u",strlen(localizedNames[longestChineseIndex]));
+    }
+    strcat_s(putRightAlignFormat,PUT_RIGHT_ALIGN_STAR_CHARACTER_NAME_FORMAT_LENGTH,"s ");
+
+    if (WishPool1.half<10){
+        strcpy_s(putLeftAlignFormat,PUT_LEFT_ALIGN_STAR_CHARACTER_NAME_FORMAT_LENGTH,"%-");
+        sprintf_s(putLeftAlignFormat+strlen(putLeftAlignFormat),PUT_LEFT_ALIGN_STAR_CHARACTER_NAME_FORMAT_LENGTH-strlen(putLeftAlignFormat),"%u",strlen(localizedNames[longestChineseIndex]));
+        strcat_s(putLeftAlignFormat,PUT_LEFT_ALIGN_STAR_CHARACTER_NAME_FORMAT_LENGTH,"s ");
+    }
+#else
+    strcat(putRightAlignFormat,"%");
+    if (WishPool1.half<10){
+        sprintf(putRightAlignFormat+strlen(putRightAlignFormat),"%u",strlen(localizedNames[longestChineseIndex]));
+    }
+    strcat(putRightAlignFormat,"s ");
+
+    if (WishPool1.half<10){
+        strcpy(putLeftAlignFormat,"%-");
+        sprintf(putLeftAlignFormat+strlen(putLeftAlignFormat),"%u",strlen(localizedNames[longestChineseIndex]));
+        strcat(putLeftAlignFormat,"s ");
+    }
+#endif
+
+    for (size_t i=0; i<2-fiveCount&&WishPool1.half<10; i++){
+        printf(putRightAlignFormat,"");
+        if (WishPool1.half<10) { printf("| "); }
+    }
+    for (size_t i=0; i<fiveCount&&WishPool1.up5[i]!=0; i++)
     {
         //printW(CharMap[WishPool1.up5[i]].name_cn);
-        printf("%s ",localizedNames[WishPool1.up5[i]]==NULL ? "" : localizedNames[WishPool1.up5[i]]);
+        printf(putRightAlignFormat,localizedNames[WishPool1.up5[i]]==NULL ? "" : localizedNames[WishPool1.up5[i]]);
+        if (WishPool1.half<10) { printf("| "); }
     }
-    for (int i=0; i<fourCount&&WishPool1.up4[i]!=0; i++)
+    for (size_t i=0; i<fourCount&&WishPool1.up4[i]!=0; i++)
     {
         //printW(CharMap[WishPool1.up4[i]].name_cn);
-        printf("%s ",localizedNames[WishPool1.up4[i]]==NULL ? "" : localizedNames[WishPool1.up4[i]]);
+        printf(putLeftAlignFormat,localizedNames[WishPool1.up4[i]]==NULL ? "" : localizedNames[WishPool1.up4[i]]);
     }
     ENDL;
+    if (WishPool1.half>=10) { puts(splitLine); }
 }
 
 void printCompileTime() {
@@ -322,7 +367,7 @@ const int choiceMenu(const wchar_t* menuItems[],int itemCount,const wchar_t* tit
 
 _Bool localizeNames(_CharMap CharMap1[],char* _localizedNames[]) {
     _Bool result=0;
-    for (int i=0; i<charCount; i++) {
+    for (size_t i=0; i<charCount; i++) {
         if ((_localizedNames[i]=localize(CharMap1[i].name_cn))==NULL) result=1;
     }
     return result;
@@ -338,7 +383,7 @@ void clearInputBuffer() {
 
 void freeLocalizedNames() {
     if (localizedNames!=NULL) {
-        for (int i=0; i<charCount; i++) {
+        for (size_t i=0; i<charCount; i++) {
             if (localizedNames[i]!=NULL) {
                 free(localizedNames[i]);
                 localizedNames[i]=NULL;

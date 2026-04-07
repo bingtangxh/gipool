@@ -8,20 +8,32 @@
 #include "conmenus.h"
 #endif
 
+#define PUT_ALL_CHARACTERS_DAYS_SINCE_LAST_UP_FORMAT_LENGTH 10
+char putAllCharactersDaysSinceLastUpFormat[PUT_ALL_CHARACTERS_DAYS_SINCE_LAST_UP_FORMAT_LENGTH]="";
+
 void printAllPools();
 void printDaysofAllLimited5StarCharacters();
 int choiceOneCharacter4Test();
 
 void printAllPools() {
     CLS;
-    for (int i=0; i<poolCount; i++) {
+    for (size_t i=0; i<poolCount; i++) {
         putPool(WishPool[i]);
     }
 }
 
 void printDaysofAllLimited5StarCharacters() {
+#ifdef _MSC_VER
+    strcpy_s(putAllCharactersDaysSinceLastUpFormat,PUT_ALL_CHARACTERS_DAYS_SINCE_LAST_UP_FORMAT_LENGTH,"%");
+    sprintf_s(putAllCharactersDaysSinceLastUpFormat+strlen(putAllCharactersDaysSinceLastUpFormat),PUT_ALL_CHARACTERS_DAYS_SINCE_LAST_UP_FORMAT_LENGTH-strlen(putAllCharactersDaysSinceLastUpFormat),"%u",strlen(localizedNames[longestChineseIndex]));
+    strcat_s(putAllCharactersDaysSinceLastUpFormat,PUT_ALL_CHARACTERS_DAYS_SINCE_LAST_UP_FORMAT_LENGTH,"s | %d");
+#else
+    strcat(putAllCharactersDaysSinceLastUpFormat,"%");
+    sprintf(putAllCharactersDaysSinceLastUpFormat+strlen(putAllCharactersDaysSinceLastUpFormat),"%u",strlen(localizedNames[longestChineseIndex]));
+    strcat(putAllCharactersDaysSinceLastUpFormat,"s | %d");
+#endif
     CLS;
-    for (int i=0; i<charCount; i++) {
+    for (size_t i=0; i<charCount; i++) {
         if ((
             daysPassedSinceLastUP[arrangedInOrderOfDays[i]]!=INT_MIN
             )&&((
@@ -29,7 +41,7 @@ void printDaysofAllLimited5StarCharacters() {
                 )||(
                     CharMap[arrangedInOrderOfDays[i]].attrib==5
                     ))) {
-            printf("%12s\t%d",localizedNames[arrangedInOrderOfDays[i]],daysPassedSinceLastUP[arrangedInOrderOfDays[i]]/*,localizedVisualLen(CharMap[arrangedInOrderOfDays[i]].name_cn)*/);
+            printf(putAllCharactersDaysSinceLastUpFormat,localizedNames[arrangedInOrderOfDays[i]],daysPassedSinceLastUP[arrangedInOrderOfDays[i]]/*,localizedVisualLen(CharMap[arrangedInOrderOfDays[i]].name_cn)*/);
             ENDL;
         } else {
             // printf("%12s\t%u",localizedNames[arrangedInOrderOfDays[i]],CharMap[arrangedInOrderOfDays[i]].attrib);
