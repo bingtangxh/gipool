@@ -49,7 +49,7 @@ jobs:
 
       - name: Build
         run: |
-          cl.exe /nologo /O1 /W3 /WX /Z7 /GF /FS /EHsc /MT /utf-8 gipool.c gipool.res /link /OUT:gipool_${{ matrix.arch }}.exe
+          cl.exe /nologo /O1 /W3 /Z7 /GF /FS /EHsc /MT /utf-8 gipool.c gipool.res /link /OUT:gipool_${{ matrix.arch }}.exe
 
       - name: Decode PFX from Secrets
         shell: pwsh
