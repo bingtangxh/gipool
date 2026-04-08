@@ -1,4 +1,5 @@
 #pragma once
+#include "gipool.h"
 #ifndef CONUSAGE
 #define CONUSAGE
 #ifndef CONFUNC
@@ -25,12 +26,10 @@ void printAllPools() {
 void printDaysofAllLimited5StarCharacters() {
 #ifdef _MSC_VER
     strcpy_s(putAllCharactersDaysSinceLastUpFormat,PUT_ALL_CHARACTERS_DAYS_SINCE_LAST_UP_FORMAT_LENGTH,"%");
-    sprintf_s(putAllCharactersDaysSinceLastUpFormat+strlen(putAllCharactersDaysSinceLastUpFormat),PUT_ALL_CHARACTERS_DAYS_SINCE_LAST_UP_FORMAT_LENGTH-strlen(putAllCharactersDaysSinceLastUpFormat),"%u",(unsigned int)strlen(localizedNames[longestChineseIndex]));
+    sprintf_s(putAllCharactersDaysSinceLastUpFormat+strlen(putAllCharactersDaysSinceLastUpFormat),PUT_ALL_CHARACTERS_DAYS_SINCE_LAST_UP_FORMAT_LENGTH-strlen(putAllCharactersDaysSinceLastUpFormat),"%d",localizedVisualLen(CharMap[longestChineseIndex].name_cn));
     strcat_s(putAllCharactersDaysSinceLastUpFormat,PUT_ALL_CHARACTERS_DAYS_SINCE_LAST_UP_FORMAT_LENGTH,"s");
 #else
-    strcat(putAllCharactersDaysSinceLastUpFormat,"%");
-    sprintf(putAllCharactersDaysSinceLastUpFormat+strlen(putAllCharactersDaysSinceLastUpFormat),"%u",(unsigned int)strlen(localizedNames[longestChineseIndex]));
-    strcat(putAllCharactersDaysSinceLastUpFormat,"s");
+    strcpy(putAllCharactersDaysSinceLastUpFormat,"%s");
 #endif
     CLS;
     for (size_t i=0; i<charCount; i++) {
@@ -41,7 +40,11 @@ void printDaysofAllLimited5StarCharacters() {
                 )||(
                     CharMap[arrangedInOrderOfDays[i]].attrib==5
                     ))) {
-
+#ifndef _MSC_VER
+            for(size_t j=0;j<localizedVisualLen(CharMap[longestChineseIndex].name_cn)-localizedVisualLen(CharMap[arrangedInOrderOfDays[i]].name_cn);j++){
+                SPACE;
+            }
+#endif
             SetConsoleColorByCharacter(CharMap[arrangedInOrderOfDays[i]]);
             printf(putAllCharactersDaysSinceLastUpFormat,localizedNames[arrangedInOrderOfDays[i]]);
             ResetConsoleColor();

@@ -4,6 +4,9 @@
 #ifndef GIPOOL
 #include "gipool.h"
 #endif
+#ifndef LOCALIZE
+#include "localize.h"
+#endif
 
 #define PUT_RIGHT_ALIGN_STAR_CHARACTER_NAME_FORMAT_LENGTH 10
 #define PUT_LEFT_ALIGN_STAR_CHARACTER_NAME_FORMAT_LENGTH  11
@@ -120,35 +123,46 @@ void putPool(_WishPool WishPool1)
 #ifdef _MSC_VER
     strcpy_s(putRightAlignFormat,PUT_RIGHT_ALIGN_STAR_CHARACTER_NAME_FORMAT_LENGTH,"%");
     if (WishPool1.half<10){
-        sprintf_s(putRightAlignFormat+strlen(putRightAlignFormat),PUT_RIGHT_ALIGN_STAR_CHARACTER_NAME_FORMAT_LENGTH-strlen(putRightAlignFormat),"%u",(unsigned int)strlen(localizedNames[longestChineseIndex]));
+        sprintf_s(putRightAlignFormat+strlen(putRightAlignFormat),PUT_RIGHT_ALIGN_STAR_CHARACTER_NAME_FORMAT_LENGTH-strlen(putRightAlignFormat),"%d", localizedVisualLen(CharMap[longestChineseIndex].name_cn));
+        localizedVisualLen(CharMap[longestChineseIndex].name_cn);
     }
     strcat_s(putRightAlignFormat,PUT_RIGHT_ALIGN_STAR_CHARACTER_NAME_FORMAT_LENGTH,"s ");
 
     if (WishPool1.half<10){
         strcpy_s(putLeftAlignFormat,PUT_LEFT_ALIGN_STAR_CHARACTER_NAME_FORMAT_LENGTH,"%-");
-        sprintf_s(putLeftAlignFormat+strlen(putLeftAlignFormat),PUT_LEFT_ALIGN_STAR_CHARACTER_NAME_FORMAT_LENGTH-strlen(putLeftAlignFormat),"%u",(unsigned int)strlen(localizedNames[longestChineseIndex]));
+        sprintf_s(putLeftAlignFormat+strlen(putLeftAlignFormat),PUT_LEFT_ALIGN_STAR_CHARACTER_NAME_FORMAT_LENGTH-strlen(putLeftAlignFormat),"%d",localizedVisualLen(CharMap[longestChineseIndex].name_cn));
         strcat_s(putLeftAlignFormat,PUT_LEFT_ALIGN_STAR_CHARACTER_NAME_FORMAT_LENGTH,"s ");
     }
 #else
     strcpy(putRightAlignFormat,"%");
-    if (WishPool1.half<10){
-        sprintf(putRightAlignFormat+strlen(putRightAlignFormat),"%u",(unsigned int)strlen(localizedNames[longestChineseIndex]));
+    if (WishPool1.half<10&&0){
+        sprintf(putRightAlignFormat+strlen(putRightAlignFormat),"%d",localizedVisualLen(CharMap[longestChineseIndex].name_cn));
     }
     strcat(putRightAlignFormat,"s ");
 
     if (WishPool1.half<10){
-        strcpy(putLeftAlignFormat,"%-");
-        sprintf(putLeftAlignFormat+strlen(putLeftAlignFormat),"%u",(unsigned int)strlen(localizedNames[longestChineseIndex]));
-        strcat(putLeftAlignFormat,"s ");
+        strcpy(putLeftAlignFormat,"%s");
+        // sprintf(putLeftAlignFormat+strlen(putLeftAlignFormat),"%d",localizedVisualLen(CharMap[longestChineseIndex].name_cn));
+        // strcat(putLeftAlignFormat,"s ");
     }
 #endif
 
     for (size_t i=0; i<2-fiveCount&&WishPool1.half<10; i++){
+#ifndef _MSC_VER
+        for(size_t j=0;j<localizedVisualLen(CharMap[longestChineseIndex].name_cn);j++){
+            SPACE;
+        }
+#endif
         printf(putRightAlignFormat,"");
         if (WishPool1.half<10) { printf("| "); }
     }
     for (size_t i=0; i<fiveCount&&WishPool1.up5[i]!=0; i++)
     {
+#ifndef _MSC_VER
+        for(size_t j=0;
+            (j<localizedVisualLen(CharMap[longestChineseIndex].name_cn)-localizedVisualLen(CharMap[WishPool1.up5[i]].name_cn))&&WishPool1.half<10;
+        j++){ SPACE; }
+#endif
         //printW(CharMap[WishPool1.up5[i]].name_cn);
         SetConsoleColorByCharacter(CharMap[WishPool1.up5[i]]);
         printf(putRightAlignFormat,localizedNames[WishPool1.up5[i]]==NULL ? "" : localizedNames[WishPool1.up5[i]]);
@@ -160,6 +174,11 @@ void putPool(_WishPool WishPool1)
         SetConsoleColorByCharacter(CharMap[WishPool1.up4[i]]);
         printf(putLeftAlignFormat,localizedNames[WishPool1.up4[i]]==NULL ? "" : localizedNames[WishPool1.up4[i]]);
         ResetConsoleColor();
+#ifndef _MSC_VER
+        for(size_t j=0;j<localizedVisualLen(CharMap[longestChineseIndex].name_cn)-localizedVisualLen(CharMap[WishPool1.up4[i]].name_cn);j++){
+            SPACE;
+        }
+#endif
     }
     ENDL;
     if (WishPool1.half>=10) { puts(splitLine); }
