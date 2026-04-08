@@ -136,11 +136,11 @@ int choiceOneCharacter() {
     static int prevSlt=0;
 #ifdef _MSC_VER
     strcpy_s(putSplitByVisionTypeFormat,PUT_LEFT_ALIGN_SPLIT_BY_VISION_TYPE_FORMAT_LENGTH,"%3u | %");
-    sprintf_s(putSplitByVisionTypeFormat+strlen(putSplitByVisionTypeFormat),PUT_LEFT_ALIGN_SPLIT_BY_VISION_TYPE_FORMAT_LENGTH-strlen(putSplitByVisionTypeFormat),"%u",strlen(localizedNames[longestChineseIndex]));
+    sprintf_s(putSplitByVisionTypeFormat+strlen(putSplitByVisionTypeFormat),PUT_LEFT_ALIGN_SPLIT_BY_VISION_TYPE_FORMAT_LENGTH-strlen(putSplitByVisionTypeFormat),"%u",(unsigned int)strlen(localizedNames[longestChineseIndex]));
     strcat_s(putSplitByVisionTypeFormat,PUT_LEFT_ALIGN_SPLIT_BY_VISION_TYPE_FORMAT_LENGTH,"s | %s");
 #else
     strcpy(putSplitByVisionTypeFormat,"%3u | %");
-    sprintf(putSplitByVisionTypeFormat+strlen(putSplitByVisionTypeFormat),"%u",strlen(localizedNames[longestChineseIndex]));
+    sprintf(putSplitByVisionTypeFormat+strlen(putSplitByVisionTypeFormat),"%u",(unsigned int)strlen(localizedNames[longestChineseIndex]));
     strcat(putSplitByVisionTypeFormat,"s | %s");
 #endif
     do {
@@ -171,7 +171,9 @@ int choiceOneCharacter() {
                 CLS;
                 for (size_t i=0; i<charCount; i++) {
                     if (wcslen(CharMap[i].name_cn)==length) {
-                        printf("%u\t%s\t%s",i,localizedNames[i],CharMap[i].name);
+                        SetConsoleColorByCharacter(CharMap[i]);
+                        printf("%u\t%s\t%s",(unsigned int)i,localizedNames[i],CharMap[i].name);
+                        ResetConsoleColor();
                         ENDL;
                     }
                 }
@@ -196,7 +198,9 @@ int choiceOneCharacter() {
                 CLS;
                 for (size_t i=0; i<charCount; i++) {
                     if (strlen(CharMap[i].name)==length) {
-                        printf("%u\t%s\t%s",i,CharMap[i].name,localizedNames[i]);
+                        SetConsoleColorByCharacter(CharMap[i]);
+                        printf("%u\t%s\t%s",(unsigned int)i,CharMap[i].name,localizedNames[i]);
+                        ResetConsoleColor();
                         ENDL;
                     }
                 }

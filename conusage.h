@@ -25,12 +25,12 @@ void printAllPools() {
 void printDaysofAllLimited5StarCharacters() {
 #ifdef _MSC_VER
     strcpy_s(putAllCharactersDaysSinceLastUpFormat,PUT_ALL_CHARACTERS_DAYS_SINCE_LAST_UP_FORMAT_LENGTH,"%");
-    sprintf_s(putAllCharactersDaysSinceLastUpFormat+strlen(putAllCharactersDaysSinceLastUpFormat),PUT_ALL_CHARACTERS_DAYS_SINCE_LAST_UP_FORMAT_LENGTH-strlen(putAllCharactersDaysSinceLastUpFormat),"%u",strlen(localizedNames[longestChineseIndex]));
-    strcat_s(putAllCharactersDaysSinceLastUpFormat,PUT_ALL_CHARACTERS_DAYS_SINCE_LAST_UP_FORMAT_LENGTH,"s | %d");
+    sprintf_s(putAllCharactersDaysSinceLastUpFormat+strlen(putAllCharactersDaysSinceLastUpFormat),PUT_ALL_CHARACTERS_DAYS_SINCE_LAST_UP_FORMAT_LENGTH-strlen(putAllCharactersDaysSinceLastUpFormat),"%u",(unsigned int)strlen(localizedNames[longestChineseIndex]));
+    strcat_s(putAllCharactersDaysSinceLastUpFormat,PUT_ALL_CHARACTERS_DAYS_SINCE_LAST_UP_FORMAT_LENGTH,"s");
 #else
     strcat(putAllCharactersDaysSinceLastUpFormat,"%");
-    sprintf(putAllCharactersDaysSinceLastUpFormat+strlen(putAllCharactersDaysSinceLastUpFormat),"%u",strlen(localizedNames[longestChineseIndex]));
-    strcat(putAllCharactersDaysSinceLastUpFormat,"s | %d");
+    sprintf(putAllCharactersDaysSinceLastUpFormat+strlen(putAllCharactersDaysSinceLastUpFormat),"%u",(unsigned int)strlen(localizedNames[longestChineseIndex]));
+    strcat(putAllCharactersDaysSinceLastUpFormat,"s");
 #endif
     CLS;
     for (size_t i=0; i<charCount; i++) {
@@ -41,7 +41,11 @@ void printDaysofAllLimited5StarCharacters() {
                 )||(
                     CharMap[arrangedInOrderOfDays[i]].attrib==5
                     ))) {
-            printf(putAllCharactersDaysSinceLastUpFormat,localizedNames[arrangedInOrderOfDays[i]],daysPassedSinceLastUP[arrangedInOrderOfDays[i]]/*,localizedVisualLen(CharMap[arrangedInOrderOfDays[i]].name_cn)*/);
+
+            SetConsoleColorByCharacter(CharMap[arrangedInOrderOfDays[i]]);
+            printf(putAllCharactersDaysSinceLastUpFormat,localizedNames[arrangedInOrderOfDays[i]]);
+            ResetConsoleColor();
+            printf(" | %d",daysPassedSinceLastUP[arrangedInOrderOfDays[i]]);
             ENDL;
         } else {
             // printf("%12s\t%u",localizedNames[arrangedInOrderOfDays[i]],CharMap[arrangedInOrderOfDays[i]].attrib);
@@ -64,7 +68,7 @@ int choiceOneCharacter4Test() {
             CLS;
             break;
         } else if (result < 0||result > charCount-1) {
-            printf("Invalid choice. Type -1 to go back. (0-%u): ",charCount-1);
+            printf("Invalid choice. Type -1 to go back. (0-%u): ",(unsigned int)charCount-1);
         } else { break; }
     } while (1);
     return result;

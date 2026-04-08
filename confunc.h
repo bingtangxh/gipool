@@ -44,7 +44,36 @@
 char putRightAlignFormat[PUT_RIGHT_ALIGN_STAR_CHARACTER_NAME_FORMAT_LENGTH]="";
 char putLeftAlignFormat[PUT_LEFT_ALIGN_STAR_CHARACTER_NAME_FORMAT_LENGTH]="";
 const char splitLine[]="-------------------------------------------------------------------------------------------------------";
+#ifdef _WIN32
+
 CONSOLE_SCREEN_BUFFER_INFO original;
+
+WORD visionColor[]={
+    FOREGROUND_BLUE |FOREGROUND_GREEN     |FOREGROUND_RED,           // 其他
+    FOREGROUND_RED                        |FOREGROUND_INTENSITY,     // 火元素
+    FOREGROUND_BLUE,                                                 // 水元素
+    FOREGROUND_BLUE |FOREGROUND_GREEN     |FOREGROUND_INTENSITY,     // 风元素
+    FOREGROUND_RED  |FOREGROUND_BLUE      |FOREGROUND_INTENSITY,     // 雷元素
+    FOREGROUND_GREEN                      |FOREGROUND_INTENSITY,     // 草元素
+    FOREGROUND_BLUE                       |FOREGROUND_INTENSITY,     // 冰元素
+    FOREGROUND_GREEN|FOREGROUND_RED       |FOREGROUND_INTENSITY,     // 岩元素
+    FOREGROUND_BLUE |FOREGROUND_GREEN     |FOREGROUND_RED            // 未知
+};
+#else
+
+uint8_t visionColor[]={
+    7,          // 其他
+    9,          // 火元素
+    45,          // 水元素
+    80,          // 风元素
+    93,          // 雷元素
+    46,          // 草元素
+    45,          // 冰元素
+    220,          // 岩元素
+    7           // 未知
+};
+
+#endif
 
 void initConsole();
 void putPool(_WishPool WishPool1);
@@ -57,6 +86,9 @@ void freeLocalizedNames();
 void printPoolLinkList(PoolLinkList current);
 int readIntInRange(int min,int max,const int* _default);
 void pause();
+_Bool SetConsoleColorByCharacter(_CharMap character);
+_Bool ResetConsoleColor();
+
 #ifdef _WIN32
 DWORD printW(const wchar_t*);
 #else
@@ -74,9 +106,6 @@ void initConsole() {
 
 void putPool(_WishPool WishPool1)
 {
-#ifdef _WIN32
-    HANDLE hConsole=GetStdHandle(STD_OUTPUT_HANDLE);
-#endif
     if (WishPool1.half>=10) { puts(splitLine); }
     size_t fiveCount=sizeof(WishPool1.up5)==0 ? 0 : (int) (sizeof(WishPool1.up5)/sizeof(WishPool1.up5[0]));
     for(size_t i=0; i<fiveCount; i++) {
@@ -91,25 +120,25 @@ void putPool(_WishPool WishPool1)
 #ifdef _MSC_VER
     strcpy_s(putRightAlignFormat,PUT_RIGHT_ALIGN_STAR_CHARACTER_NAME_FORMAT_LENGTH,"%");
     if (WishPool1.half<10){
-        sprintf_s(putRightAlignFormat+strlen(putRightAlignFormat),PUT_RIGHT_ALIGN_STAR_CHARACTER_NAME_FORMAT_LENGTH-strlen(putRightAlignFormat),"%u",strlen(localizedNames[longestChineseIndex]));
+        sprintf_s(putRightAlignFormat+strlen(putRightAlignFormat),PUT_RIGHT_ALIGN_STAR_CHARACTER_NAME_FORMAT_LENGTH-strlen(putRightAlignFormat),"%u",(unsigned int)strlen(localizedNames[longestChineseIndex]));
     }
     strcat_s(putRightAlignFormat,PUT_RIGHT_ALIGN_STAR_CHARACTER_NAME_FORMAT_LENGTH,"s ");
 
     if (WishPool1.half<10){
         strcpy_s(putLeftAlignFormat,PUT_LEFT_ALIGN_STAR_CHARACTER_NAME_FORMAT_LENGTH,"%-");
-        sprintf_s(putLeftAlignFormat+strlen(putLeftAlignFormat),PUT_LEFT_ALIGN_STAR_CHARACTER_NAME_FORMAT_LENGTH-strlen(putLeftAlignFormat),"%u",strlen(localizedNames[longestChineseIndex]));
+        sprintf_s(putLeftAlignFormat+strlen(putLeftAlignFormat),PUT_LEFT_ALIGN_STAR_CHARACTER_NAME_FORMAT_LENGTH-strlen(putLeftAlignFormat),"%u",(unsigned int)strlen(localizedNames[longestChineseIndex]));
         strcat_s(putLeftAlignFormat,PUT_LEFT_ALIGN_STAR_CHARACTER_NAME_FORMAT_LENGTH,"s ");
     }
 #else
-    strcat(putRightAlignFormat,"%");
+    strcpy(putRightAlignFormat,"%");
     if (WishPool1.half<10){
-        sprintf(putRightAlignFormat+strlen(putRightAlignFormat),"%u",strlen(localizedNames[longestChineseIndex]));
+        sprintf(putRightAlignFormat+strlen(putRightAlignFormat),"%u",(unsigned int)strlen(localizedNames[longestChineseIndex]));
     }
     strcat(putRightAlignFormat,"s ");
 
     if (WishPool1.half<10){
         strcpy(putLeftAlignFormat,"%-");
-        sprintf(putLeftAlignFormat+strlen(putLeftAlignFormat),"%u",strlen(localizedNames[longestChineseIndex]));
+        sprintf(putLeftAlignFormat+strlen(putLeftAlignFormat),"%u",(unsigned int)strlen(localizedNames[longestChineseIndex]));
         strcat(putLeftAlignFormat,"s ");
     }
 #endif
@@ -121,24 +150,16 @@ void putPool(_WishPool WishPool1)
     for (size_t i=0; i<fiveCount&&WishPool1.up5[i]!=0; i++)
     {
         //printW(CharMap[WishPool1.up5[i]].name_cn);
-#ifdef _WIN32
-        GetConsoleScreenBufferInfo(hConsole,&original);
-        CharMap[WishPool1.up5[i]].vision;
-        SetConsoleTextAttribute(hConsole,visionColor[CharMap[WishPool1.up5[i]].vision]);
-#else
-
-#endif
+        SetConsoleColorByCharacter(CharMap[WishPool1.up5[i]]);
         printf(putRightAlignFormat,localizedNames[WishPool1.up5[i]]==NULL ? "" : localizedNames[WishPool1.up5[i]]);
-#ifdef _WIN32
-        SetConsoleTextAttribute(hConsole,original.wAttributes);
-#else
-#endif
+        ResetConsoleColor();
         if (WishPool1.half<10) { printf("| "); }
     }
     for (size_t i=0; i<fourCount&&WishPool1.up4[i]!=0; i++)
     {
-        //printW(CharMap[WishPool1.up4[i]].name_cn);
+        SetConsoleColorByCharacter(CharMap[WishPool1.up4[i]]);
         printf(putLeftAlignFormat,localizedNames[WishPool1.up4[i]]==NULL ? "" : localizedNames[WishPool1.up4[i]]);
+        ResetConsoleColor();
     }
     ENDL;
     if (WishPool1.half>=10) { puts(splitLine); }
@@ -496,5 +517,27 @@ int printW(const wchar_t* wstr) {
 }
 #endif
 
-
+_Bool SetConsoleColorByCharacter(_CharMap character) {
+#ifdef _WIN32
+    HANDLE hConsole=GetStdHandle(STD_OUTPUT_HANDLE);
+    if (!GetConsoleScreenBufferInfo(hConsole,&original)) {
+        return 0;
+    }
+    SetConsoleTextAttribute(hConsole,visionColor[character.vision]);
+    return 1;
+#else
+    printf("\033[38;5;%um",visionColor[character.vision]);
 #endif
+}
+
+_Bool ResetConsoleColor() {
+#ifdef _WIN32
+    HANDLE hConsole=GetStdHandle(STD_OUTPUT_HANDLE);
+    SetConsoleTextAttribute(hConsole,original.wAttributes);
+    return 1;
+#else
+    printf("\033[0m");
+#endif
+}
+
+#endif   // #ifndef CONFUNC

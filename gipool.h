@@ -139,7 +139,7 @@ void initDynamicThings(void){
      getDaysPassedSinceLastUp();
     do { arrangedInOrderOfDays=(int*) malloc(charCount*sizeof(int)); } while (arrangedInOrderOfDays==NULL);
     for (size_t i=0; i<charCount; i++){
-        arrangedInOrderOfDays[i]=i;
+        arrangedInOrderOfDays[i]=(int)i;
     }
     arrangeByDaysPassedSinceLastUp();
     do { PoolLinkLists=(PoolLinkList*) malloc(sizeof(PoolLinkList)*charCount); } while (PoolLinkLists==NULL);
@@ -158,7 +158,7 @@ int findLongest(_CharMap CharMap1[]){
         currentLen=wcslen(CharMap1[i].name_cn);
         if (currentLen>maxLen)
         {
-            maxIndex=i;
+            maxIndex=(int)i;
             maxLen=currentLen;
         }
     }
@@ -172,7 +172,7 @@ int findLongestEnglish(_CharMap CharMap1[]){
         currentLen=strlen(CharMap1[i].name);
         if (currentLen>maxLen)
         {
-            maxIndex=i;
+            maxIndex=(int)i;
             maxLen=currentLen;
         }
     }
@@ -205,7 +205,7 @@ void getDaysPassedSinceLastUp(void){
             {
                 if ((CharMap[c].attrib==4 ? WishPool[p].up4[i] : WishPool[p].up5[i])==CharMap[c].id)
                 {
-                    lastPoolIndex=p;
+                    lastPoolIndex=(int)p;
                     goto FOUND;
                 }
             }
@@ -289,14 +289,15 @@ void arrangeByDaysPassedSinceLastUp() {
     // 这个是包装函数，在 initDynamicThings() 中调用  
     // 对 arrangedInOrderOfDays 进行快速排序
     // 排序依据是 daysPassedSinceLastUP[arrangedInOrderOfDays[i]] 降序
-    if (charCount>0) quickSort(daysPassedSinceLastUP,arrangedInOrderOfDays,0,charCount-1);
+    if (charCount>0) quickSort(daysPassedSinceLastUP,arrangedInOrderOfDays,0,(int)charCount-1);
 }
 
 void freeDynamicThings(void){
     PoolLinkList currentNode=NULL,currentNext=NULL;
     free(daysPassedSinceLastUP);
+    daysPassedSinceLastUP=NULL;
     free(arrangedInOrderOfDays);
-    daysPassedSinceLastUP=arrangedInOrderOfDays=NULL;
+    arrangedInOrderOfDays=NULL;
     if (PoolLinkLists!=NULL)
     {
         for (size_t i=0; i<charCount; i++) {
