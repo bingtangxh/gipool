@@ -129,7 +129,7 @@ _CharMap CharMap[]={
     ,{16,L"琴","Jean",ANEMO,3}
     ,{17,L"迪卢克","Diluc",PYRO,3}
     ,{18,L"七七","Qiqi",CRYO,3}
-    ,{19,L"莫娜","Mona",HYDRO,3}
+    ,{19,L"莫娜","Mona",HYDRO,3} /*阿斯托洛吉斯·莫娜·梅姬斯图斯*/ /*Astrologist Mona Megistus*/
     ,{20,L"刻晴","Keqing",ELECTRO,MAKE_ROLE_META_P(1,3,2)}
     ,{21,L"温迪","Venti",ANEMO,5}
     ,{22,L"可莉","Klee",PYRO,5}

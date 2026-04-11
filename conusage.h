@@ -31,13 +31,8 @@ void printDaysofAllLimited5StarCharacters() {
                 )||(
                     CharMap[arrangedInOrderOfDays[i]].attrib==5
                     ))) {
-#ifndef _MSC_VER
-            for(size_t j=0;j<localizedVisualLen(CharMap[longestChineseIndex].name_cn)-localizedVisualLen(CharMap[arrangedInOrderOfDays[i]].name_cn);j++){
-                SPACE;
-            }
-#endif
-            SetConsoleColorByCharacter(CharMap[arrangedInOrderOfDays[i]]);
-            for (size_t j=0; j<localizedVisualLen(CharMap[longestChineseIndex].name_cn)-localizedVisualLen(CharMap[arrangedInOrderOfDays[i]].name_cn); j++) { SPACE; }
+            for (size_t j=0; j<localizedVisualLen(CharMap[longestChineseIndex].name_cn)-localizedVisualLen(CharMap[arrangedInOrderOfDays[i]].name_cn); j++){ SPACE; }
+            SetConsoleColorByCharacter(CharMap[arrangedInOrderOfDays[i]]);  
             printf("%s",localizedNames[arrangedInOrderOfDays[i]]);
             ResetConsoleColor();
             printf(" | %d",daysPassedSinceLastUP[arrangedInOrderOfDays[i]]);

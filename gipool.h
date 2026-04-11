@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #ifndef GIPOOL
 #define GIPOOL
 #include <errno.h>

@@ -8,9 +8,6 @@
 #include "localize.h"
 #endif
 
-#define PUT_RIGHT_ALIGN_STAR_CHARACTER_NAME_FORMAT_LENGTH 10
-#define PUT_LEFT_ALIGN_STAR_CHARACTER_NAME_FORMAT_LENGTH  11
-
 #ifdef _WIN32
 #include <conio.h>
 #include <minwindef.h>
@@ -52,8 +49,8 @@ const wchar_t singleEdge[]=L"-";
 const wchar_t doubleEdge[]=L"=";
 #endif
 
-
 const char splitLine[]="-------------------------------------------------------------------------------------------------------";
+
 #ifdef _WIN32
 
 CONSOLE_SCREEN_BUFFER_INFO original;
@@ -73,11 +70,11 @@ WORD visionColor[]={
 uint8_t visionColor[]={
     7,          // 其他
     9,          // 火元素
-    45,          // 水元素
-    80,          // 风元素
-    93,          // 雷元素
+    33,          // 水元素
+    43,          // 风元素
+    99,          // 雷元素
     46,          // 草元素
-    45,          // 冰元素
+    159,          // 冰元素
     220,          // 岩元素
     7           // 未知
 };

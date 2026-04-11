@@ -229,7 +229,7 @@ int choiceOneCharacter() {
                 CLS;
                 for (size_t i=0; i<charCount; i++) {
                     if (CharMap[i].vision==visionSelection) {
-                        printf("%3u | ",i);
+                        printf("%3zu | ",i);
                         for (size_t j=0; j<localizedVisualLen(CharMap[longestChineseIndex].name_cn)-localizedVisualLen(CharMap[i].name_cn); j++) { SPACE; }
                         printf("%s | %s",localizedNames[i],CharMap[i].name);
 
