@@ -59,18 +59,17 @@ const char splitLine[]="--------------------------------------------------------
 CONSOLE_SCREEN_BUFFER_INFO original;
 
 WORD visionColor[]={
-    FOREGROUND_BLUE |FOREGROUND_GREEN     |FOREGROUND_RED,           // 其他
-    FOREGROUND_RED                        |FOREGROUND_INTENSITY,     // 火元素
-    FOREGROUND_BLUE,                                                 // 水元素
-    FOREGROUND_BLUE |FOREGROUND_GREEN     |FOREGROUND_INTENSITY,     // 风元素
-    FOREGROUND_RED  |FOREGROUND_BLUE      |FOREGROUND_INTENSITY,     // 雷元素
-    FOREGROUND_GREEN                      |FOREGROUND_INTENSITY,     // 草元素
-    FOREGROUND_BLUE                       |FOREGROUND_INTENSITY,     // 冰元素
-    FOREGROUND_GREEN|FOREGROUND_RED       |FOREGROUND_INTENSITY,     // 岩元素
-    FOREGROUND_BLUE |FOREGROUND_GREEN     |FOREGROUND_RED            // 未知
+    FOREGROUND_BLUE |FOREGROUND_GREEN     |FOREGROUND_RED,                // 其他
+    FOREGROUND_RED                        |FOREGROUND_INTENSITY,          // 火元素
+    FOREGROUND_BLUE                       |FOREGROUND_INTENSITY,          // 水元素
+    FOREGROUND_BLUE |FOREGROUND_GREEN     |FOREGROUND_INTENSITY,          // 风元素
+    FOREGROUND_RED  |FOREGROUND_BLUE      |FOREGROUND_INTENSITY,          // 雷元素
+    FOREGROUND_GREEN                      |FOREGROUND_INTENSITY,          // 草元素
+    FOREGROUND_BLUE|FOREGROUND_GREEN|FOREGROUND_RED|FOREGROUND_INTENSITY, // 冰元素
+    FOREGROUND_GREEN|FOREGROUND_RED       |FOREGROUND_INTENSITY,          // 岩元素
+    FOREGROUND_BLUE |FOREGROUND_GREEN     |FOREGROUND_RED                 // 未知
 };
 #else
-
 uint8_t visionColor[]={
     7,          // 其他
     9,          // 火元素
@@ -82,7 +81,6 @@ uint8_t visionColor[]={
     220,          // 岩元素
     7           // 未知
 };
-
 #endif
 
 void initConsole();
@@ -188,7 +186,7 @@ const int typeMenu(const wchar_t* menuItems[],int itemCount,const wchar_t* title
 
         char* localizedTitle=localize(title);
         if (localizedTitle!=NULL) {
-            if (localizedVisualLen(title)-4>maxItemLength) {
+            if ((localizedVisualLen(title)>=4)&&localizedVisualLen(title)-4>maxItemLength) {
                 maxItemLength=localizedVisualLen(title)-4;
             }
             titleLineSpaces=maxItemLength+5-localizedVisualLen(title)+longestIndexLength;
@@ -281,7 +279,7 @@ const int choiceMenu(const wchar_t* menuItems[],int itemCount,const wchar_t* tit
 
         char* localizedTitle=localize(title);
         if (localizedTitle!=NULL) {
-            if (localizedVisualLen(title)-4>maxItemLength) {
+            if ((localizedVisualLen(title)>=4)&&localizedVisualLen(title)-4>maxItemLength) {
                 maxItemLength=localizedVisualLen(title)-4;
             }
             titleLineSpaces=maxItemLength+5-localizedVisualLen(title)+longestIndexLength;

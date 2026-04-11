@@ -6,7 +6,7 @@
 #endif
 
 size_t localizedMemLen(const wchar_t*);
-int localizedVisualLen(const wchar_t*);
+size_t localizedVisualLen(const wchar_t*);
 char* localize(const wchar_t*);
 
 size_t localizedMemLen(const wchar_t* source) {
@@ -20,7 +20,7 @@ size_t localizedMemLen(const wchar_t* source) {
 #endif
 }
 
-int localizedVisualLen(const wchar_t* source) {
+size_t localizedVisualLen(const wchar_t* source) {
     // 该函数返回字符串的可视长度（不包括最后的 '\0' 字符），返回0表示出错。
 #ifdef _WIN32
     LPWORD widthArray=(LPWORD)malloc(sizeof(WORD)*(wcslen(source))+1);
