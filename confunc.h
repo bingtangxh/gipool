@@ -44,8 +44,15 @@
 #define GETNUM(num) scanf("%d",&num); clearInputBuffer();
 #endif
 
-char putRightAlignFormat[PUT_RIGHT_ALIGN_STAR_CHARACTER_NAME_FORMAT_LENGTH]="";
-char putLeftAlignFormat[PUT_LEFT_ALIGN_STAR_CHARACTER_NAME_FORMAT_LENGTH]="";
+#if 1
+const wchar_t singleEdge[]=L"─";
+const wchar_t doubleEdge[]=L"═";
+#else
+const wchar_t singleEdge[]=L"-";
+const wchar_t doubleEdge[]=L"=";
+#endif
+
+
 const char splitLine[]="-------------------------------------------------------------------------------------------------------";
 #ifdef _WIN32
 
@@ -120,65 +127,33 @@ void putPool(_WishPool WishPool1)
     size_t fourCount=sizeof(WishPool1.up4)==0 ? 0 : (int) (sizeof(WishPool1.up4)/sizeof(WishPool1.up4[0]));
     printf("%hu.%hu.%hu\t%u.%hu.%hu\t%u.%hu.%hu\t | ",WishPool1.major,WishPool1.minor,WishPool1.half,WishPool1.startY,WishPool1.startM,WishPool1.startD,WishPool1.endY,WishPool1.endM,WishPool1.endD);
 
-#ifdef _MSC_VER
-    strcpy_s(putRightAlignFormat,PUT_RIGHT_ALIGN_STAR_CHARACTER_NAME_FORMAT_LENGTH,"%");
-    if (WishPool1.half<10){
-        sprintf_s(putRightAlignFormat+strlen(putRightAlignFormat),PUT_RIGHT_ALIGN_STAR_CHARACTER_NAME_FORMAT_LENGTH-strlen(putRightAlignFormat),"%d", localizedVisualLen(CharMap[longestChineseIndex].name_cn));
-        localizedVisualLen(CharMap[longestChineseIndex].name_cn);
-    }
-    strcat_s(putRightAlignFormat,PUT_RIGHT_ALIGN_STAR_CHARACTER_NAME_FORMAT_LENGTH,"s ");
-
-    if (WishPool1.half<10){
-        strcpy_s(putLeftAlignFormat,PUT_LEFT_ALIGN_STAR_CHARACTER_NAME_FORMAT_LENGTH,"%-");
-        sprintf_s(putLeftAlignFormat+strlen(putLeftAlignFormat),PUT_LEFT_ALIGN_STAR_CHARACTER_NAME_FORMAT_LENGTH-strlen(putLeftAlignFormat),"%d",localizedVisualLen(CharMap[longestChineseIndex].name_cn));
-        strcat_s(putLeftAlignFormat,PUT_LEFT_ALIGN_STAR_CHARACTER_NAME_FORMAT_LENGTH,"s ");
-    }
-#else
-    strcpy(putRightAlignFormat,"%");
-    if (WishPool1.half<10&&0){
-        sprintf(putRightAlignFormat+strlen(putRightAlignFormat),"%d",localizedVisualLen(CharMap[longestChineseIndex].name_cn));
-    }
-    strcat(putRightAlignFormat,"s ");
-
-    if (WishPool1.half<10){
-        strcpy(putLeftAlignFormat,"%s");
-        // sprintf(putLeftAlignFormat+strlen(putLeftAlignFormat),"%d",localizedVisualLen(CharMap[longestChineseIndex].name_cn));
-        // strcat(putLeftAlignFormat,"s ");
-    }
-#endif
-
     for (size_t i=0; i<2-fiveCount&&WishPool1.half<10; i++){
-#ifndef _MSC_VER
-        for(size_t j=0;j<localizedVisualLen(CharMap[longestChineseIndex].name_cn);j++){
+        for(size_t j=0;j<=localizedVisualLen(CharMap[longestChineseIndex].name_cn);j++){
             SPACE;
         }
-#endif
-        printf(putRightAlignFormat,"");
         if (WishPool1.half<10) { printf("| "); }
     }
     for (size_t i=0; i<fiveCount&&WishPool1.up5[i]!=0; i++)
     {
-#ifndef _MSC_VER
         for(size_t j=0;
             (j<localizedVisualLen(CharMap[longestChineseIndex].name_cn)-localizedVisualLen(CharMap[WishPool1.up5[i]].name_cn))&&WishPool1.half<10;
         j++){ SPACE; }
-#endif
         //printW(CharMap[WishPool1.up5[i]].name_cn);
         SetConsoleColorByCharacter(CharMap[WishPool1.up5[i]]);
-        printf(putRightAlignFormat,localizedNames[WishPool1.up5[i]]==NULL ? "" : localizedNames[WishPool1.up5[i]]);
+        printf("%s ",localizedNames[WishPool1.up5[i]]==NULL ? "" : localizedNames[WishPool1.up5[i]]);
         ResetConsoleColor();
         if (WishPool1.half<10) { printf("| "); }
     }
     for (size_t i=0; i<fourCount&&WishPool1.up4[i]!=0; i++)
     {
         SetConsoleColorByCharacter(CharMap[WishPool1.up4[i]]);
-        printf(putLeftAlignFormat,localizedNames[WishPool1.up4[i]]==NULL ? "" : localizedNames[WishPool1.up4[i]]);
+        printf("%s ",localizedNames[WishPool1.up4[i]]==NULL ? "" : localizedNames[WishPool1.up4[i]]);
         ResetConsoleColor();
-#ifndef _MSC_VER
+
         for(size_t j=0;j<localizedVisualLen(CharMap[longestChineseIndex].name_cn)-localizedVisualLen(CharMap[WishPool1.up4[i]].name_cn);j++){
             SPACE;
         }
-#endif
+
     }
     ENDL;
     if (WishPool1.half>=10) { puts(splitLine); }
@@ -218,7 +193,7 @@ const int typeMenu(const wchar_t* menuItems[],int itemCount,const wchar_t* title
             }
             titleLineSpaces=maxItemLength+5-localizedVisualLen(title)+longestIndexLength;
             printW(L"╔");
-            for (size_t i=0; i<longestIndexLength+maxItemLength+7; i++) { printW(L"═"); }
+            for (size_t i=0; i<longestIndexLength+maxItemLength+7; i++) { printW(doubleEdge); }
             printW(L"╗"); ENDL;
 
             printW(L"║"); SPACE;
@@ -228,15 +203,15 @@ const int typeMenu(const wchar_t* menuItems[],int itemCount,const wchar_t* title
             SPACE;
             printW(L"║"); ENDL;
             printW(L"╟");
-            for (size_t i=0; i<longestIndexLength+4; i++) { printW(L"─"); }
+            for (size_t i=0; i<longestIndexLength+4; i++) { printW(singleEdge); }
             printW(L"┬");
-            for (size_t i=0; i<maxItemLength+2; i++) { printW(L"─"); }
+            for (size_t i=0; i<maxItemLength+2; i++) { printW(singleEdge); }
             printW(L"╢"); ENDL;
         } else {
             printW(L"╔");
-            for (size_t i=0; i<longestIndexLength+4; i++) { printW(L"═"); }
+            for (size_t i=0; i<longestIndexLength+4; i++) { printW(doubleEdge); }
             printW(L"╤");
-            for (size_t i=0; i<maxItemLength+2; i++) { printW(L"═"); }
+            for (size_t i=0; i<maxItemLength+2; i++) { printW(doubleEdge); }
             printW(L"╗"); ENDL;
         }
         for (int i=0,currentIndexColLen=0; i<itemCount; i++) {
@@ -255,9 +230,9 @@ const int typeMenu(const wchar_t* menuItems[],int itemCount,const wchar_t* title
             } else ENDL;
         }
         printW(L"╚");
-        for (size_t i=0; i<longestIndexLength+4; i++) { printW(L"═"); }
+        for (size_t i=0; i<longestIndexLength+4; i++) { printW(doubleEdge); }
         printW(L"╧");
-        for (size_t i=0; i<maxItemLength+2; i++) { printW(L"═"); }
+        for (size_t i=0; i<maxItemLength+2; i++) { printW(doubleEdge); }
         printW(L"╝"); ENDL;
         ENDL;
         printf("Please select an option (0-%d) and press ENTER: ",itemCount-1);
@@ -311,7 +286,8 @@ const int choiceMenu(const wchar_t* menuItems[],int itemCount,const wchar_t* tit
             }
             titleLineSpaces=maxItemLength+5-localizedVisualLen(title)+longestIndexLength;
             printW(L"╔");
-            for (size_t i=0; i<longestIndexLength+maxItemLength+7; i++) { printW(L"═"); }
+            for (size_t i=0; i<longestIndexLength+maxItemLength+7; i++) { printW(doubleEdge); }
+
             printW(L"╗"); ENDL;
 
             printW(L"║"); SPACE;
@@ -321,15 +297,15 @@ const int choiceMenu(const wchar_t* menuItems[],int itemCount,const wchar_t* tit
             SPACE;
             printW(L"║"); ENDL;
             printW(L"╟");
-            for (size_t i=0; i<longestIndexLength+4; i++) { printW(L"─"); }
+            for (size_t i=0; i<longestIndexLength+4; i++) { printW(singleEdge); }
             printW(L"┬");
-            for (size_t i=0; i<maxItemLength+2; i++) { printW(L"─"); }
+            for (size_t i=0; i<maxItemLength+2; i++) { printW(singleEdge); }
             printW(L"╢"); ENDL;
         } else {
             printW(L"╔");
-            for (size_t i=0; i<longestIndexLength+4; i++) { printW(L"═"); }
+            for (size_t i=0; i<longestIndexLength+4; i++) { printW(doubleEdge); }
             printW(L"╤");
-            for (size_t i=0; i<maxItemLength+2; i++) { printW(L"═"); }
+            for (size_t i=0; i<maxItemLength+2; i++) { printW(doubleEdge); }
             printW(L"╗"); ENDL;
         }
         for (int i=0,currentIndexColLen=0; i<itemCount; i++) {
@@ -360,9 +336,9 @@ const int choiceMenu(const wchar_t* menuItems[],int itemCount,const wchar_t* tit
             }
         }
         printW(L"╚");
-        for (size_t i=0; i<longestIndexLength+4; i++) { printW(L"═"); }
+        for (size_t i=0; i<longestIndexLength+4; i++) { printW(doubleEdge); }
         printW(L"╧");
-        for (size_t i=0; i<maxItemLength+2; i++) { printW(L"═"); }
+        for (size_t i=0; i<maxItemLength+2; i++) { printW(doubleEdge); }
         printW(L"╝"); ENDL;
         ENDL;
         printf(

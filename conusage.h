@@ -9,9 +9,6 @@
 #include "conmenus.h"
 #endif
 
-#define PUT_ALL_CHARACTERS_DAYS_SINCE_LAST_UP_FORMAT_LENGTH 10
-char putAllCharactersDaysSinceLastUpFormat[PUT_ALL_CHARACTERS_DAYS_SINCE_LAST_UP_FORMAT_LENGTH]="";
-
 void printAllPools();
 void printDaysofAllLimited5StarCharacters();
 int choiceOneCharacter4Test();
@@ -24,13 +21,7 @@ void printAllPools() {
 }
 
 void printDaysofAllLimited5StarCharacters() {
-#ifdef _MSC_VER
-    strcpy_s(putAllCharactersDaysSinceLastUpFormat,PUT_ALL_CHARACTERS_DAYS_SINCE_LAST_UP_FORMAT_LENGTH,"%");
-    sprintf_s(putAllCharactersDaysSinceLastUpFormat+strlen(putAllCharactersDaysSinceLastUpFormat),PUT_ALL_CHARACTERS_DAYS_SINCE_LAST_UP_FORMAT_LENGTH-strlen(putAllCharactersDaysSinceLastUpFormat),"%d",localizedVisualLen(CharMap[longestChineseIndex].name_cn));
-    strcat_s(putAllCharactersDaysSinceLastUpFormat,PUT_ALL_CHARACTERS_DAYS_SINCE_LAST_UP_FORMAT_LENGTH,"s");
-#else
-    strcpy(putAllCharactersDaysSinceLastUpFormat,"%s");
-#endif
+
     CLS;
     for (size_t i=0; i<charCount; i++) {
         if ((
@@ -46,7 +37,8 @@ void printDaysofAllLimited5StarCharacters() {
             }
 #endif
             SetConsoleColorByCharacter(CharMap[arrangedInOrderOfDays[i]]);
-            printf(putAllCharactersDaysSinceLastUpFormat,localizedNames[arrangedInOrderOfDays[i]]);
+            for (size_t j=0; j<localizedVisualLen(CharMap[longestChineseIndex].name_cn)-localizedVisualLen(CharMap[arrangedInOrderOfDays[i]].name_cn); j++) { SPACE; }
+            printf("%s",localizedNames[arrangedInOrderOfDays[i]]);
             ResetConsoleColor();
             printf(" | %d",daysPassedSinceLastUP[arrangedInOrderOfDays[i]]);
             ENDL;
