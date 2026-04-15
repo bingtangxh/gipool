@@ -224,8 +224,10 @@ _CharMap CharMap[]={
     ,{111,L"哥伦比娅"/*"哥伦比娅·希珀塞莱尼娅"*/,
            "Columbina"/*"Columbina Hyposelenia"*/,HYDRO,5}
     ,{112,L"法尔伽","Varka",ANEMO,5}
-    ,{113,L"洛恩","Lohen",VISION_UNKNOWN,5}
+    ,{113,L"洛恩","Lohen",CRYO,5}
     ,{114,L"莉奈娅","Linnea",GEO,5}
+    ,{115,L"妮可","Nicole",PYRO,5}
+    ,{116,L"布伦妮","Prune",ANEMO,6}
 };
 
 _WishPool WishPool[]={
