@@ -38,7 +38,6 @@ jobs:
         with:
           arch: ${{ matrix.msvc_arch }}
           sdk:  ${{ matrix.sdk }}
-          toolset: 143
 
       - name: Compile resources
         run: |
