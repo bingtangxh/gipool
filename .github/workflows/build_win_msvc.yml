@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: windows-2022
     strategy:
       matrix:
         include:
@@ -21,14 +21,9 @@ jobs:
             msvc_arch: x64
           - arch: ARM64
             msvc_arch: x64_ARM64
-          # - arch: ARM
-          #   msvc_arch: x64_ARM
-          #   sdk: 10.0.18362.0
-          #   vsversion: 2022
-            # x64_ARM results in following error:
-            # C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt\corecrt.h(205):
-            # fatal error C1189: 
-            # #error:  Compiling Desktop applications for the ARM platform is not supported.
+          - arch: ARM
+            msvc_arch: x64_ARM
+            sdk: 10.0.18362.0
     steps:
       - uses: actions/checkout@v4
 
@@ -43,6 +38,7 @@ jobs:
         with:
           arch: ${{ matrix.msvc_arch }}
           sdk:  ${{ matrix.sdk }}
+          toolset: 143
 
       - name: Compile resources
         run: |
@@ -102,7 +98,7 @@ jobs:
             /td sha256 `
             "$exe"
 
-          # 只要“有签名”即可：用 Get-AuthenticodeSignature 看是否 Signed
+          # 只要"有签名"即可：用 Get-AuthenticodeSignature 看是否 Signed
           $sig = Get-AuthenticodeSignature -FilePath $exe
           Write-Host "Signature status: $($sig.Status)"
           if ($sig.Status -eq 'NotSigned') { throw "File is not signed" }
