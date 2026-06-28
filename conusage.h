@@ -57,7 +57,7 @@ int choiceOneCharacter4Test() {
         if (result==-1) {
             CLS;
             break;
-        } else if (result < 0||result > charCount-1) {
+        } else if (result < 0||(unsigned int)result > charCount-1) {
             printf("Invalid choice. Type -1 to go back. (0-%u): ",(unsigned int)charCount-1);
         } else { break; }
     } while (1);

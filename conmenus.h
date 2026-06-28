@@ -157,7 +157,7 @@ int choiceOneCharacter() {
                 } while (1);
                 CLS;
                 for (size_t i=0; i<charCount; i++) {
-                    if (wcslen(CharMap[i].name_cn)==length) {
+                    if ((int) (wcslen(CharMap[i].name_cn)&31)==length) {
                         SetConsoleColorByCharacter(CharMap[i]);
                         printf("%u\t%s\t%s",(unsigned int)i,localizedNames[i],CharMap[i].name);
                         ResetConsoleColor();
@@ -184,7 +184,7 @@ int choiceOneCharacter() {
                 } while (1);
                 CLS;
                 for (size_t i=0; i<charCount; i++) {
-                    if (strlen(CharMap[i].name)==length) {
+                    if ((int) (strlen(CharMap[i].name)&63)==length) {
                         SetConsoleColorByCharacter(CharMap[i]);
                         printf("%u\t%s\t%s",(unsigned int)i,CharMap[i].name,localizedNames[i]);
                         ResetConsoleColor();
