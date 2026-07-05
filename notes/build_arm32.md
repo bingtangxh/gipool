@@ -1,10 +1,12 @@
 # 为啥 Windows ARM32 的可执行文件只能手动编译上传
 
-没办法，Windows ARM32 的没法用 GitHub Actions 编译，具体原因就是那句
+Windows ARM32 的目前还可以 GitHub Actions 编译，之前因为会报错
 
 `Compiling Desktop applications for the ARM platform is not supported.`
 
-在给人使绊子。
+无法编译，现在有了仓库里的两个 `*.props` 文件，就可以编译了。
+
+但是 Visual Studio 2026 直接不支持 ARM32 了， windows-latest 已经带的是 VS2026 了，随着时间的推移，最后一个能用 VS2022 ARM32 的镜像 windows-2022 迟早下架，那时候就编译不出 ARM32 的程序了。
 
 本地手动编译上传的话，倒是可以直接用管理员身份开一个文本编辑器，将这个文件：
 
