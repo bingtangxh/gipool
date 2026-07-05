@@ -55,7 +55,19 @@ gipool_*/
 Debug/
 Release/
 .vs/
+.idea/
 a.out
+
+# CMake build directories and files
+build/
+cmake_build/
+cmake-build-*/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+CTestTestfile.cmake
+DartConfiguration.tcl
+compile_commands.json
 
 # other
 *.zip
