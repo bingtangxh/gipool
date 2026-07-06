@@ -458,23 +458,24 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="confunc.h" />
-    <ClInclude Include="conmenus.h" />
-    <ClInclude Include="conusage.h" />
-    <ClInclude Include="cynojokes.h" />
-    <ClInclude Include="giplinfo.h" />
     <ClInclude Include="gipool.h" />
-    <ClInclude Include="localize.h" />
     <ClInclude Include="resource.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="gipool.c" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="gipool.rc" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="VentiSleep.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="confunc.c" />
+    <ClCompile Include="conmenus.c" />
+    <ClCompile Include="conusage.c" />
+    <ClCompile Include="cynojokes.c" />
+    <ClCompile Include="giplcore.c" />
+    <ClCompile Include="gipldata.c" />
+    <ClCompile Include="gipool.c" />
+    <ClCompile Include="localize.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

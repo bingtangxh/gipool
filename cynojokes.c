@@ -1,7 +1,6 @@
-#ifndef CYNOJOKES
-#define CYNOJOKES
-#include "confunc.h"
-const wchar_t *cynojokes[]=
+#include "gipool.h"
+
+static const wchar_t* cynojokes[]=
 {
      L"提瓦特哪个国家的建筑最不牢固？\0须弥，因为须弥墙危（须弥蔷薇）"
     ,L"夜兰手镯摔坏了应该找谁修？\0找琴团长，因为琴能补镯（勤能补拙）"
@@ -54,20 +53,18 @@ const wchar_t *cynojokes[]=
 int cynoJoke(void)
 {
     int index=0,current;
-    const int jokeCount=(int) (sizeof(cynojokes)/sizeof(cynojokes[0]));
-    srand((unsigned int) time(NULL));
-    while (1)
-    {
-        const wchar_t *joke;
-        const wchar_t *secondPart;
+    const int jokeCount=(int)(sizeof(cynojokes)/sizeof(cynojokes[0]));
+    srand((unsigned int)time(NULL));
+    while(1) {
+        const wchar_t* joke;
+        const wchar_t* secondPart;
         CLS;
         index=rand()%jokeCount;
         joke=cynojokes[index];
         putws(joke);
         ENDL;
         secondPart=joke+wcslen(joke)+1;
-        if (*secondPart!=L'\0')
-        {
+        if(*secondPart!=L'\0') {
             puts(
 #ifdef _WIN32
                 "Press any key to see the answer..."
@@ -91,15 +88,14 @@ int cynoJoke(void)
         );
         ENDL;
         current=getch();
-        if (
-            current==EOF||
+        if(current==EOF||
 #ifdef _WIN32
             current==' '||
 #endif
-            current=='\r'||current=='\n'
-        ) continue;
-        else break;
+            current=='\r'||current=='\n') {
+            continue;
+        }
+        break;
     }
     return 0;
 }
-#endif

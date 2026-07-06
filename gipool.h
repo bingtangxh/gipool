@@ -1,41 +1,178 @@
-﻿#pragma once
-#ifndef GIPOOL
-#define GIPOOL
+#pragma once
+
+#ifndef GIPOOL_H
+#define GIPOOL_H
+
+#ifndef _WIN32
+#define _XOPEN_SOURCE 700
+#endif
+
 #include <errno.h>
 #include <limits.h>
+#include <locale.h>
 #include <stdbool.h>
+#include <stddef.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-
-#ifndef _WIN32
-#include <stddef.h>
 #include <wchar.h>
+
+#ifdef _WIN32
+#include <conio.h>
+#include <windows.h>
 #endif
 
-#include "giplinfo.h"
-
 #define DATE_LENGTH 12
-#define ARRAY_SIZE(arr)                 \
-    (                                   \
-        sizeof(arr)==0?0:               \
-        sizeof(arr)/sizeof((arr)[0])    \
-    )
+#define ARRAY_SIZE(arr) (sizeof(arr) == 0 ? 0 : sizeof(arr) / sizeof((arr)[0]))
 
-PoolLinkList* PoolLinkLists=NULL;
-size_t charCount=0,poolCount=0,longestChineseIndex=0,longestChineseNameLength=0,longestEnglishIndex=0,longestEnglishNameLength=0;
-int ending='\0';
-int* daysPassedSinceLastUP=NULL;
-int* arrangedInOrderOfDays=NULL;
-char** localizedNames=NULL;
-static const char* month_table[]={
-    "Jan","Feb","Mar","Apr","May","Jun",
-    "Jul","Aug","Sep","Oct","Nov","Dec"
-};
-const int maxCharactersInCharPool=2;
-_Bool convertCompileTime(char* date);
+#ifdef _WIN32
+#define CLS system("cls")
+#define ENDL putchar('\n')
+#define putws(wstr) printW(wstr); putwchar(L'\n')
+#ifdef _MSC_VER
+#define PAUSE ending = _getch()
+#define getch() _getch()
+#define getche() _getche()
+#else
+#define PAUSE ending = getch()
+#endif
+#else
+#define CLS system("clear")
+#define ENDL putchar('\n')
+#define putws(wstr) printW(wstr); putwchar(L'\r'); putwchar(L'\n')
+#define getche() \
+    ending = getchar(); \
+    if (ending != EOF && ending != '\0' && ending != '\n') { clearInputBuffer(); }
+#define getch() \
+    ending = getchar(); \
+    if (ending != EOF && ending != '\0' && ending != '\n') { clearInputBuffer(); }
+#define PAUSE \
+    ending = getchar(); \
+    if (ending != EOF && ending != '\0' && ending != '\n') { clearInputBuffer(); }
+#endif
+
+#define SPACE putchar(' ')
+
+#ifdef _MSC_VER
+#define GETNUM(num) scanf_s("%d", &(num)); clearInputBuffer()
+#else
+#define GETNUM(num) scanf("%d", &(num)); clearInputBuffer()
+#endif
+
+typedef uint32_t RoleMeta;
+
+typedef enum vision {
+    VISION_OTHER,
+    PYRO,
+    HYDRO,
+    ANEMO,
+    ELECTRO,
+    DENDRO,
+    CRYO,
+    GEO,
+    VISION_UNKNOWN
+} Vision;
+
+typedef enum roleType {
+    ROLE_TYPE_TRAVELER_AETHER,
+    ROLE_TYPE_TRAVELER_LUMINE,
+    ROLE_TYPE_COLLAB,
+    ROLE_TYPE_FOUR_STAR=4,
+    ROLE_TYPE_LIMITED_FIVE_STAR,
+    ROLE_TYPE_UNKNOWN,
+    ROLE_TYPE_EXCLUDED=256
+} RoleType;
+
+#define ENCODE_POOL_VERSION_FOR_PERMANENT_5_STAR(major, minor, half) \
+    (((major) << 6) | (((minor) & 0xF) << 2) | ((half) & 0x3))
+
+#define MAKE_ROLE_META_P(major, minor, half) \
+    ((ENCODE_POOL_VERSION_FOR_PERMANENT_5_STAR((major), (minor), (half)) << 3) | 3)
+
+#define GET_ROLE_TYPE(meta) ((meta) & 0x7)
+#define GET_MAJOR_P(meta) (((meta) >> 9) & 0xFF)
+#define GET_MINOR_P(meta) (((meta) >> 5) & 0x0F)
+#define GET_HALF_P(meta) (((meta) >> 3) & 0x03)
+
+#define ENCODE_POOL_INFO_LL(major, minor, half) \
+    (((major) << 24) | ((minor) << 16) | ((half) << 8))
+
+#define GET_MAJOR_LL(meta) (((meta) >> 24) & 0xFF)
+#define GET_MINOR_LL(meta) (((meta) >> 16) & 0xFF)
+#define GET_HALF_LL(meta) (((meta) >> 8) & 0xFF)
+
+typedef struct _characterMap {
+    const unsigned int id;
+    const wchar_t name_cn[20];
+    const char name[40];
+    const uint8_t vision;
+    const uint32_t attrib;
+} _CharMap;
+
+typedef struct _weaponMap {
+    const unsigned int id;
+    const wchar_t name_cn[20];
+    const char name[40];
+    const unsigned int stars;
+    const uint8_t type;
+} _WeaponMap;
+
+typedef struct _wishPool {
+    unsigned int up5[24];
+    unsigned int up4[24];
+    unsigned int weapon[24];
+    uint8_t major;
+    uint8_t minor;
+    uint8_t half;
+    uint16_t startY;
+    uint8_t startM;
+    uint8_t startD;
+    uint16_t endY;
+    uint8_t endM;
+    uint8_t endD;
+} _WishPool;
+
+typedef struct _poolNode {
+    uint8_t major;
+    uint8_t minor;
+    uint8_t half;
+    struct _poolNode* next;
+} _PoolNode,*PoolLinkList,**PoolLinkListArray;
+
+extern _CharMap CharMap[118];
+extern _WishPool WishPool[109];
+
+extern PoolLinkList* PoolLinkLists;
+extern size_t charCount;
+extern size_t poolCount;
+extern size_t longestChineseIndex;
+extern size_t longestChineseNameLength;
+extern size_t longestEnglishIndex;
+extern size_t longestEnglishNameLength;
+extern int ending;
+extern int* daysPassedSinceLastUP;
+extern int* arrangedInOrderOfDays;
+extern char** localizedNames;
+extern const int maxCharactersInCharPool;
+
+extern const wchar_t singleEdge[];
+extern const wchar_t doubleEdge[];
+extern const char splitLine[];
+
+#ifdef _WIN32
+extern CONSOLE_SCREEN_BUFFER_INFO original;
+extern WORD visionColor[];
+#else
+extern uint8_t visionColor[];
+#endif
+
+void printTestInfo(void);
+void beforeTerminate(void);
+
 unsigned short shortmonth_to_number(const char* mon);
+_Bool convertCompileTime(char* date);
 int checkIntegrity(void);
 _Bool isPoolInOrder(int i);
 void initDynamicThings(void);
@@ -43,378 +180,49 @@ int findLongest(_CharMap CharMap1[]);
 int findLongestEnglish(_CharMap CharMap1[]);
 void getDaysPassedSinceLastUp(void);
 time_t makeTimeFromYMDHMS(uint16_t y,uint8_t m,uint8_t d,int hour,int min,int sec);
-int daysSinceSinglePoolEnds(const _WishPool pool);
+int daysSinceSinglePoolEnds(_WishPool pool);
 void swap(int* a,int* b);
 int partition(int days[],int indices[],int low,int high);
 void quickSort(int days[],int indices[],int low,int high);
 void arrangeByDaysPassedSinceLastUp(void);
 void freeDynamicThings(void);
 int poolEndHour(uint8_t half);
-_Bool buildPoolLinkList(size_t index,_WishPool WishPool1[]);
+_Bool buildPoolLinkList(size_t index,_WishPool WishPools[]);
 PoolLinkList createPoolNode(_WishPool WishPool1);
 void help(void);
 
-_Bool convertCompileTime(char* date) {
-    int gotten=0;
-    char month_str[4];
-    unsigned short month;
-    unsigned short day;
-    unsigned int year;
-    if ((gotten=
-#ifdef _MSC_VER
-         sscanf_s(__DATE__,"%3s %hu %u",month_str,4,&day,&year)
+void initConsole(void);
+void putPool(_WishPool WishPool1);
+void printCompileTime(void);
+int typeMenu(const wchar_t* menuItems[],int itemCount,const wchar_t* title);
+int choiceMenu(const wchar_t* menuItems[],int itemCount,const wchar_t* title);
+_Bool localizeNamesArray(_CharMap CharMap1[],char* targetLocalizedNames[]);
+void clearInputBuffer(void);
+void freeLocalizedNames(void);
+void printPoolLinkList(PoolLinkList current);
+int readIntInRange(int min,int max,const int* defaultValue);
+void pauseConsole(void);
+_Bool SetConsoleColorByCharacter(_CharMap character);
+_Bool ResetConsoleColor(void);
+
+#ifdef _WIN32
+DWORD printW(const wchar_t* wstr);
 #else
-         sscanf(__DATE__,"%3s %hu %u",month_str,&day,&year)
+int printW(const wchar_t* wstr);
 #endif
-         )==3
-        &&
-        (month=shortmonth_to_number(month_str))!=0
-        )
-    {
-#ifdef _MSC_VER
-        _snprintf_s(date,DATE_LENGTH,DATE_LENGTH-1,"%u-%hu-%hu",year,month,day);
-#else
-        snprintf(date,DATE_LENGTH-1,"%u-%hu-%hu",year,month,day);
+
+size_t localizedMemLen(const wchar_t* source);
+size_t localizedVisualLen(const wchar_t* source);
+char* localize(const wchar_t* source);
+
+void printAllPools(void);
+void printDaysofAllLimited5StarCharacters(void);
+int choiceOneCharacter4Test(void);
+
+void mainMenu(void);
+int choiceOneCharacter(void);
+
+int cynoJoke(void);
+
 #endif
-        return 0;
-    } else {
-#ifdef _MSC_VER
-        strcpy_s(date,DATE_LENGTH,__DATE__);
-#else
-        strcpy(date,__DATE__);
-#endif
-        return 1;
-    }
-}
 
-unsigned short shortmonth_to_number(const char* mon)
-{
-    for (unsigned short i=0; i<12; i++) {
-        if (strcmp(mon,month_table[i])==0) return i+1; // 1~12
-    }
-    return 0; // Invalid month
-}
-
-int checkIntegrity(void){
-    int errorlevel=0;
-    size_t excludedPoolIndex=0;
-    for (unsigned int i=0; i<(int) ARRAY_SIZE(CharMap); i++) {
-        if (CharMap[i].attrib==ROLE_TYPE_EXCLUDED) { 
-            excludedPoolIndex++;
-            continue;
-        }
-        if (
-            CharMap[i].id!=i-excludedPoolIndex
-            ) {
-            errorlevel++;
-            excludedPoolIndex++;
-        }
-    }
-    for (int i=0; i+1<(int) ARRAY_SIZE(WishPool); i++) {
-        if (
-            isPoolInOrder(i)
-            ) errorlevel++;
-    }
-    return errorlevel;
-}
-
-_Bool isPoolInOrder(int i){
-    if ((WishPool[i].major>WishPool[i+1].major)||
-        ((WishPool[i].major==WishPool[i+1].major)&&(WishPool[i].minor>WishPool[i+1].minor))||
-        ((WishPool[i].major<WishPool[i+1].major)&&(WishPool[i+1].minor>0))||
-        (!((WishPool[i].major<WishPool[i+1].major)||((WishPool[i].major==WishPool[i+1].major)&&(WishPool[i].minor<WishPool[i+1].minor)))&&((WishPool[i].half%10)>(WishPool[i+1].half%10)))||
-        (makeTimeFromYMDHMS(WishPool[i].startY,WishPool[i].startM,WishPool[i].startD,poolEndHour(WishPool[i].half),0,0)>=makeTimeFromYMDHMS(WishPool[i].endY,WishPool[i].endM,WishPool[i].endD,poolEndHour(WishPool[i].half),0,0))||
-        ((makeTimeFromYMDHMS(WishPool[i].endY,WishPool[i].endM,WishPool[i].endD,poolEndHour(WishPool[i].half),0,0)>makeTimeFromYMDHMS(WishPool[i+1].startY,WishPool[i+1].startM,WishPool[i+1].startD,poolEndHour(WishPool[i].half),0,0))&&((WishPool[i].half%10)<(WishPool[i+1].half%10)))||
-        0
-        ) return 1; else return 0;
-}
-
-void initDynamicThings(void){
-    charCount=(int) ARRAY_SIZE(CharMap);
-    poolCount=(int) ARRAY_SIZE(WishPool);
-    longestChineseIndex=findLongest(CharMap);
-    longestChineseNameLength=(size_t) wcslen(CharMap[longestChineseIndex].name_cn);
-    longestEnglishIndex=findLongestEnglish(CharMap);
-    longestEnglishNameLength=(size_t) strlen(CharMap[longestEnglishIndex].name);
-     getDaysPassedSinceLastUp();
-    do { arrangedInOrderOfDays=(int*) malloc(charCount*sizeof(int)); } while (arrangedInOrderOfDays==NULL);
-    for (size_t i=0; i<charCount; i++){
-        arrangedInOrderOfDays[i]=(int)i;
-    }
-    arrangeByDaysPassedSinceLastUp();
-    do { PoolLinkLists=(PoolLinkList*) malloc(sizeof(PoolLinkList)*charCount); } while (PoolLinkLists==NULL);
-    for (size_t i=0; i<charCount; i++) {
-        PoolLinkLists[i]=NULL;
-    }
-#ifndef _WIN32
-    // initscr();
-#endif
-}
-
-int findLongest(_CharMap CharMap1[]){
-    size_t currentLen=0,maxLen=0;
-    int maxIndex=-1;
-    for (size_t i=0; i<charCount; i++){
-        currentLen=wcslen(CharMap1[i].name_cn);
-        if (currentLen>maxLen)
-        {
-            maxIndex=(int)i;
-            maxLen=currentLen;
-        }
-    }
-    return maxIndex;
-}
-
-int findLongestEnglish(_CharMap CharMap1[]){
-    size_t currentLen=0,maxLen=0;
-    int maxIndex=-1;
-    for (size_t i=0; i<charCount; i++){
-        currentLen=strlen(CharMap1[i].name);
-        if (currentLen>maxLen)
-        {
-            maxIndex=(int)i;
-            maxLen=currentLen;
-        }
-    }
-    return maxIndex;
-}
-
-void getDaysPassedSinceLastUp(void){
-    // 这个函数在程序最开始初始化时调用，计算每一个角色的最后一个卡池的已结束天数
-    // 因为函数最开始会将 daysPassedSinceLastUP 全局指针变量进行分配
-    // 而这个全局变量的释放是由 freeDynamicThings() 进行
-    // 所以请勿反复调用此函数
-    // 现在本程序规定未分配或 free 过的指针应当值是 NULL
-    // 因此这个函数在检测到 daysPassedSinceLastUP 不是 NULL 就会直接 free
-    // 然后直接再次分配，没有其他情况检测
-    if (daysPassedSinceLastUP!=NULL) free(daysPassedSinceLastUP);
-    do {
-        daysPassedSinceLastUP=(int*) malloc(sizeof(int)*charCount);
-    } while (daysPassedSinceLastUP==NULL);
-    for (size_t c=0; c<charCount; c++)
-    {
-        int lastPoolIndex=-1;
-        if(poolCount<=0) {
-            daysPassedSinceLastUP[c]=INT_MIN;
-            continue;
-        }
-        // 从后往前找，最近一次包含该角色的池
-        for (size_t p=poolCount-1; p+1!=0; p--)
-        {
-            for (size_t i=0; i<24&&(CharMap[c].attrib==4 ? WishPool[p].up4[i] : WishPool[p].up5[i])!=0; i++)
-            {
-                if ((CharMap[c].attrib==4 ? WishPool[p].up4[i] : WishPool[p].up5[i])==CharMap[c].id)
-                {
-                    lastPoolIndex=(int)p;
-                    goto FOUND;
-                }
-            }
-        }
-    FOUND:
-        if (daysPassedSinceLastUP!=NULL)
-        {
-            if (lastPoolIndex>=0)daysPassedSinceLastUP[c]=daysSinceSinglePoolEnds(WishPool[lastPoolIndex]);
-            // 从未 UP 过（常驻 / 联动 / 特殊）
-            else daysPassedSinceLastUP[c]=INT_MIN;
-        }
-    }
-}
-
-time_t makeTimeFromYMDHMS(uint16_t y,uint8_t m,uint8_t d,int hour,int min,int sec){
-    struct tm t={ 0 };
-    t.tm_year=y-1900;
-    t.tm_mon=m-1;
-    t.tm_mday=d;
-    t.tm_hour=hour;
-    t.tm_min=min;
-    t.tm_sec=sec;
-    // 此处暂时硬编码一个 00:00:00 ，以后再看要不要细化到时间
-    t.tm_isdst=-1;
-    return mktime(&t);
-}
-
-int daysSinceSinglePoolEnds(const _WishPool pool)
-{
-    // 这个函数仅计算单个卡池的已结束天数
-    time_t now=time(NULL);
-    int hour=0,min=0,sec=0;
-    hour=poolEndHour(pool.half);
-    if (hour==INT_MIN) return INT_MIN;
-    time_t end=makeTimeFromYMDHMS(pool.endY,pool.endM,pool.endD,hour,min,sec);
-    double diff=difftime(now,end);
-    diff/=24*60*60;
-    if (diff<0) return ((int) diff)-1;
-    else if (diff>0) return ((int) diff)+1;
-    else return 0;
-}
-
-void swap(int* a,int* b) {
-    if (a==b||*a==*b) return;
-    else {
-        *a+=*b;
-        *b=*a-*b;
-        *a-=*b;
-    }
-}
-
-int partition(int days[],int indices[],int low,int high) {
-    // 快速排序分区函数
-    int pivot=days[indices[high]];  // 选择最后一个元素作为枢轴
-    int i=low-1;                    // 较小元素的索引
-    for (int j=low; j<=high-1; j++) {
-        // 如果当前元素大于枢轴值（降序排序）
-        if (days[indices[j]]>pivot) {
-            i++;                    // 增加较小元素的索引
-            // 交换 indices[i] 和 indices[j]
-            swap(&indices[i],&indices[j]);
-        }
-    }
-    // 将枢轴放到正确位置
-    swap(&indices[i+1],&indices[high]);
-    return i+1;
-}
-
-void quickSort(int days[],int indices[],int low,int high) {
-    // 快速排序主函数
-    if (low<high) {
-        // 获取分区点
-        int pi=partition(days,indices,low,high);
-        // 递归排序左右两部分
-        quickSort(days,indices,low,pi-1);
-        quickSort(days,indices,pi+1,high);
-    }
-}
-
-void arrangeByDaysPassedSinceLastUp() {
-    // 这个是包装函数，在 initDynamicThings() 中调用  
-    // 对 arrangedInOrderOfDays 进行快速排序
-    // 排序依据是 daysPassedSinceLastUP[arrangedInOrderOfDays[i]] 降序
-    if (charCount>0) quickSort(daysPassedSinceLastUP,arrangedInOrderOfDays,0,(int)charCount-1);
-}
-
-void freeDynamicThings(void){
-    PoolLinkList currentNode=NULL,currentNext=NULL;
-    free(daysPassedSinceLastUP);
-    daysPassedSinceLastUP=NULL;
-    free(arrangedInOrderOfDays);
-    arrangedInOrderOfDays=NULL;
-    if (PoolLinkLists!=NULL)
-    {
-        for (size_t i=0; i<charCount; i++) {
-            if (PoolLinkLists[i]!=NULL) {
-                currentNode=PoolLinkLists[i];
-                while (currentNode!=NULL) {
-                    currentNext=currentNode->next;
-                    free(currentNode);
-                    currentNode=currentNext;
-                }
-            }
-        }
-    }
-#ifndef _WIN32
-    // endwin();
-#endif
-}
-
-int poolEndHour(uint8_t half){
-    switch (half%10) {
-        case 1:
-        {
-            return 18;
-        }
-        case 2:
-        {
-            return 15;
-        }
-        case 3:
-        {
-            return 0; // 资料暂缺
-        }
-        default:
-        {
-            return INT_MIN;
-        }
-    }
-}
-
-_Bool buildPoolLinkList(size_t index,_WishPool WishPools[]) {
-    PoolLinkList current=NULL,currentNext=NULL;
-    size_t fiveCount=sizeof(WishPools[0].up5)==0 ? 0 : (int) (sizeof(WishPools[0].up5)/sizeof(WishPools[0].up5[0]));
-    size_t fourCount=sizeof(WishPools[0].up4)==0 ? 0 : (int) (sizeof(WishPools[0].up4)/sizeof(WishPools[0].up4[0]));
-    if (PoolLinkLists==NULL) return 1;
-    if (PoolLinkLists[index]!=NULL) {
-        current=PoolLinkLists[index];
-        do {
-            currentNext=current->next;
-            free(current);
-            current=currentNext;
-        } while (currentNext!=NULL);
-        PoolLinkLists[index]=current=currentNext=NULL;
-    }
-    if (CharMap[index].attrib==5) {
-        for (size_t i=0; i<poolCount; i++) {
-            for (size_t j=0; j<fiveCount&&WishPools[i].up5[j]!=0; j++) {
-                if (WishPools[i].up5[j]==index) {
-                    do { currentNext=createPoolNode(WishPools[i]); } while (currentNext==NULL);
-                    if (PoolLinkLists[index]==NULL) {
-                        PoolLinkLists[index]=current=currentNext;
-                    } else {
-                        current->next=currentNext;
-                        current=current->next;
-                    }
-
-                }
-            }
-        }
-        return 0;
-    } else if (CharMap[index].attrib==4) {
-        for (size_t i=0; i<poolCount; i++) {
-            for (size_t j=0; j<fourCount&&WishPools[i].up4[j]!=0; j++) {
-                if (WishPools[i].up4[j]==index) {
-                    do { currentNext=createPoolNode(WishPools[i]); } while (currentNext==NULL);
-                    if (PoolLinkLists[index]==NULL) {
-                        PoolLinkLists[index]=current=currentNext;
-                    } else {
-                        if (current!=NULL){
-                            current->next=currentNext;
-                            current=current->next;
-                        } else {
-                            // 为啥这里处理四星的时候还想到了 current==NULL 的情况，而五星的时候没有？
-                            // 因为 Visual Studio 在上面 current->next=currentNext; 这一行给我报了个警告“取消对 NULL 指针"current"的引用。”
-                            // 而五星的那里没有报这个警告
-                            // 所以只有四星这里加了这个东西
-                            // 但是我都又生成了一遍了，这个警告还没有消失。谁知道咋回事，先这样吧。
-                            puts("Error: 'current' is NULL while building pool link list for 4-star character. This should not happen.\r\nPlease report this bug to the developer.\r");
-                            free(currentNext);
-                            return 1;
-                        }
-                    }
-                }
-            }
-        }
-        return 0;
-    } else return 1;
-
-}
-
-PoolLinkList createPoolNode(_WishPool WishPool1) {
-    PoolLinkList target=NULL;
-    target=(PoolLinkList) malloc(sizeof(_PoolNode));
-    if (target==NULL) return NULL;
-    else {
-        target->major=WishPool1.major;
-        target->minor=WishPool1.minor;
-        target->half=WishPool1.half;
-        target->next=NULL;
-        return target;
-    }
-}
-
-void help(void) {
-    puts("Genshin Impact Wish Pool Information Tool\r");
-    puts("\r");
-    puts("Copyright (c) 2025-2026 BingtangXH.\r");
-    puts("May the Anemo God bless you.\r");
-    puts("\r");
-}
-#endif

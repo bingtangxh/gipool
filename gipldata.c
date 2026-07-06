@@ -1,112 +1,6 @@
-#include <stdbool.h>
-#include <stdint.h>
-#ifdef _WIN32
-#endif
+#include "gipool.h"
 
-typedef uint32_t RoleMeta;
-
-typedef enum vision{
-    VISION_OTHER   ,
-    PYRO           ,
-    HYDRO          ,
-    ANEMO          ,
-    ELECTRO        ,
-    DENDRO         ,
-    CRYO           ,
-    GEO            ,
-    VISION_UNKNOWN
-} Vision;
-
-typedef enum roleType{
-    ROLE_TYPE_TRAVELER_AETHER         ,
-    ROLE_TYPE_TRAVELER_LUMINE         ,
-    ROLE_TYPE_COLLAB                  ,
-    ROLE_TYPE_FOUR_STAR           = 4 ,
-    ROLE_TYPE_LIMITED_FIVE_STAR       ,
-    ROLE_TYPE_UNKNOWN                 ,   
-    ROLE_TYPE_EXCLUDED          = 256
-} RoleType;
-
-// 末两位均为 1 时，即模 4 余 3 时一律算作常驻五星
-
-// 编码池信息（常驻五星时才有意义）
-#define ENCODE_POOL_VERSION_FOR_PERMANENT_5_STAR(major,minor,half) \
-    (((major)<<6)|(((minor)&0xF)<<2)|((half)&0x3))
-
-// 构造 RoleMeta：常驻五星 = (encoded << 3) | 3（3表示常驻五星）
-// 只看最后两位，如果是 3 ，表示是常驻五星，再去解码
-// 如果往前全是 0 ，说明是开服常驻，从未 UP （刻晴是特殊情况）
-#define MAKE_ROLE_META_P(major,minor,half) \
-    ((ENCODE_POOL_VERSION_FOR_PERMANENT_5_STAR((major),(minor),(half))<<3)|3)
-
-// 提取 roleType
-#define GET_ROLE_TYPE(meta) ((meta)&0x7)
-
-// 提取常驻五星的首次UP信息（前提是 GET_ROLE_TYPE(meta)==3）
-#define GET_MAJOR_P(meta) (((meta)>>9)&0xFF)
-#define GET_MINOR_P(meta) (((meta)>>5)&0x0F)
-#define GET_HALF_P(meta)  (((meta)>>3)&0x03)
-
-// 编码链表池信息 /
-// （可能用不到，有可能链表卡池信息会用3个uint_8，不进行编码存放进uint_32，
-// 因为反正链表为了存next指针需要是结构体了）
-#define ENCODE_POOL_INFO_LL(major,minor,half)\
-    (((major)<<24)|((minor)<<16)|((half)<<8))
-
-// 提取链表池信息中的具体信息
-#define GET_MAJOR_LL(meta) (((meta)>>24)&0xFF)
-#define GET_MINOR_LL(meta) (((meta)>>16)&0xFF)
-#define GET_HALF_LL(meta) (((meta)>>8)&0xFF)
-
-typedef struct _characterMap {
-    const unsigned int id;
-    const wchar_t name_cn[20];
-    const char name[40];
-    const uint8_t vision;
-    const uint32_t attrib;
-    /*
-    0: traveler Aether
-    1: traveler Lumine
-    2: interaction such as Eloi
-    3: permanent 5 star
-    4: 4 star
-    5: limited 5 star
-    6: Unknown
-    if mod 4 equals to 3 then it is permanent 5 star
-    */
-}_CharMap;
-
-typedef struct _weaponMap {
-    const unsigned int id;
-    const wchar_t name_cn[20];
-    const char name[40];
-    const unsigned int stars;
-    const uint8_t type;
-} _WeaponMap;
-
-typedef struct _wishPool {
-    unsigned int up5[24];
-    unsigned int up4[24];
-    unsigned int weapon[24];
-    uint8_t major;
-    uint8_t minor;
-    uint8_t half;
-    uint16_t startY;
-    uint8_t startM;
-    uint8_t startD;
-    uint16_t endY;
-    uint8_t endM;
-    uint8_t endD;
-} _WishPool;
-
-typedef struct _poolNode {
-    uint8_t major;
-    uint8_t minor;
-    uint8_t half;
-    struct _poolNode* next;
-}_PoolNode,*PoolLinkList,**PoolLinkListArray;
-
-_CharMap CharMap[]={
+_CharMap CharMap[118]={
      {0,L"空","Aether",VISION_OTHER,0}
     ,{1,L"荧","Lumine",VISION_OTHER,1}
     // ,{UINT_MAX,L"戴因斯雷布","Dainsleif",VISION_OTHER,256}
@@ -230,7 +124,7 @@ _CharMap CharMap[]={
     ,{117,L"桑多涅","Sandrone",CRYO,5}
 };
 
-_WishPool WishPool[]={
+_WishPool WishPool[109]={
      {{21},{11,7,5},{0},1,0,1,2020,9,28,2020,10,18}
     ,{{22},{15,9,13},{0},1,0,2,2020,10,20,2020,11,10}
     ,{{24},{8,10,23},{0},1,1,1,2020,11,11,2020,12,1}
@@ -365,3 +259,4 @@ _WishPool WishPool[]={
 
     ,*/
 };
+
