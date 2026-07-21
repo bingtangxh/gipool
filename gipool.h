@@ -141,8 +141,10 @@ typedef struct _poolNode {
     struct _poolNode* next;
 } _PoolNode,*PoolLinkList,**PoolLinkListArray;
 
-extern _CharMap CharMap[118];
-extern _WishPool WishPool[109];
+extern _CharMap CharMap[];
+extern _WishPool WishPool[];
+
+void getCharandPoolCount(void);
 
 extern PoolLinkList* PoolLinkLists;
 extern size_t charCount;
@@ -173,9 +175,9 @@ void beforeTerminate(void);
 
 unsigned short shortmonth_to_number(const char* mon);
 _Bool convertCompileTime(char* date);
-int checkIntegrity(void);
 _Bool isPoolInOrder(int i);
 void initDynamicThings(void);
+int checkIntegrity(void);
 int findLongest(_CharMap CharMap1[]);
 int findLongestEnglish(_CharMap CharMap1[]);
 void getDaysPassedSinceLastUp(void);

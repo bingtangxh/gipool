@@ -47,31 +47,6 @@ _Bool convertCompileTime(char* date)
     return 1;
 }
 
-int checkIntegrity(void)
-{
-    int errorlevel=0;
-    size_t excludedPoolIndex=0;
-
-    for(unsigned int i=0; i<ARRAY_SIZE(CharMap); i++) {
-        if(CharMap[i].attrib==ROLE_TYPE_EXCLUDED) {
-            excludedPoolIndex++;
-            continue;
-        }
-        if(CharMap[i].id!=i-excludedPoolIndex) {
-            errorlevel++;
-            excludedPoolIndex++;
-        }
-    }
-
-    for(int i=0; i+1<(int)ARRAY_SIZE(WishPool); i++) {
-        if(isPoolInOrder(i)) {
-            errorlevel++;
-        }
-    }
-
-    return errorlevel;
-}
-
 _Bool isPoolInOrder(int i)
 {
     if((WishPool[i].major>WishPool[i+1].major)||
@@ -92,8 +67,7 @@ _Bool isPoolInOrder(int i)
 
 void initDynamicThings(void)
 {
-    charCount=ARRAY_SIZE(CharMap);
-    poolCount=ARRAY_SIZE(WishPool);
+    getCharandPoolCount();
     longestChineseIndex=(size_t)findLongest(CharMap);
     longestChineseNameLength=wcslen(CharMap[longestChineseIndex].name_cn);
     longestEnglishIndex=(size_t)findLongestEnglish(CharMap);
@@ -117,6 +91,34 @@ void initDynamicThings(void)
     for(size_t i=0; i<charCount; i++) {
         PoolLinkLists[i]=NULL;
     }
+}
+
+int checkIntegrity(void)
+{
+    // 该函数用到了 charCount 和 poolCount 这两个全局变量
+    // 所以在调用该函数之前必须先调用 getCharandPoolCount() 或者 initDynamicThings() 函数来初始化这两个变量
+    // 不过该函数也只会在 main 函数中被调用了
+    int errorlevel=0;
+    size_t excludedPoolIndex=0;
+
+    for(unsigned int i=0; i<charCount; i++) {
+        if(CharMap[i].attrib==ROLE_TYPE_EXCLUDED) {
+            excludedPoolIndex++;
+            continue;
+        }
+        if(CharMap[i].id!=i-excludedPoolIndex) {
+            errorlevel++;
+            excludedPoolIndex++;
+        }
+    }
+
+    for(int i=0; i+1<(int)poolCount; i++) {
+        if(isPoolInOrder(i)) {
+            errorlevel++;
+        }
+    }
+
+    return errorlevel;
 }
 
 int findLongest(_CharMap CharMap1[])
