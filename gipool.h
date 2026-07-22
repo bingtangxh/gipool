@@ -25,7 +25,8 @@
 #endif
 
 #define DATE_LENGTH 12
-#define ARRAY_SIZE(arr) (sizeof(arr) == 0 ? 0 : sizeof(arr) / sizeof((arr)[0]))
+// #define ARRAY_SIZE(arr) (sizeof(arr) == 0 ? 0 : sizeof(arr) / sizeof((arr)[0]))
+#define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]))
 
 #ifdef _WIN32
 #define CLS system("cls")
@@ -109,6 +110,11 @@ typedef enum roleType {
 #define GET_MINOR_LL(meta) (((meta) >> 16) & 0xFF)
 #define GET_HALF_LL(meta) (((meta) >> 8) & 0xFF)
 
+#define MAX_POOL_UP5_COUNT 24
+#define MAX_POOL_UP4_COUNT 24
+#define MAX_POOL_WEAPON_COUNT 24
+// void getDaysPassedSinceLastUp(void) 这个函数有缺陷，因此上面三个 COUNT 宏的值应当相等
+
 typedef struct characterMap {
     const unsigned int id;
     const wchar_t name_cn[20];
@@ -126,9 +132,9 @@ typedef struct weaponMap {
 } WeaponMap;
 
 typedef struct wishPool {
-    unsigned int up5[24];
-    unsigned int up4[24];
-    unsigned int weapon[24];
+    unsigned int up5[MAX_POOL_UP5_COUNT];
+    unsigned int up4[MAX_POOL_UP4_COUNT];
+    unsigned int weapon[MAX_POOL_WEAPON_COUNT];
     uint8_t major;
     uint8_t minor;
     uint8_t half;
@@ -147,8 +153,8 @@ typedef struct poolNode {
     struct poolNode* next;
 } PoolNodeType,*PoolLinkList,**PoolLinkListArray;
 
-extern CharMapType CharMap[];
-extern WishPoolType WishPool[];
+extern const CharMapType CharMap[];
+extern const WishPoolType WishPool[];
 
 void getCharandPoolCount(void);
 
@@ -177,25 +183,25 @@ extern uint8_t visionColor[];
 #endif
 
 _Bool convertCompileTime(char* date);
-_Bool buildPoolLinkList(size_t index,WishPoolType WishPools[]);
+_Bool buildPoolLinkList(size_t index,const WishPoolType WishPools[]);
 void help(void);
 
 void initConsole(void);
 void printCompileTime(void);
 int typeMenu(const wchar_t* menuItems[],int itemCount,const wchar_t* title);
 int choiceMenu(const wchar_t* menuItems[],int itemCount,const wchar_t* title);
-_Bool localizeNamesArray(CharMapType CharMap1[],char* targetLocalizedNames[]);
+_Bool localizeNamesArray(const CharMapType CharMap1[],char* targetLocalizedNames[]);
 void freeLocalizedNames(void);
 void printPoolLinkList(PoolLinkList current);
 int readIntInRange(int min,int max,const int* defaultValue);
-_Bool SetConsoleColorByCharacter(CharMapType character);
+_Bool SetConsoleColorByCharacter(const CharMapType character);
 _Bool ResetConsoleColor(void);
 
 void initDynamicThings(void);
 int checkIntegrity(void);
 void freeDynamicThings(void);
 
-void putPool(WishPoolType WishPool1);
+void putPool(const WishPoolType WishPool1);
 
 #ifdef _WIN32
 DWORD printW(const wchar_t* wstr);

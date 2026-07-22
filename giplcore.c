@@ -7,17 +7,17 @@ static const char* month_table[]={
 
 unsigned short shortmonth_to_number(const char* mon);
 _Bool isPoolInOrder(int i);
-int findLongest(CharMapType CharMap1[]);
-int findLongestEnglish(CharMapType CharMap1[]);
+int findLongest(const CharMapType CharMap1[]);
+int findLongestEnglish(const CharMapType CharMap1[]);
 void getDaysPassedSinceLastUp(void);
 time_t makeTimeFromYMDHMS(uint16_t y,uint8_t m,uint8_t d,int hour,int min,int sec);
-int daysSinceSinglePoolEnds(WishPoolType pool);
+int daysSinceSinglePoolEnds(const WishPoolType pool);
 void swap(int* a,int* b);
 int partition(int days[],int indices[],int low,int high);
 void quickSort(int days[],int indices[],int low,int high);
 void arrangeByDaysPassedSinceLastUp(void);
 int poolEndHour(uint8_t half);
-PoolLinkList createPoolNode(WishPoolType WishPool1);
+PoolLinkList createPoolNode(const WishPoolType WishPool1);
 
 unsigned short shortmonth_to_number(const char* mon)
 {
@@ -135,7 +135,7 @@ int checkIntegrity(void)
     return errorlevel;
 }
 
-int findLongest(CharMapType CharMap1[])
+int findLongest(const CharMapType CharMap1[])
 {
     size_t currentLen=0;
     size_t maxLen=0;
@@ -151,7 +151,7 @@ int findLongest(CharMapType CharMap1[])
     return maxIndex;
 }
 
-int findLongestEnglish(CharMapType CharMap1[])
+int findLongestEnglish(const CharMapType CharMap1[])
 {
     size_t currentLen=0;
     size_t maxLen=0;
@@ -186,7 +186,9 @@ void getDaysPassedSinceLastUp(void)
         }
 
         for(size_t p=poolCount-1; p+1!=0; p--) {
-            for(size_t i=0; i<24&&(CharMap[c].attrib==4 ? WishPool[p].up4[i] : WishPool[p].up5[i])!=0; i++) {
+            // 等同于循环条件写 (p--)>0,循环后操作不写，但我不喜欢写(p--)>0这样的
+            for(size_t i=0; i<MAX_POOL_UP4_COUNT&&(CharMap[c].attrib==4 ? WishPool[p].up4[i] : WishPool[p].up5[i])!=0; i++) {
+                // 这里有问题，没有应对好 MAX_POOL_UP4_COUNT 和 MAX_POOL_UP5_COUNT 可能不相等的情况
                 if((CharMap[c].attrib==4 ? WishPool[p].up4[i] : WishPool[p].up5[i])==CharMap[c].id) {
                     lastPoolIndex=(int)p;
                     goto FOUND;
@@ -216,7 +218,7 @@ time_t makeTimeFromYMDHMS(uint16_t y,uint8_t m,uint8_t d,int hour,int min,int se
     return mktime(&t);
 }
 
-int daysSinceSinglePoolEnds(WishPoolType pool)
+int daysSinceSinglePoolEnds(const WishPoolType pool)
 {
     time_t now=time(NULL);
     int hour=poolEndHour(pool.half);
@@ -244,10 +246,9 @@ void swap(int* a,int* b)
     if(a==b||*a==*b) {
         return;
     }
-
-    *a+=*b;
-    *b=*a-*b;
-    *a-=*b;
+    int temp=*a;
+    *a=*b;
+    *b=temp;
 }
 
 int partition(int days[],int indices[],int low,int high)
@@ -321,7 +322,7 @@ int poolEndHour(uint8_t half)
     }
 }
 
-_Bool buildPoolLinkList(size_t index,WishPoolType WishPools[])
+_Bool buildPoolLinkList(size_t index,const WishPoolType WishPools[])
 {
     PoolLinkList current=NULL;
     PoolLinkList currentNext=NULL;
@@ -392,7 +393,7 @@ _Bool buildPoolLinkList(size_t index,WishPoolType WishPools[])
     return 1;
 }
 
-PoolLinkList createPoolNode(WishPoolType WishPool1)
+PoolLinkList createPoolNode(const WishPoolType WishPool1)
 {
     PoolLinkList target=(PoolLinkList)malloc(sizeof(PoolNodeType));
     if(target==NULL) {

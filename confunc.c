@@ -1,5 +1,7 @@
 #include "gipool.h"
 
+#define MAX_CHOICE_MENU_ITEMS 35 // 1~9,A~Z
+
 void clearInputBuffer(void);
 void pauseConsole(void);
 
@@ -10,7 +12,7 @@ void initConsole(void)
 #endif
 }
 
-void putPool(WishPoolType WishPool1)
+void putPool(const WishPoolType WishPool1)
 {
     size_t fiveCount=ARRAY_SIZE(WishPool1.up5);
     size_t fourCount=ARRAY_SIZE(WishPool1.up4);
@@ -219,14 +221,14 @@ int choiceMenu(const wchar_t* menuItems[],int itemCount,const wchar_t* title)
             printW(L"╗"); ENDL;
         }
         for(int i=0,currentIndexColLen=0; i<itemCount; i++) {
-            if(i>=35&&i!=itemCount-1) {
+            if(i>=MAX_CHOICE_MENU_ITEMS&&i!=itemCount-1) {
                 continue;
             }
             printW(L"║");
             if(i<9) {
                 currentIndexColLen=printf(" [%d] ",i==itemCount-1 ? 0 : i+1);
             }
-            else if(i>=9&&i<itemCount-1&&i<35) {
+            else if(i>=9&&i<itemCount-1&&i<MAX_CHOICE_MENU_ITEMS) {
                 currentIndexColLen=printf(" [%c] ",'A'+i-9);
             }
             else if(i==itemCount-1) {
@@ -256,7 +258,7 @@ int choiceMenu(const wchar_t* menuItems[],int itemCount,const wchar_t* title)
 #else
             "Please select an option and press ENTER (0-%c): ",
 #endif
-            itemCount<=10 ? itemCount-1+'0' : itemCount<=35 ? itemCount-11+'A' : 'Z'
+            itemCount<=10 ? itemCount-1+'0' : itemCount<=MAX_CHOICE_MENU_ITEMS ? itemCount-11+'A' : 'Z'
         );
         for(int i=0; i<itemCount; i++) {
             free(localizedItemNames[i]);
@@ -292,7 +294,7 @@ int choiceMenu(const wchar_t* menuItems[],int itemCount,const wchar_t* title)
                 ENDL;
                 printf("Invalid choice. Please try again. (0-%c): ",
                     itemCount<=10 ? itemCount-1+'0' :
-                    itemCount<=35 ? itemCount-11+'A' : 'Z');
+                    itemCount<=MAX_CHOICE_MENU_ITEMS ? itemCount-11+'A' : 'Z');
             }
             else {
                 return choice;
@@ -301,7 +303,7 @@ int choiceMenu(const wchar_t* menuItems[],int itemCount,const wchar_t* title)
     } while(1);
 }
 
-_Bool localizeNamesArray(CharMapType CharMap1[],char* targetLocalizedNames[])
+_Bool localizeNamesArray(const CharMapType CharMap1[],char* targetLocalizedNames[])
 {
     _Bool result=0;
     for(size_t i=0; i<charCount; i++) {
@@ -415,7 +417,7 @@ int printW(const wchar_t* wstr)
 }
 #endif
 
-_Bool SetConsoleColorByCharacter(CharMapType character)
+_Bool SetConsoleColorByCharacter(const CharMapType character)
 {
 #ifdef _WIN32
     HANDLE hConsole=GetStdHandle(STD_OUTPUT_HANDLE);
