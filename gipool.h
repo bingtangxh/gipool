@@ -140,12 +140,12 @@ typedef struct wishPool {
     uint8_t endD;
 } WishPoolType;
 
-typedef struct _poolNode {
+typedef struct poolNode {
     uint8_t major;
     uint8_t minor;
     uint8_t half;
-    struct _poolNode* next;
-} _PoolNode,*PoolLinkList,**PoolLinkListArray;
+    struct poolNode* next;
+} PoolNodeType,*PoolLinkList,**PoolLinkListArray;
 
 extern CharMapType CharMap[];
 extern WishPoolType WishPool[];

@@ -394,7 +394,7 @@ _Bool buildPoolLinkList(size_t index,WishPoolType WishPools[])
 
 PoolLinkList createPoolNode(WishPoolType WishPool1)
 {
-    PoolLinkList target=(PoolLinkList)malloc(sizeof(_PoolNode));
+    PoolLinkList target=(PoolLinkList)malloc(sizeof(PoolNodeType));
     if(target==NULL) {
         return NULL;
     }
