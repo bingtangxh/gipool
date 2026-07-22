@@ -30,7 +30,7 @@
 #ifdef _WIN32
 #define CLS system("cls")
 #define ENDL putchar('\n')
-#define putws(wstr) printW(wstr); putwchar(L'\n')
+#define putws(wstr) do { printW(wstr); putwchar(L'\n'); } while(0)
 #ifdef _MSC_VER
 #define PAUSE ending = _getch()
 #define getch() _getch()
@@ -41,24 +41,30 @@
 #else
 #define CLS system("clear")
 #define ENDL putchar('\n')
-#define putws(wstr) printW(wstr); putwchar(L'\r'); putwchar(L'\n')
+#define putws(wstr) do {printW(wstr); putwchar(L'\r'); putwchar(L'\n'); }while(0)
 #define getche() \
-    ending = getchar(); \
-    if (ending != EOF && ending != '\0' && ending != '\n') { clearInputBuffer(); }
+    do { \
+        ending = getchar(); \
+        if (ending != EOF && ending != '\0' && ending != '\n') { clearInputBuffer(); } \
+    } while(0)
 #define getch() \
+    do { \
     ending = getchar(); \
-    if (ending != EOF && ending != '\0' && ending != '\n') { clearInputBuffer(); }
+    if (ending != EOF && ending != '\0' && ending != '\n') { clearInputBuffer(); } \
+    } while(0)
 #define PAUSE \
+    do { \
     ending = getchar(); \
-    if (ending != EOF && ending != '\0' && ending != '\n') { clearInputBuffer(); }
+    if (ending != EOF && ending != '\0' && ending != '\n') { clearInputBuffer(); } \
+    } while(0)
 #endif
 
 #define SPACE putchar(' ')
 
 #ifdef _MSC_VER
-#define GETNUM(num) scanf_s("%d", &(num)); clearInputBuffer()
+#define GETNUM(num) do { scanf_s("%d", &(num)); clearInputBuffer(); } while(0)
 #else
-#define GETNUM(num) scanf("%d", &(num)); clearInputBuffer()
+#define GETNUM(num) do { scanf("%d", &(num)); clearInputBuffer(); } while(0)
 #endif
 
 typedef uint32_t RoleMeta;
@@ -103,23 +109,23 @@ typedef enum roleType {
 #define GET_MINOR_LL(meta) (((meta) >> 16) & 0xFF)
 #define GET_HALF_LL(meta) (((meta) >> 8) & 0xFF)
 
-typedef struct _characterMap {
+typedef struct characterMap {
     const unsigned int id;
     const wchar_t name_cn[20];
     const char name[40];
     const uint8_t vision;
     const uint32_t attrib;
-} _CharMap;
+} CharMapType;
 
-typedef struct _weaponMap {
+typedef struct weaponMap {
     const unsigned int id;
     const wchar_t name_cn[20];
     const char name[40];
     const unsigned int stars;
     const uint8_t type;
-} _WeaponMap;
+} WeaponMap;
 
-typedef struct _wishPool {
+typedef struct wishPool {
     unsigned int up5[24];
     unsigned int up4[24];
     unsigned int weapon[24];
@@ -132,7 +138,7 @@ typedef struct _wishPool {
     uint16_t endY;
     uint8_t endM;
     uint8_t endD;
-} _WishPool;
+} WishPoolType;
 
 typedef struct _poolNode {
     uint8_t major;
@@ -141,8 +147,8 @@ typedef struct _poolNode {
     struct _poolNode* next;
 } _PoolNode,*PoolLinkList,**PoolLinkListArray;
 
-extern _CharMap CharMap[];
-extern _WishPool WishPool[];
+extern CharMapType CharMap[];
+extern WishPoolType WishPool[];
 
 void getCharandPoolCount(void);
 
@@ -171,25 +177,25 @@ extern uint8_t visionColor[];
 #endif
 
 _Bool convertCompileTime(char* date);
-_Bool buildPoolLinkList(size_t index,_WishPool WishPools[]);
+_Bool buildPoolLinkList(size_t index,WishPoolType WishPools[]);
 void help(void);
 
 void initConsole(void);
 void printCompileTime(void);
 int typeMenu(const wchar_t* menuItems[],int itemCount,const wchar_t* title);
 int choiceMenu(const wchar_t* menuItems[],int itemCount,const wchar_t* title);
-_Bool localizeNamesArray(_CharMap CharMap1[],char* targetLocalizedNames[]);
+_Bool localizeNamesArray(CharMapType CharMap1[],char* targetLocalizedNames[]);
 void freeLocalizedNames(void);
 void printPoolLinkList(PoolLinkList current);
 int readIntInRange(int min,int max,const int* defaultValue);
-_Bool SetConsoleColorByCharacter(_CharMap character);
+_Bool SetConsoleColorByCharacter(CharMapType character);
 _Bool ResetConsoleColor(void);
 
 void initDynamicThings(void);
 int checkIntegrity(void);
 void freeDynamicThings(void);
 
-void putPool(_WishPool WishPool1);
+void putPool(WishPoolType WishPool1);
 
 #ifdef _WIN32
 DWORD printW(const wchar_t* wstr);

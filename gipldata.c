@@ -1,6 +1,6 @@
 #include "gipool.h"
 
-_CharMap CharMap[]={
+CharMapType CharMap[]={
      {0,L"空","Aether",VISION_OTHER,0}
     ,{1,L"荧","Lumine",VISION_OTHER,1}
     // ,{UINT_MAX,L"戴因斯雷布","Dainsleif",VISION_OTHER,256}
@@ -124,7 +124,7 @@ _CharMap CharMap[]={
     ,{117,L"桑多涅","Sandrone",CRYO,5}
 };
 
-_WishPool WishPool[]={
+WishPoolType WishPool[]={
      {{21},{11,7,5},{0},1,0,1,2020,9,28,2020,10,18}
     ,{{22},{15,9,13},{0},1,0,2,2020,10,20,2020,11,10}
     ,{{24},{8,10,23},{0},1,1,1,2020,11,11,2020,12,1}

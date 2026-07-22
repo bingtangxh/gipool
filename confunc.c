@@ -10,7 +10,7 @@ void initConsole(void)
 #endif
 }
 
-void putPool(_WishPool WishPool1)
+void putPool(WishPoolType WishPool1)
 {
     size_t fiveCount=ARRAY_SIZE(WishPool1.up5);
     size_t fourCount=ARRAY_SIZE(WishPool1.up4);
@@ -301,7 +301,7 @@ int choiceMenu(const wchar_t* menuItems[],int itemCount,const wchar_t* title)
     } while(1);
 }
 
-_Bool localizeNamesArray(_CharMap CharMap1[],char* targetLocalizedNames[])
+_Bool localizeNamesArray(CharMapType CharMap1[],char* targetLocalizedNames[])
 {
     _Bool result=0;
     for(size_t i=0; i<charCount; i++) {
@@ -415,7 +415,7 @@ int printW(const wchar_t* wstr)
 }
 #endif
 
-_Bool SetConsoleColorByCharacter(_CharMap character)
+_Bool SetConsoleColorByCharacter(CharMapType character)
 {
 #ifdef _WIN32
     HANDLE hConsole=GetStdHandle(STD_OUTPUT_HANDLE);

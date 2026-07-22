@@ -7,17 +7,17 @@ static const char* month_table[]={
 
 unsigned short shortmonth_to_number(const char* mon);
 _Bool isPoolInOrder(int i);
-int findLongest(_CharMap CharMap1[]);
-int findLongestEnglish(_CharMap CharMap1[]);
+int findLongest(CharMapType CharMap1[]);
+int findLongestEnglish(CharMapType CharMap1[]);
 void getDaysPassedSinceLastUp(void);
 time_t makeTimeFromYMDHMS(uint16_t y,uint8_t m,uint8_t d,int hour,int min,int sec);
-int daysSinceSinglePoolEnds(_WishPool pool);
+int daysSinceSinglePoolEnds(WishPoolType pool);
 void swap(int* a,int* b);
 int partition(int days[],int indices[],int low,int high);
 void quickSort(int days[],int indices[],int low,int high);
 void arrangeByDaysPassedSinceLastUp(void);
 int poolEndHour(uint8_t half);
-PoolLinkList createPoolNode(_WishPool WishPool1);
+PoolLinkList createPoolNode(WishPoolType WishPool1);
 
 unsigned short shortmonth_to_number(const char* mon)
 {
@@ -135,7 +135,7 @@ int checkIntegrity(void)
     return errorlevel;
 }
 
-int findLongest(_CharMap CharMap1[])
+int findLongest(CharMapType CharMap1[])
 {
     size_t currentLen=0;
     size_t maxLen=0;
@@ -151,7 +151,7 @@ int findLongest(_CharMap CharMap1[])
     return maxIndex;
 }
 
-int findLongestEnglish(_CharMap CharMap1[])
+int findLongestEnglish(CharMapType CharMap1[])
 {
     size_t currentLen=0;
     size_t maxLen=0;
@@ -216,7 +216,7 @@ time_t makeTimeFromYMDHMS(uint16_t y,uint8_t m,uint8_t d,int hour,int min,int se
     return mktime(&t);
 }
 
-int daysSinceSinglePoolEnds(_WishPool pool)
+int daysSinceSinglePoolEnds(WishPoolType pool)
 {
     time_t now=time(NULL);
     int hour=poolEndHour(pool.half);
@@ -321,7 +321,7 @@ int poolEndHour(uint8_t half)
     }
 }
 
-_Bool buildPoolLinkList(size_t index,_WishPool WishPools[])
+_Bool buildPoolLinkList(size_t index,WishPoolType WishPools[])
 {
     PoolLinkList current=NULL;
     PoolLinkList currentNext=NULL;
@@ -392,7 +392,7 @@ _Bool buildPoolLinkList(size_t index,_WishPool WishPools[])
     return 1;
 }
 
-PoolLinkList createPoolNode(_WishPool WishPool1)
+PoolLinkList createPoolNode(WishPoolType WishPool1)
 {
     PoolLinkList target=(PoolLinkList)malloc(sizeof(_PoolNode));
     if(target==NULL) {
