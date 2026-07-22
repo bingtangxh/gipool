@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #ifndef GIPOOL_H
 #define GIPOOL_H
@@ -170,42 +170,26 @@ extern WORD visionColor[];
 extern uint8_t visionColor[];
 #endif
 
-void printTestInfo(void);
-void beforeTerminate(void);
-
-unsigned short shortmonth_to_number(const char* mon);
 _Bool convertCompileTime(char* date);
-_Bool isPoolInOrder(int i);
-void initDynamicThings(void);
-int checkIntegrity(void);
-int findLongest(_CharMap CharMap1[]);
-int findLongestEnglish(_CharMap CharMap1[]);
-void getDaysPassedSinceLastUp(void);
-time_t makeTimeFromYMDHMS(uint16_t y,uint8_t m,uint8_t d,int hour,int min,int sec);
-int daysSinceSinglePoolEnds(_WishPool pool);
-void swap(int* a,int* b);
-int partition(int days[],int indices[],int low,int high);
-void quickSort(int days[],int indices[],int low,int high);
-void arrangeByDaysPassedSinceLastUp(void);
-void freeDynamicThings(void);
-int poolEndHour(uint8_t half);
 _Bool buildPoolLinkList(size_t index,_WishPool WishPools[]);
-PoolLinkList createPoolNode(_WishPool WishPool1);
 void help(void);
 
 void initConsole(void);
-void putPool(_WishPool WishPool1);
 void printCompileTime(void);
 int typeMenu(const wchar_t* menuItems[],int itemCount,const wchar_t* title);
 int choiceMenu(const wchar_t* menuItems[],int itemCount,const wchar_t* title);
 _Bool localizeNamesArray(_CharMap CharMap1[],char* targetLocalizedNames[]);
-void clearInputBuffer(void);
 void freeLocalizedNames(void);
 void printPoolLinkList(PoolLinkList current);
 int readIntInRange(int min,int max,const int* defaultValue);
-void pauseConsole(void);
 _Bool SetConsoleColorByCharacter(_CharMap character);
 _Bool ResetConsoleColor(void);
+
+void initDynamicThings(void);
+int checkIntegrity(void);
+void freeDynamicThings(void);
+
+void putPool(_WishPool WishPool1);
 
 #ifdef _WIN32
 DWORD printW(const wchar_t* wstr);
@@ -222,7 +206,6 @@ void printDaysofAllLimited5StarCharacters(void);
 int choiceOneCharacter4Test(void);
 
 void mainMenu(void);
-int choiceOneCharacter(void);
 
 int cynoJoke(void);
 

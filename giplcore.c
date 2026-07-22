@@ -1,9 +1,23 @@
-#include "gipool.h"
+ï»¿#include "gipool.h"
 
 static const char* month_table[]={
     "Jan", "Feb", "Mar", "Apr", "May", "Jun",
     "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
 };
+
+unsigned short shortmonth_to_number(const char* mon);
+_Bool isPoolInOrder(int i);
+int findLongest(_CharMap CharMap1[]);
+int findLongestEnglish(_CharMap CharMap1[]);
+void getDaysPassedSinceLastUp(void);
+time_t makeTimeFromYMDHMS(uint16_t y,uint8_t m,uint8_t d,int hour,int min,int sec);
+int daysSinceSinglePoolEnds(_WishPool pool);
+void swap(int* a,int* b);
+int partition(int days[],int indices[],int low,int high);
+void quickSort(int days[],int indices[],int low,int high);
+void arrangeByDaysPassedSinceLastUp(void);
+int poolEndHour(uint8_t half);
+PoolLinkList createPoolNode(_WishPool WishPool1);
 
 unsigned short shortmonth_to_number(const char* mon)
 {
@@ -95,9 +109,9 @@ void initDynamicThings(void)
 
 int checkIntegrity(void)
 {
-    // ¸Ãº¯ÊıÓÃµ½ÁË charCount ºÍ poolCount ÕâÁ½¸öÈ«¾Ö±äÁ¿
-    // ËùÒÔÔÚµ÷ÓÃ¸Ãº¯ÊıÖ®Ç°±ØĞëÏÈµ÷ÓÃ getCharandPoolCount() »òÕß initDynamicThings() º¯ÊıÀ´³õÊ¼»¯ÕâÁ½¸ö±äÁ¿
-    // ²»¹ı¸Ãº¯ÊıÒ²Ö»»áÔÚ main º¯ÊıÖĞ±»µ÷ÓÃÁË
+    // è¯¥å‡½æ•°ç”¨åˆ°äº† charCount å’Œ poolCount è¿™ä¸¤ä¸ªå…¨å±€å˜é‡
+    // æ‰€ä»¥åœ¨è°ƒç”¨è¯¥å‡½æ•°ä¹‹å‰å¿…é¡»å…ˆè°ƒç”¨ getCharandPoolCount() æˆ–è€… initDynamicThings() å‡½æ•°æ¥åˆå§‹åŒ–è¿™ä¸¤ä¸ªå˜é‡
+    // ä¸è¿‡è¯¥å‡½æ•°ä¹Ÿåªä¼šåœ¨ main å‡½æ•°ä¸­è¢«è°ƒç”¨äº†
     int errorlevel=0;
     size_t excludedPoolIndex=0;
 

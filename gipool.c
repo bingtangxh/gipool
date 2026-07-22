@@ -37,6 +37,10 @@ uint8_t visionColor[]={7, 9, 33, 43, 99, 46, 159, 220, 7};
 #endif
 
 
+void printTestInfo(void);
+void beforeTerminate(void);
+
+
 void printTestInfo(void)
 {
 }

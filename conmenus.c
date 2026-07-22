@@ -27,6 +27,8 @@ static const wchar_t* splitByVisionType[]={
     L"返回"
 };
 
+int choiceOneCharacter(void);
+
 void mainMenu(void)
 {
     static int prevSlt=0;

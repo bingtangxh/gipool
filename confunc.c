@@ -1,5 +1,8 @@
 #include "gipool.h"
 
+void clearInputBuffer(void);
+void pauseConsole(void);
+
 void initConsole(void)
 {
 #ifndef _WIN32
