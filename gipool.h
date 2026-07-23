@@ -176,6 +176,14 @@ extern WORD visionColor[];
 extern uint8_t visionColor[];
 #endif
 
+#ifndef _WIN32
+int getche_my(void);
+int getch_my(void);
+#endif
+
+void clearInputBuffer(void);
+void pauseConsole(void);
+
 _Bool convertCompileTime(char* date);
 _Bool buildPoolLinkList(size_t index,const WishPoolType WishPools[]);
 void help(void);
