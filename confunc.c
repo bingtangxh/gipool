@@ -2,8 +2,29 @@
 
 #define MAX_CHOICE_MENU_ITEMS 35 // 1~9,A~Z
 
+#ifndef _WIN32
+int getche_my(void);
+int getch_my(void);
+#endif
+
 void clearInputBuffer(void);
 void pauseConsole(void);
+
+#ifndef _WIN32
+
+int getche_my(void) {
+    int ending=getchar();
+    if(ending!=EOF&&ending!='\0'&&ending!='\n') { clearInputBuffer(); }
+    return ending;
+}
+
+int getch_my(void) {
+    int ending=getchar();
+    if(ending!=EOF&&ending!='\0'&&ending!='\n') { clearInputBuffer(); }
+    return ending;
+}
+
+#endif // _WIN32
 
 void initConsole(void)
 {

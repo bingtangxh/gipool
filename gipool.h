@@ -43,16 +43,8 @@
 #define CLS system("clear")
 #define ENDL putchar('\n')
 #define putws(wstr) do {printW(wstr); putwchar(L'\r'); putwchar(L'\n'); }while(0)
-#define getche() \
-    do { \
-        ending = getchar(); \
-        if (ending != EOF && ending != '\0' && ending != '\n') { clearInputBuffer(); } \
-    } while(0)
-#define getch() \
-    do { \
-    ending = getchar(); \
-    if (ending != EOF && ending != '\0' && ending != '\n') { clearInputBuffer(); } \
-    } while(0)
+#define getche() getche_my()
+#define getch() getch_my()
 #define PAUSE \
     do { \
     ending = getchar(); \
@@ -62,10 +54,12 @@
 
 #define SPACE putchar(' ')
 
+#if 0
 #ifdef _MSC_VER
 #define GETNUM(num) do { scanf_s("%d", &(num)); clearInputBuffer(); } while(0)
 #else
 #define GETNUM(num) do { scanf("%d", &(num)); clearInputBuffer(); } while(0)
+#endif
 #endif
 
 typedef uint32_t RoleMeta;
