@@ -2,7 +2,7 @@
 
 CharMapType const CharMap[]={
      {0,L"空","Aether",VISION_OTHER,0}
-    ,{1,L"荧","Lumine",VISION_OTHER,1}
+     ,{1,L"荧","Lumine",VISION_OTHER,1}
     // ,{UINT_MAX,L"戴因斯雷布","Dainsleif",VISION_OTHER,256}
     // 整个程序还没有做好应对 CharMap[i].id!=i 的情况，所以戴因暂时先注释掉
     // The whole program is not designed to handle the case where CharMap[i].id!=i, so Dainsleif is temporarily commented out
@@ -122,6 +122,9 @@ CharMapType const CharMap[]={
     ,{115,L"妮可","Nicole",PYRO,5}
     ,{116,L"布伦妮","Prune",ANEMO,4}
     ,{117,L"桑多涅","Sandrone",CRYO,5}
+        ,{118,L"奥黛塔","Odette",CRYO,5}
+        ,{119,L"阿罗夏","Alyosha",ELECTRO,4}
+
 };
 
 WishPoolType const WishPool[]={
@@ -236,8 +239,8 @@ WishPoolType const WishPool[]={
     ,{{117,92},{71,23,8},{0},6,7,1,2026,7,1,2026,7,21}
     ,{{95,73,56,47,18},{0},{0},6,7,11,2026,7,1,2026,7,21}
     ,{{111,40},{107,82,90},{0},6,7,2,2026,7,21,2026,8,11}/*
-    ,{{,},{,,},{0},7,0,1,2026,8,12,2026,,}
-    ,{{,},{,,},{0},7,0,2,2026,,,2026,,}
+    ,{{118,81},{119,,},{0},7,0,1,2026,8,12,2026,,}
+    ,{{105,102},{,,},{0},7,0,2,2026,,,2026,,}
     ,{{,},{,,},{0},7,1,1,2026,9,23,2026,,}
     ,{{,},{,,},{0},7,1,2,2026,,,2026,,}
     ,{{,},{,,},{0},7,2,1,2026,11,4,2026,,}
