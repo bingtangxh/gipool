@@ -42,7 +42,7 @@ CharMapType const CharMap[]={
     ,{35,L"神里绫华","Kamisato Ayaka",CRYO,5}
     ,{36,L"早柚","Sayu",ANEMO,4}
     ,{37,L"宵宫","Yoimiya",PYRO,5}
-    ,{38,L"埃洛伊","Eloi",HYDRO,2}
+    ,{38,L"埃洛伊","Aloy",HYDRO,2}
     ,{39,L"九条裟罗","Kujou Sara",ELECTRO,4}
     ,{40,L"雷电将军","Raiden Shogun",ELECTRO,5}
     ,{41,L"珊瑚宫心海","Sangonomiya Kokomi",HYDRO,5}
@@ -122,8 +122,11 @@ CharMapType const CharMap[]={
     ,{115,L"妮可","Nicole",PYRO,5}
     ,{116,L"布伦妮","Prune",ANEMO,4}
     ,{117,L"桑多涅","Sandrone",CRYO,5}
-        ,{118,L"奥黛塔","Odette",CRYO,5}
-        ,{119,L"阿罗夏","Alyosha",ELECTRO,4}
+    ,{118,L"奥黛塔","Odette",CRYO,5}
+    ,{119,L"阿罗夏","Alyosha",ELECTRO,4}
+    ,{120,L"薇斯纳","Vesna",ANEMO,5}
+    ,{121,L"沃雅妮莎","Vodyanitsa",HYDRO,5}
+        
 
 };
 
