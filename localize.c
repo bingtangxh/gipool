@@ -1,4 +1,4 @@
-#include "gipool.h"
+﻿#include "gipool.h"
 
 size_t localizedMemLen(const wchar_t* source)
 {

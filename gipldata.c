@@ -1,4 +1,4 @@
-#include "gipool.h"
+﻿#include "gipool.h"
 
 CharMapType const CharMap[]={
      {0,L"空","Aether",VISION_OTHER,0}

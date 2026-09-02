@@ -1,4 +1,4 @@
-#include "gipool.h"
+﻿#include "gipool.h"
 
 #define MAX_CHOICE_MENU_ITEMS 35 // 1~9,A~Z
 

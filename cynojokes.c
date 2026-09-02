@@ -1,4 +1,4 @@
-#include "gipool.h"
+﻿#include "gipool.h"
 
 static const wchar_t* cynojokes[]=
 {
