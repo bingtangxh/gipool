@@ -51,8 +51,10 @@ Mkfile.old
 dkms.conf
 PackRelease/
 gipool_*/
+_temp/
 Debug/
 Release/
+RelXP/
 .vs/
 .idea/
 a.out
