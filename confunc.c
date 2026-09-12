@@ -54,14 +54,15 @@ void putPool(const WishPoolType WishPool1)
     }
 
     for(size_t i=0; i<fiveCount&&WishPool1.up5[i]!=0; i++) {
+        size_t currentIndex = id2Index(WishPool1.up5[i]);
         for(size_t j=0;
-            j<localizedVisualLen(CharMap[longestChineseIndex].name_cn)-localizedVisualLen(CharMap[WishPool1.up5[i]].name_cn)&&
+            j<localizedVisualLen(CharMap[longestChineseIndex].name_cn)-localizedVisualLen(CharMap[currentIndex].name_cn)&&
             WishPool1.half<10;
             j++) {
             SPACE;
         }
-        SetConsoleColorByCharacter(CharMap[WishPool1.up5[i]]);
-        printf("%s ",localizedNames[WishPool1.up5[i]]==NULL ? "" : localizedNames[WishPool1.up5[i]]);
+        SetConsoleColorByCharacter(CharMap[currentIndex]);
+        printf("%s ",localizedNames[currentIndex]==NULL ? "" : localizedNames[currentIndex]);
         ResetConsoleColor();
         if(WishPool1.half<10) {
             printf("| ");
@@ -69,12 +70,13 @@ void putPool(const WishPoolType WishPool1)
     }
 
     for(size_t i=0; i<fourCount&&WishPool1.up4[i]!=0; i++) {
-        SetConsoleColorByCharacter(CharMap[WishPool1.up4[i]]);
-        printf("%s ",localizedNames[WishPool1.up4[i]]==NULL ? "" : localizedNames[WishPool1.up4[i]]);
+        size_t currentIndex = id2Index(WishPool1.up4[i]);
+        SetConsoleColorByCharacter(CharMap[currentIndex]);
+        printf("%s ",localizedNames[currentIndex]==NULL ? "" : localizedNames[currentIndex]);
         ResetConsoleColor();
 
         for(size_t j=0; j<localizedVisualLen(CharMap[longestChineseIndex].name_cn)-
-            localizedVisualLen(CharMap[WishPool1.up4[i]].name_cn);
+            localizedVisualLen(CharMap[currentIndex].name_cn);
             j++) {
             SPACE;
         }
@@ -432,15 +434,20 @@ int printW(const wchar_t* wstr)
 
 _Bool SetConsoleColorByCharacter(const CharMapType character)
 {
+    return SetConsoleColorByVision(character.vision);
+}
+
+_Bool SetConsoleColorByVision(uint8_t vision)
+{
 #ifdef _WIN32
     HANDLE hConsole=GetStdHandle(STD_OUTPUT_HANDLE);
     if(!GetConsoleScreenBufferInfo(hConsole,&original)) {
         return 0;
     }
-    SetConsoleTextAttribute(hConsole,visionColor[character.vision]);
+    SetConsoleTextAttribute(hConsole,visionColor[vision]);
     return 1;
 #else
-    printf("\033[38;5;%um",visionColor[character.vision]);
+    printf("\033[38;5;%um",visionColor[vision]);
     return 1;
 #endif
 }
@@ -455,4 +462,22 @@ _Bool ResetConsoleColor(void)
     printf("\033[0m");
     return 1;
 #endif
+}
+
+size_t id2Index(int id)
+{
+    for(size_t i=0; i<charCount; i++) {
+        if(CharMap[i].id==id) {
+            return i;
+        }
+    }
+    return SIZE_MAX;
+}
+
+int index2Id(size_t index)
+{
+    if(index>=charCount) {
+        return -1;
+    }
+    return CharMap[index].id;
 }

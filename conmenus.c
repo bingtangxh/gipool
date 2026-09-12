@@ -70,10 +70,13 @@ void mainMenu(void)
                     prevSlt=0;
                     goto main_menu;
                 }
-                buildPoolLinkList((size_t)choice,WishPool);
+                size_t choicedIndex = id2Index((unsigned int)choice);
+                buildPoolLinkList(choicedIndex,WishPool);
                 ENDL;
-                printf("%s: ",CharMap[choice].name);
-                printPoolLinkList(PoolLinkLists[choice]);
+                SetConsoleColorByCharacter(CharMap[choicedIndex]);
+                printf("%s: ",CharMap[choicedIndex].name);
+                ResetConsoleColor();
+                printPoolLinkList(PoolLinkLists[choicedIndex]);
                 ENDL;
                 printf(
 #ifdef _WIN32
@@ -81,7 +84,7 @@ void mainMenu(void)
 #else
                     "The above is all %s wish pool info, press ENTER for another character.",
 #endif
-                    CharMap[choice].name);
+                    CharMap[choicedIndex].name);
                 ENDL;
                 PAUSE;
                 CLS;
@@ -102,6 +105,7 @@ void mainMenu(void)
 int choiceOneCharacter(void)
 {
     static int prevSlt=0;
+    int foundAny = 0;
     do {
     choice_one_character:
         if(prevSlt==0||prevSlt==-1) {
@@ -113,60 +117,78 @@ int choiceOneCharacter(void)
         case 1:
         {
             ENDL;
-            printf("Please type how long the Chinese name is and press ENTER, type 0 for go back (0-20): ");
+            printf("Please type how long the Chinese name is and press ENTER, type -1 or 0 for go back (-1-%zu): ", longestChineseNameLength);
             int length=0;
             do {
-                length=readIntInRange(0,20,NULL);
-                if(length==0) {
+                length=readIntInRange(-1, (int)longestChineseNameLength,NULL);
+                if(length==-1||length==0) {
                     CLS;
                     prevSlt=0;
                     goto choice_one_character;
                 }
-                else if(length<=0||length>20) {
-                    printf("Invalid choice. Type 0 to go back. (0-20): ");
+                else if(length<0||length>(int)longestChineseNameLength) {
+                    printf("Invalid choice. Type -1 or 0 to go back. (-1-%zu): ", longestChineseNameLength);
                 }
                 else {
                     break;
                 }
             } while(1);
             CLS;
+            foundAny = 0;
             for(size_t i=0; i<charCount; i++) {
-                if((int)(wcslen(CharMap[i].name_cn)&31)==length) {
+                if(
+                    ((int)(wcslen(CharMap[i].name_cn)&31)==length)
+                    &&
+                    (CharMap[i].attrib!=ROLE_TYPE_EXCLUDED)
+                    ) {
+                    foundAny = 1;
                     SetConsoleColorByCharacter(CharMap[i]);
-                    printf("%u\t%s\t%s",(unsigned int)i,localizedNames[i],CharMap[i].name);
+                    printf("%u\t%s\t%s",index2Id(i),localizedNames[i],CharMap[i].name);
                     ResetConsoleColor();
                     ENDL;
                 }
+            }
+            if(!foundAny) {
+                printf("No character found with Chinese name length %d.\n", length);
             }
             break;
         }
         case 2:
         {
             ENDL;
-            printf("Please type how long the English name is and press ENTER, type 0 for go back (0-40): ");
+            printf("Please type how long the English name is and press ENTER, type -1 or 0 for go back (-1-%zu): ", longestEnglishNameLength);
             int length=0;
             do {
-                length=readIntInRange(0,40,NULL);
-                if(length==0) {
+                length=readIntInRange(-1, (int)longestEnglishNameLength,NULL);
+                if(length==-1||length==0) {
                     CLS;
                     prevSlt=0;
                     goto choice_one_character;
                 }
-                else if(length<=0||length>40) {
-                    printf("Invalid choice. Type 0 to go back. (0-40): ");
+                else if(length<0||length>(int)longestEnglishNameLength) {
+                    printf("Invalid choice. Type -1 or 0 to go back. (-1-%zu): ", longestEnglishNameLength);
                 }
                 else {
                     break;
                 }
             } while(1);
             CLS;
+            foundAny = 0;
             for(size_t i=0; i<charCount; i++) {
-                if((int)(strlen(CharMap[i].name)&63)==length) {
+                if(
+                    ((int)(strlen(CharMap[i].name)&63)==length)
+                    &&
+                    (CharMap[i].attrib != ROLE_TYPE_EXCLUDED)
+                    ) {
+                    foundAny = 1;
                     SetConsoleColorByCharacter(CharMap[i]);
-                    printf("%u\t%s\t%s",(unsigned int)i,CharMap[i].name,localizedNames[i]);
+                    printf("%u\t%s\t%s",index2Id(i), CharMap[i].name, localizedNames[i]);
                     ResetConsoleColor();
                     ENDL;
                 }
+            }
+            if(!foundAny) {
+                printf("No character found with English name length %d.\n", length);
             }
             break;
         }
@@ -175,6 +197,7 @@ int choiceOneCharacter(void)
             int visionSelection=VISION_UNKNOWN;
             ENDL;
             visionSelection=choiceMenu(splitByVisionType,(int)ARRAY_SIZE(splitByVisionType),L"选择一个神之眼类型");
+            int visionUserChoice = visionSelection;
             switch(visionSelection) {
             case 1: visionSelection=ANEMO; break;
             case 2: visionSelection=GEO; break;
@@ -189,9 +212,13 @@ int choiceOneCharacter(void)
                 continue;
             }
             CLS;
+            SetConsoleColorByVision((uint8_t)visionSelection);
+            putws(splitByVisionType[visionUserChoice - 1]);
+            ResetConsoleColor();
+            ENDL;
             for(size_t i=0; i<charCount; i++) {
                 if(CharMap[i].vision==visionSelection) {
-                    printf("%3zu | ",i);
+                    printf("%3d | ",index2Id(i));
                     for(size_t j=0; j<localizedVisualLen(CharMap[longestChineseIndex].name_cn)-localizedVisualLen(CharMap[i].name_cn); j++) { SPACE; }
                     printf("%s | %s",localizedNames[i],CharMap[i].name);
                     ENDL;

@@ -64,6 +64,10 @@
 
 typedef uint32_t RoleMeta;
 
+#define FSD UINT_MAX
+// FSD 就是 Four Star Dummy 的意思，因为原神每次前瞻会公布下一个版本的五星角色，然后等到卡池上线前一天才会公布四星角色
+// 所以我就用 FSD 来表示四星角色的占位符，在只有五星角色已公布的时期先记载五星信息，四星角色就写成 FSD，等到四星角色公布后再把 FSD 替换成真正的四星角色 ID
+
 typedef enum vision {
     VISION_OTHER,
     PYRO,
@@ -110,7 +114,7 @@ typedef enum roleType {
 // void getDaysPassedSinceLastUp(void) 这个函数有缺陷，因此上面三个 COUNT 宏的值应当相等
 
 typedef struct characterMap {
-    const unsigned int id;
+    const int id;
     const wchar_t name_cn[20];
     const char name[40];
     const uint8_t vision;
@@ -118,7 +122,7 @@ typedef struct characterMap {
 } CharMapType;
 
 typedef struct weaponMap {
-    const unsigned int id;
+    const int id;
     const wchar_t name_cn[20];
     const char name[40];
     const unsigned int stars;
@@ -126,9 +130,9 @@ typedef struct weaponMap {
 } WeaponMap;
 
 typedef struct wishPool {
-    unsigned int up5[MAX_POOL_UP5_COUNT];
-    unsigned int up4[MAX_POOL_UP4_COUNT];
-    unsigned int weapon[MAX_POOL_WEAPON_COUNT];
+    int up5[MAX_POOL_UP5_COUNT];
+    int up4[MAX_POOL_UP4_COUNT];
+    int weapon[MAX_POOL_WEAPON_COUNT];
     uint8_t major;
     uint8_t minor;
     uint8_t half;
@@ -197,6 +201,7 @@ void freeLocalizedNames(void);
 void printPoolLinkList(PoolLinkList current);
 int readIntInRange(int min,int max,const int* defaultValue);
 _Bool SetConsoleColorByCharacter(const CharMapType character);
+_Bool SetConsoleColorByVision(uint8_t vision);
 _Bool ResetConsoleColor(void);
 
 void initDynamicThings(void);
@@ -204,6 +209,8 @@ int checkIntegrity(void);
 void freeDynamicThings(void);
 
 void putPool(const WishPoolType WishPool1);
+size_t id2Index(int id);
+int index2Id(size_t index);
 
 #ifdef _WIN32
 DWORD printW(const wchar_t* wstr);

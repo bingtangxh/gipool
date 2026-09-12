@@ -29,9 +29,9 @@ int choiceOneCharacter4Test(void)
 {
     int result=-1;
     ENDL;
-    fputs("Please type a char index number, type -1 to go back: ",stdout);
+    printf("Please type a char index number, type -1 to go back (-1-%u): ",(unsigned int)charCount-1);
     do {
-        result=readIntInRange(INT_MIN,INT_MAX,NULL);
+        result=readIntInRange(-1,(int) charCount - 1,NULL);
         if(result==-1) {
             CLS;
             break;

@@ -120,7 +120,7 @@ int checkIntegrity(void)
             excludedPoolIndex++;
             continue;
         }
-        if(CharMap[i].id!=i-excludedPoolIndex) {
+        if(CharMap[i].id!=(int)(i-excludedPoolIndex)) {
             errorlevel++;
             excludedPoolIndex++;
         }
@@ -187,12 +187,26 @@ void getDaysPassedSinceLastUp(void)
 
         for(size_t p=poolCount-1; p+1!=0; p--) {
             // 等同于循环条件写 (p--)>0,循环后操作不写，但我不喜欢写(p--)>0这样的
-            for(size_t i=0; i<MAX_POOL_UP4_COUNT&&(CharMap[c].attrib==4 ? WishPool[p].up4[i] : WishPool[p].up5[i])!=0; i++) {
-                // 这里有问题，没有应对好 MAX_POOL_UP4_COUNT 和 MAX_POOL_UP5_COUNT 可能不相等的情况
-                if((CharMap[c].attrib==4 ? WishPool[p].up4[i] : WishPool[p].up5[i])==CharMap[c].id) {
-                    lastPoolIndex=(int)p;
-                    goto FOUND;
+            
+            if(CharMap[c].attrib==5) {
+                for(size_t i=0; i<MAX_POOL_UP5_COUNT&&WishPool[p].up5[i]!=0; i++) {
+                    if(WishPool[p].up5[i]==index2Id(c)) {
+                        lastPoolIndex=(int)p;
+                        goto FOUND;
+                    }
                 }
+            }
+            else if(CharMap[c].attrib==4) {
+                for(size_t i=0; i<MAX_POOL_UP4_COUNT&&WishPool[p].up4[i]!=0; i++) {
+                    if(WishPool[p].up4[i]==index2Id(c)) {
+                        lastPoolIndex=(int)p;
+                        goto FOUND;
+                    }
+                }
+            }
+            else {
+                lastPoolIndex=-1;
+                goto FOUND;
             }
         }
     FOUND:
@@ -332,7 +346,7 @@ _Bool buildPoolLinkList(size_t index,const WishPoolType WishPools[])
     if(PoolLinkLists==NULL) {
         return 1;
     }
-
+    // 如果链表不是空，那就先先清空，从头重建
     if(PoolLinkLists[index]!=NULL) {
         current=PoolLinkLists[index];
         while(current!=NULL) {
@@ -343,10 +357,12 @@ _Bool buildPoolLinkList(size_t index,const WishPoolType WishPools[])
         PoolLinkLists[index]=NULL;
     }
 
-    if(CharMap[index].attrib==5) {
+    int id = index2Id(index);
+
+    if(CharMap[index].attrib == 5) {
         for(size_t i=0; i<poolCount; i++) {
             for(size_t j=0; j<fiveCount&&WishPools[i].up5[j]!=0; j++) {
-                if(WishPools[i].up5[j]==index) {
+                if(WishPools[i].up5[j]==id) {
                     do {
                         currentNext=createPoolNode(WishPools[i]);
                     } while(currentNext==NULL);
@@ -367,7 +383,7 @@ _Bool buildPoolLinkList(size_t index,const WishPoolType WishPools[])
     if(CharMap[index].attrib==4) {
         for(size_t i=0; i<poolCount; i++) {
             for(size_t j=0; j<fourCount&&WishPools[i].up4[j]!=0; j++) {
-                if(WishPools[i].up4[j]==index) {
+                if(WishPools[i].up4[j]==id) {
                     do {
                         currentNext=createPoolNode(WishPools[i]);
                     } while(currentNext==NULL);
