@@ -462,7 +462,6 @@
   <ItemGroup>
     <ClCompile Include="confunc.c" />
     <ClCompile Include="conmenus.c" />
-    <ClCompile Include="conusage.c" />
     <ClCompile Include="cynojokes.c" />
     <ClCompile Include="giplcore.c" />
     <ClCompile Include="gipldata.c" />

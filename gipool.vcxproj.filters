@@ -45,9 +45,6 @@
     <ClCompile Include="conmenus.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="conusage.c">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="localize.c">
       <Filter>源文件</Filter>
     </ClCompile>

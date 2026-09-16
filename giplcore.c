@@ -105,6 +105,19 @@ void initDynamicThings(void)
     for(size_t i=0; i<charCount; i++) {
         PoolLinkLists[i]=NULL;
     }
+
+}
+
+size_t getSplitResultExpectedLength()
+{
+    size_t result = 0;
+    result += 3 + 3; // 3 digits for ID, 3 for " | "
+    result += (int)localizedVisualLen(CharMap[longestChineseIndex].name_cn);
+    result += 3; // 3 for " | "
+    result += (int)longestEnglishNameLength;
+    result += 1; // 1 for "\n"
+    result *= charCount;
+    return result;
 }
 
 int checkIntegrity(void)
@@ -320,6 +333,9 @@ void freeDynamicThings(void)
         free(PoolLinkLists);
         PoolLinkLists=NULL;
     }
+
+    free(splitResult);
+    splitResult = NULL;
 }
 
 int poolEndHour(uint8_t half)

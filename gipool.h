@@ -172,6 +172,7 @@ extern const int maxCharactersInCharPool;
 extern const wchar_t singleEdge[];
 extern const wchar_t doubleEdge[];
 extern const char splitLine[];
+extern char* splitResult;
 
 #ifdef _WIN32
 extern CONSOLE_SCREEN_BUFFER_INFO original;
@@ -205,6 +206,7 @@ _Bool SetConsoleColorByVision(uint8_t vision);
 _Bool ResetConsoleColor(void);
 
 void initDynamicThings(void);
+size_t getSplitResultExpectedLength();
 int checkIntegrity(void);
 void freeDynamicThings(void);
 
@@ -222,11 +224,16 @@ size_t localizedMemLen(const wchar_t* source);
 size_t localizedVisualLen(const wchar_t* source);
 char* localize(const wchar_t* source);
 
+extern size_t splitResultLength;
+void mainMenu(void);
+int choiceOneCharacter(void);
 void printAllPools(void);
 void printDaysofAllLimited5StarCharacters(void);
 int choiceOneCharacter4Test(void);
-
-void mainMenu(void);
+int choiceOneCharacterwithSpliterBefore(int list[], size_t length);
+int choiceOneCharacterUsingChineseNameLength();
+int choiceOneCharacterUsingEnglishNameLength();
+int choiceOneCharacterUsingVisionType();
 
 int cynoJoke(void);
 

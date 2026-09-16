@@ -5,8 +5,6 @@ CharMapType const CharMap[]={
      ,{1,L"荧","Lumine",VISION_OTHER,1}
      ,{UINT_MAX-1,L"戴因斯雷布","Dainsleif",VISION_OTHER,ROLE_TYPE_EXCLUDED}
     ,{FSD,L"","",VISION_OTHER,ROLE_TYPE_EXCLUDED}
-    // 整个程序还没有做好应对 CharMap[i].id!=i 的情况，所以戴因暂时先注释掉
-    // The whole program is not designed to handle the case where CharMap[i].id!=i, so Dainsleif is temporarily commented out
     ,{2,L"安柏","Amber",PYRO,4}
     ,{3,L"凯亚","Kaeya",CRYO,4}
     ,{4,L"丽莎","Lisa",ELECTRO,4}
