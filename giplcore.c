@@ -89,18 +89,22 @@ void initDynamicThings(void)
 
     getDaysPassedSinceLastUp();
 
-    do {
-        arrangedInOrderOfDays=(int*)malloc(charCount*sizeof(int));
-    } while(arrangedInOrderOfDays==NULL);
+    arrangedInOrderOfDays=(int*)malloc(charCount*sizeof(int));
+    if (arrangedInOrderOfDays == NULL) {
+        puts("Failed to allocate memory for arrangedInOrderOfDays.");
+        exit(1);
+    }
 
     for(size_t i=0; i<charCount; i++) {
         arrangedInOrderOfDays[i]=(int)i;
     }
     arrangeByDaysPassedSinceLastUp();
 
-    do {
-        PoolLinkLists=(PoolLinkList*)malloc(sizeof(PoolLinkList)*charCount);
-    } while(PoolLinkLists==NULL);
+    PoolLinkLists=(PoolLinkList*)malloc(sizeof(PoolLinkList)*charCount);
+    if (PoolLinkLists == NULL) {
+        puts("Failed to allocate memory for PoolLinkLists.");
+        exit(1);
+    }
 
     for(size_t i=0; i<charCount; i++) {
         PoolLinkLists[i]=NULL;
@@ -108,7 +112,7 @@ void initDynamicThings(void)
 
 }
 
-size_t getSplitResultExpectedLength()
+size_t getSplitResultExpectedLength(void)
 {
     size_t result = 0;
     result += 3 + 3; // 3 digits for ID, 3 for " | "
@@ -186,9 +190,11 @@ void getDaysPassedSinceLastUp(void)
         free(daysPassedSinceLastUP);
     }
 
-    do {
-        daysPassedSinceLastUP=(int*)malloc(sizeof(int)*charCount);
-    } while(daysPassedSinceLastUP==NULL);
+    daysPassedSinceLastUP=(int*)malloc(sizeof(int)*charCount);
+    if (daysPassedSinceLastUP == NULL) {
+        puts("Failed to allocate memory for daysPassedSinceLastUP.");
+        exit(1);
+    }
 
     for(size_t c=0; c<charCount; c++) {
         int lastPoolIndex=-1;
@@ -360,6 +366,7 @@ _Bool buildPoolLinkList(size_t index,const WishPoolType WishPools[])
     size_t fourCount=ARRAY_SIZE(WishPools[0].up4);
 
     if(PoolLinkLists==NULL) {
+        puts("Error: PoolLinkLists is NULL.");
         return 1;
     }
     // 如果链表不是空，那就先先清空，从头重建
@@ -375,44 +382,47 @@ _Bool buildPoolLinkList(size_t index,const WishPoolType WishPools[])
 
     int id = index2Id(index);
 
-    if(CharMap[index].attrib == 5) {
-        for(size_t i=0; i<poolCount; i++) {
-            for(size_t j=0; j<fiveCount&&WishPools[i].up5[j]!=0; j++) {
-                if(WishPools[i].up5[j]==id) {
-                    do {
-                        currentNext=createPoolNode(WishPools[i]);
-                    } while(currentNext==NULL);
-
-                    if(PoolLinkLists[index]==NULL) {
-                        PoolLinkLists[index]=current=currentNext;
-                    }
-                    else {
-                        current->next=currentNext;
-                        current=current->next;
-                    }
-                }
-            }
-        }
-        return 0;
+    if (CharMap[index].attrib != 5 && CharMap[index].attrib != 4 && (CharMap[index].attrib&3)!=3) {
+        // 来到这里说明查询的角色类型不是会UP的
+        // 注意刻晴是特殊的开服常驻但是海灯节被拉出来UP了一次，因为过年不能让看殡仪馆的胡桃UP
+        return 1;
     }
-
-    if(CharMap[index].attrib==4) {
+    else 
+    {
         for(size_t i=0; i<poolCount; i++) {
-            for(size_t j=0; j<fourCount&&WishPools[i].up4[j]!=0; j++) {
-                if(WishPools[i].up4[j]==id) {
-                    do {
-                        currentNext=createPoolNode(WishPools[i]);
-                    } while(currentNext==NULL);
+            for(
+                size_t j=0; 
+
+                CharMap[index].attrib == 4?
+                j<fourCount&&WishPools[i].up4[j]!=0: 
+                j<fiveCount&&WishPools[i].up5[j]!=0;
+                
+                j++
+                ) {
+                if(
+                    CharMap[index].attrib == 4 ?
+                    WishPools[i].up4[j] == id :
+                    WishPools[i].up5[j] == id 
+                    ) {
+                    
+                    currentNext=createPoolNode(WishPools[i]);
+                    if(currentNext==NULL) {
+                        puts("Failed to allocate memory for a new pool node while building pool link list.\r");
+                        return 1;
+                    }
 
                     if(PoolLinkLists[index]==NULL) {
                         PoolLinkLists[index]=current=currentNext;
                     }
-                    else if(current!=NULL) {
+                    else if (current != NULL) {
                         current->next=currentNext;
                         current=current->next;
-                    }
-                    else {
-                        puts("Error: 'current' is NULL while building pool link list for 4-star character.\r\nPlease report this bug to the developer.\r");
+                    } else {
+                        puts(
+                            CharMap[index].attrib == 5 ?
+                            "Error: 'current' is NULL while building pool link list for 4-star character.\r\nPlease report this bug to the developer.\r" :
+                            "Error: 'current' is NULL while building pool link list for 5-star character.\r\nPlease report this bug to the developer.\r" 
+                        );
                         free(currentNext);
                         return 1;
                     }
@@ -421,7 +431,7 @@ _Bool buildPoolLinkList(size_t index,const WishPoolType WishPools[])
         }
         return 0;
     }
-
+    // 不应该来到这里的才对
     return 1;
 }
 
@@ -429,6 +439,7 @@ PoolLinkList createPoolNode(const WishPoolType WishPool1)
 {
     PoolLinkList target=(PoolLinkList)malloc(sizeof(PoolNodeType));
     if(target==NULL) {
+        puts("Failed to allocate memory for a new pool node.\r");
         return NULL;
     }
 

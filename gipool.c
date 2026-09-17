@@ -66,9 +66,12 @@ int main(int argc,char** argv)
     }
 
     initDynamicThings();
-    do {
-        localizedNames=(char**)malloc(charCount*sizeof(char*));
-    } while(localizedNames==NULL);
+    
+    localizedNames=(char**)malloc(charCount*sizeof(char*));
+    if (localizedNames == NULL) {
+        puts("Failed to allocate memory for localizedNames.");
+        exit(1);
+    }
 
     localizeNamesArray(CharMap,localizedNames);
     printCompileTime();

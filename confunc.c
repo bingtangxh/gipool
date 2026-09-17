@@ -106,6 +106,10 @@ int typeMenu(const wchar_t* menuItems[],int itemCount,const wchar_t* title)
             longestIndexLength++;
         }
         localizedItemNames=(char**)malloc(itemCount*sizeof(char*));
+        if(localizedItemNames==NULL) {
+            puts("Error: Memory allocation failed for localizedItemNames.");
+            exit(1);
+        }
         for(int i=0; i<itemCount; i++) {
             if((currentExpectedLength=localizedVisualLen(menuItems[i]))>maxItemLength) {
                 maxItemLength=currentExpectedLength;
@@ -194,7 +198,10 @@ int choiceMenu(const wchar_t* menuItems[],int itemCount,const wchar_t* title)
     do {
         size_t currentExpectedLength=0,maxItemLength=0,gaptoMax=0,gaptoMax_num=0,longestIndexLength=1,titleLineSpaces=0;
         char** localizedItemNames=(char**)malloc(itemCount*sizeof(char*));
-
+        if(localizedItemNames==NULL) {
+            puts("Error: Memory allocation failed for localizedItemNames.");
+            exit(1);
+        }
         for(int i=0; i<itemCount; i++) {
             if((currentExpectedLength=localizedVisualLen(menuItems[i]))>maxItemLength) {
                 maxItemLength=currentExpectedLength;

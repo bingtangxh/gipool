@@ -82,7 +82,12 @@ void mainMenu(void)
                     goto main_menu;
                 }
                 size_t choicedIndex = id2Index((unsigned int)choice);
-                buildPoolLinkList(choicedIndex,WishPool);
+                if(buildPoolLinkList(choicedIndex,WishPool))
+                {
+                    // 来到这里
+                    // 仅说明构建链表失败，不一定是内存申请失败，也有可能是查询的角色不是4星或5星UP角色
+                    // 所以先继续运行
+                }
                 ENDL;
                 SetConsoleColorByCharacter(CharMap[choicedIndex]);
                 printf("%s: ",CharMap[choicedIndex].name);
@@ -248,7 +253,7 @@ int choiceOneCharacterwithSpliterBefore(int list[], size_t length)
     } while (1);
 }
 
-int choiceOneCharacterUsingChineseNameLength() {
+int choiceOneCharacterUsingChineseNameLength(void) {
     int foundAny = 0, found = 0, currentIndex = 0, selection = -1;
     int* foundList = NULL;
 typeChineseName:
@@ -287,7 +292,7 @@ typeChineseName:
         }
         foundList = (int*)malloc(sizeof(int) * (found + 1));
         if (foundList == NULL) {
-            puts("Failed to malloc memory for foundList. ");
+            puts("Failed to allocate memory for foundList. ");
             return -2;
         }
         currentIndex = 0;
@@ -315,7 +320,7 @@ typeChineseName:
     }
 }
 
-int choiceOneCharacterUsingEnglishNameLength() {
+int choiceOneCharacterUsingEnglishNameLength(void) {
     int foundAny = 0, found = 0, currentIndex = 0, selection = -1;
     int* foundList = NULL;
 typeEnglishName:
@@ -355,7 +360,7 @@ typeEnglishName:
         }
         foundList = (int*)malloc(sizeof(int) * (found + 1));
         if (foundList == NULL) {
-            puts("Failed to malloc memory for foundList. ");
+            puts("Failed to allocate memory for foundList. ");
             return -2;
         }
         currentIndex = 0;
@@ -383,15 +388,16 @@ typeEnglishName:
     }
 }
 
-int choiceOneCharacterUsingVisionType() {
-    int found = 0, currentIndex = 0, selection = -1;
+int choiceOneCharacterUsingVisionType(void) {
+    size_t found = 0, currentIndex = 0;
+    int selection = -1;
     int* foundList = NULL;
 
     splitResultLength = getSplitResultExpectedLength();
     splitResult = (char*)malloc(sizeof(char) * (splitResultLength + 1));
     if (splitResult == NULL) {
         puts("Failed to allocate memory for splitResult.");
-        exit(1);
+        return -2;
     }
 
     int visionSelection = VISION_UNKNOWN;
@@ -449,9 +455,9 @@ int choiceOneCharacterUsingVisionType() {
         }
     }
     puts(splitResult);
-    foundList = (int*)malloc(sizeof(int) * (found + 1));
+    foundList = (int*)malloc(sizeof(int) * (found + 0));
     if (foundList == NULL) {
-        puts("Failed to malloc memory for foundList. ");
+        puts("Failed to allocate memory for foundList. ");
         return -2;
     }
     currentIndex = 0;
@@ -462,9 +468,14 @@ int choiceOneCharacterUsingVisionType() {
                 puts("Unexpected null pointer foundList.");
                 exit(1);
             }
-            else foundList[currentIndex++] = index2Id(i);
+            else if (currentIndex>=found) {
+                puts("Unexpected index out of bounds in foundList.");
+                exit(1);
+            } else foundList[currentIndex++] = index2Id(i);
         }
     }
+    printf("Found %zu characters.", found);
+    ENDL;
     selection = choiceOneCharacterwithSpliterBefore(foundList, (size_t)found);
     if (selection == -1) {
         free(foundList);

@@ -206,7 +206,7 @@ _Bool SetConsoleColorByVision(uint8_t vision);
 _Bool ResetConsoleColor(void);
 
 void initDynamicThings(void);
-size_t getSplitResultExpectedLength();
+size_t getSplitResultExpectedLength(void);
 int checkIntegrity(void);
 void freeDynamicThings(void);
 
@@ -231,9 +231,9 @@ void printAllPools(void);
 void printDaysofAllLimited5StarCharacters(void);
 int choiceOneCharacter4Test(void);
 int choiceOneCharacterwithSpliterBefore(int list[], size_t length);
-int choiceOneCharacterUsingChineseNameLength();
-int choiceOneCharacterUsingEnglishNameLength();
-int choiceOneCharacterUsingVisionType();
+int choiceOneCharacterUsingChineseNameLength(void);
+int choiceOneCharacterUsingEnglishNameLength(void);
+int choiceOneCharacterUsingVisionType(void);
 
 int cynoJoke(void);
 
