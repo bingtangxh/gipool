@@ -37,24 +37,6 @@ uint8_t visionColor[]={7, 9, 33, 43, 99, 46, 159, 220, 7};
 #endif
 
 
-void printTestInfo(void);
-void beforeTerminate(void);
-
-
-void printTestInfo(void)
-{
-}
-
-void beforeTerminate(void)
-{
-#ifdef _WIN32
-    puts("Press any key to exit...");
-#else
-    puts("Press ENTER to exit...");
-#endif
-    PAUSE;
-}
-
 int main(int argc,char** argv)
 {
     initConsole();
@@ -64,22 +46,33 @@ int main(int argc,char** argv)
             return 0;
         }
     }
-
     initDynamicThings();
-    
-    localizedNames=(char**)malloc(charCount*sizeof(char*));
-    if (localizedNames == NULL) {
-        puts("Failed to allocate memory for localizedNames.");
-        exit(1);
-    }
-
-    localizeNamesArray(CharMap,localizedNames);
     printCompileTime();
     ENDL;
     printf("Count of characters and pool info with errors: %d",checkIntegrity());
+    printTestInfo();
     ENDL;
     mainMenu();
+    // 确保 mainMenu 结束后和 exitDuetoFatalError 函数调用时，都释放动态申请的内存且两种退出方式流程相同
     freeDynamicThings();
-    freeLocalizedNames();
     return 0;
+}
+
+void printTestInfo(void)
+{
+}
+
+void exitDuetoFatalError(const int code,const char* message,const int id)
+{
+    // 切勿将该函数的 message 参数交由不可靠的用户输入决定，否则可能会导致格式化字符串漏洞
+    fputs(message, stderr);
+    if(id>=0) {
+        fprintf(stderr,"\nThe error occurred when id is: %d. ",id);
+    }
+    else { fputc('\n', stderr); }
+    fputs("gipool cannot continue running.\n", stderr);
+    // 确保 mainMenu 结束后和 exitDuetoFatalError 函数调用时，都释放动态申请的内存且两种退出方式流程相同
+    freeDynamicThings();
+    beforeTerminate();
+    exit(code);
 }

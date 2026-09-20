@@ -2,6 +2,7 @@
 
 size_t splitResultLength = 0;
 char *splitResultCurrent=NULL;
+char* splitResult=NULL;
 
 #define CHINESE_SPLITER ((int)(wcslen(CharMap[i].name_cn) & 31) == length)\
 &&\
@@ -19,7 +20,6 @@ const wchar_t* mainMenuItems[]={
     L"退出"
 };
 
-char* splitResult;
 
 const wchar_t* splitMainMenu[]={
     L"按照角色中文名有几个字筛选",

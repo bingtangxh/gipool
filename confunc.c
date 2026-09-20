@@ -325,37 +325,12 @@ int choiceMenu(const wchar_t* menuItems[],int itemCount,const wchar_t* title)
     } while(1);
 }
 
-_Bool localizeNamesArray(const CharMapType CharMap1[],char* targetLocalizedNames[])
-{
-    _Bool result=0;
-    for(size_t i=0; i<charCount; i++) {
-        if((targetLocalizedNames[i]=localize(CharMap1[i].name_cn))==NULL) {
-            result=1;
-        }
-    }
-    return result;
-}
-
 void clearInputBuffer(void)
 {
     int current='\0';
     do {
         current=getchar();
     } while(current!='\n'&&current!=EOF&&current!='\0');
-}
-
-void freeLocalizedNames(void)
-{
-    if(localizedNames!=NULL) {
-        for(size_t i=0; i<charCount; i++) {
-            if(localizedNames[i]!=NULL) {
-                free(localizedNames[i]);
-                localizedNames[i]=NULL;
-            }
-        }
-        free(localizedNames);
-        localizedNames=NULL;
-    }
 }
 
 void printPoolLinkList(PoolLinkList current)
@@ -487,4 +462,14 @@ int index2Id(size_t index)
         return -1;
     }
     return CharMap[index].id;
+}
+
+void beforeTerminate(void)
+{
+#ifdef _WIN32
+    puts("Press any key to exit...");
+#else
+    puts("Press ENTER to exit...");
+#endif
+    PAUSE;
 }

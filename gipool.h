@@ -173,6 +173,7 @@ extern const wchar_t singleEdge[];
 extern const wchar_t doubleEdge[];
 extern const char splitLine[];
 extern char* splitResult;
+extern size_t splitResultLength;
 
 #ifdef _WIN32
 extern CONSOLE_SCREEN_BUFFER_INFO original;
@@ -195,10 +196,13 @@ void help(void);
 
 void initConsole(void);
 void printCompileTime(void);
+void printTestInfo(void);
+void beforeTerminate(void);
+void exitDuetoFatalError(const int code, const char* message, const int id);
+
 int typeMenu(const wchar_t* menuItems[],int itemCount,const wchar_t* title);
 int choiceMenu(const wchar_t* menuItems[],int itemCount,const wchar_t* title);
-_Bool localizeNamesArray(const CharMapType CharMap1[],char* targetLocalizedNames[]);
-void freeLocalizedNames(void);
+
 void printPoolLinkList(PoolLinkList current);
 int readIntInRange(int min,int max,const int* defaultValue);
 _Bool SetConsoleColorByCharacter(const CharMapType character);

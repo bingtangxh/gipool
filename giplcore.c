@@ -91,8 +91,9 @@ void initDynamicThings(void)
 
     arrangedInOrderOfDays=(int*)malloc(charCount*sizeof(int));
     if (arrangedInOrderOfDays == NULL) {
-        puts("Failed to allocate memory for arrangedInOrderOfDays.");
-        exit(1);
+        exitDuetoFatalError(2,"Failed to allocate memory for arrangedInOrderOfDays.",-1);
+        exit(2);
+        // 下面要咱取消对 NULL 指针的引用，所以这里再加一行 exit
     }
 
     for(size_t i=0; i<charCount; i++) {
@@ -102,14 +103,27 @@ void initDynamicThings(void)
 
     PoolLinkLists=(PoolLinkList*)malloc(sizeof(PoolLinkList)*charCount);
     if (PoolLinkLists == NULL) {
-        puts("Failed to allocate memory for PoolLinkLists.");
-        exit(1);
+        exitDuetoFatalError(2,"Failed to allocate memory for PoolLinkLists.",-1);
+        exit(2);
+        // 下面要咱取消对 NULL 指针的引用，所以这里再加一行 exit
     }
 
     for(size_t i=0; i<charCount; i++) {
         PoolLinkLists[i]=NULL;
     }
 
+    localizedNames = (char**)malloc(charCount * sizeof(char*));
+    if (localizedNames == NULL) {
+        exitDuetoFatalError(2,"Failed to allocate memory for localizedNames.",-1);
+        exit(2);
+        // 下面要咱取消对 NULL 指针的引用，所以这里再加一行 exit
+    }
+
+    for (size_t i = 0; i < charCount; i++) {
+        if ((localizedNames[i] = localize(CharMap[i].name_cn)) == NULL) {
+            exitDuetoFatalError(2,"Failed to localize Chinese name.", index2Id(i));
+        }
+    }
 }
 
 size_t getSplitResultExpectedLength(void)
@@ -342,6 +356,17 @@ void freeDynamicThings(void)
 
     free(splitResult);
     splitResult = NULL;
+
+    if (localizedNames != NULL) {
+        for (size_t i = 0; i < charCount; i++) {
+            if (localizedNames[i] != NULL) {
+                free(localizedNames[i]);
+                localizedNames[i] = NULL;
+            }
+        }
+        free(localizedNames);
+        localizedNames = NULL;
+    }
 }
 
 int poolEndHour(uint8_t half)
