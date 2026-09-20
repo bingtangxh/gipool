@@ -90,11 +90,7 @@ void initDynamicThings(void)
     getDaysPassedSinceLastUp();
 
     arrangedInOrderOfDays=(int*)malloc(charCount*sizeof(int));
-    if (arrangedInOrderOfDays == NULL) {
-        exitDuetoFatalError(2,"Failed to allocate memory for arrangedInOrderOfDays.",-1);
-        exit(2);
-        // 下面要咱取消对 NULL 指针的引用，所以这里再加一行 exit
-    }
+    EXIT_IF_NULL(arrangedInOrderOfDays,-1);
 
     for(size_t i=0; i<charCount; i++) {
         arrangedInOrderOfDays[i]=(int)i;
@@ -102,27 +98,18 @@ void initDynamicThings(void)
     arrangeByDaysPassedSinceLastUp();
 
     PoolLinkLists=(PoolLinkList*)malloc(sizeof(PoolLinkList)*charCount);
-    if (PoolLinkLists == NULL) {
-        exitDuetoFatalError(2,"Failed to allocate memory for PoolLinkLists.",-1);
-        exit(2);
-        // 下面要咱取消对 NULL 指针的引用，所以这里再加一行 exit
-    }
+    EXIT_IF_NULL(PoolLinkLists,-1);
 
     for(size_t i=0; i<charCount; i++) {
         PoolLinkLists[i]=NULL;
     }
 
     localizedNames = (char**)malloc(charCount * sizeof(char*));
-    if (localizedNames == NULL) {
-        exitDuetoFatalError(2,"Failed to allocate memory for localizedNames.",-1);
-        exit(2);
-        // 下面要咱取消对 NULL 指针的引用，所以这里再加一行 exit
-    }
+    EXIT_IF_NULL(localizedNames,-1);
 
     for (size_t i = 0; i < charCount; i++) {
-        if ((localizedNames[i] = localize(CharMap[i].name_cn)) == NULL) {
-            exitDuetoFatalError(2,"Failed to localize Chinese name.", index2Id(i));
-        }
+        localizedNames[i] = localize(CharMap[i].name_cn);
+        EXIT_IF_NULL(localizedNames[i], index2Id(i));
     }
 }
 

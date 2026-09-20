@@ -28,6 +28,15 @@
 // #define ARRAY_SIZE(arr) (sizeof(arr) == 0 ? 0 : sizeof(arr) / sizeof((arr)[0]))
 #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]))
 
+#define EXIT_IF_NULL(ptr,id) \
+    do { \
+        if ((ptr) == NULL) { \
+            fprintf(stderr, "Error: %s is unexpectedly NULL at %s:%d, may be allocating memory failed\n", #ptr, __FILE__, __LINE__); \
+            exitDuetoFatalError(2,"",id); \
+            exit(2); \
+        } \
+    } while (0)
+
 #ifdef _WIN32
 #define CLS system("cls")
 #define ENDL putchar('\n')
