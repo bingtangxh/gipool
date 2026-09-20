@@ -291,19 +291,13 @@ typeChineseName:
             goto typeChineseName;
         }
         foundList = (int*)malloc(sizeof(int) * (found + 1));
-        if (foundList == NULL) {
-            puts("Failed to allocate memory for foundList. ");
-            return -2;
-        }
+        RETURN_IF_NULL(foundList, -2,-1);
+        // 这里只是筛选失败，应该返回重新询问角色名长度，不退出
         currentIndex = 0;
         for (size_t i = 0; i < charCount; i++) {
             if (CHINESE_SPLITER) {
-                if (foundList == NULL)
-                {
-                    puts("Unexpected null pointer foundList.");
-                    exit(1);
-                }
-                else foundList[currentIndex++] = index2Id(i);
+                EXIT_IF_NULL(foundList, index2Id(i));
+                foundList[currentIndex++] = index2Id(i);
             }
         }
         selection = choiceOneCharacterwithSpliterBefore(foundList, (size_t)found);
@@ -359,10 +353,7 @@ typeEnglishName:
             goto typeEnglishName;
         }
         foundList = (int*)malloc(sizeof(int) * (found + 1));
-        if (foundList == NULL) {
-            puts("Failed to allocate memory for foundList. ");
-            return -2;
-        }
+        RETURN_IF_NULL(foundList, -2,-1);
         currentIndex = 0;
         for (size_t i = 0; i < charCount; i++) {
             if (ENGLISH_SPLITER) {
@@ -395,11 +386,7 @@ int choiceOneCharacterUsingVisionType(void) {
 
     splitResultLength = getSplitResultExpectedLength();
     splitResult = (char*)malloc(sizeof(char) * (splitResultLength + 1));
-    if (splitResult == NULL) {
-        puts("Failed to allocate memory for splitResult.");
-        return -2;
-    }
-
+    RETURN_IF_NULL(splitResult, -2,-1);
     int visionSelection = VISION_UNKNOWN;
     ENDL;
     visionSelection = choiceMenu(splitByVisionType, (int)ARRAY_SIZE(splitByVisionType), L"选择一个神之眼类型");
@@ -456,19 +443,12 @@ int choiceOneCharacterUsingVisionType(void) {
     }
     puts(splitResult);
     foundList = (int*)malloc(sizeof(int) * (found + 0));
-    if (foundList == NULL) {
-        puts("Failed to allocate memory for foundList. ");
-        return -2;
-    }
+    RETURN_IF_NULL(foundList, -2,-1);
     currentIndex = 0;
     for (size_t i = 0; i < charCount; i++) {
         if (CharMap[i].vision == visionSelection) {
-            if (foundList == NULL)
-            {
-                puts("Unexpected null pointer foundList.");
-                exit(1);
-            }
-            else if (currentIndex>=found) {
+            EXIT_IF_NULL(foundList, index2Id(i));
+            if (currentIndex>=found) {
                 puts("Unexpected index out of bounds in foundList.");
                 exit(1);
             } else foundList[currentIndex++] = index2Id(i);

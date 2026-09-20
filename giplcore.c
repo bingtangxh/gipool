@@ -450,11 +450,7 @@ _Bool buildPoolLinkList(size_t index,const WishPoolType WishPools[])
 PoolLinkList createPoolNode(const WishPoolType WishPool1)
 {
     PoolLinkList target=(PoolLinkList)malloc(sizeof(PoolNodeType));
-    if(target==NULL) {
-        puts("Failed to allocate memory for a new pool node.\r");
-        return NULL;
-    }
-
+    RETURN_IF_NULL(target, NULL, -1);
     target->major=WishPool1.major;
     target->minor=WishPool1.minor;
     target->half=WishPool1.half;

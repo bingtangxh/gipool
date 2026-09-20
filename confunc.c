@@ -106,10 +106,7 @@ int typeMenu(const wchar_t* menuItems[],int itemCount,const wchar_t* title)
             longestIndexLength++;
         }
         localizedItemNames=(char**)malloc(itemCount*sizeof(char*));
-        if(localizedItemNames==NULL) {
-            puts("Error: Memory allocation failed for localizedItemNames.");
-            exit(1);
-        }
+        EXIT_IF_NULL(localizedItemNames, -1);
         for(int i=0; i<itemCount; i++) {
             if((currentExpectedLength=localizedVisualLen(menuItems[i]))>maxItemLength) {
                 maxItemLength=currentExpectedLength;
@@ -198,10 +195,7 @@ int choiceMenu(const wchar_t* menuItems[],int itemCount,const wchar_t* title)
     do {
         size_t currentExpectedLength=0,maxItemLength=0,gaptoMax=0,gaptoMax_num=0,longestIndexLength=1,titleLineSpaces=0;
         char** localizedItemNames=(char**)malloc(itemCount*sizeof(char*));
-        if(localizedItemNames==NULL) {
-            puts("Error: Memory allocation failed for localizedItemNames.");
-            exit(1);
-        }
+        EXIT_IF_NULL(localizedItemNames, -1);
         for(int i=0; i<itemCount; i++) {
             if((currentExpectedLength=localizedVisualLen(menuItems[i]))>maxItemLength) {
                 maxItemLength=currentExpectedLength;
@@ -350,33 +344,42 @@ int readIntInRange(int min,int max,const int* defaultValue)
     long val;
     while(1) {
         if(!fgets(buf,sizeof(buf),stdin)) {
+            // 说明 fgets 读取失败，可能是 EOF 或者其他错误
             if(feof(stdin)) {
-                ENDL;
-                printf("EOF detected. Exiting.");
-                ENDL;
-                exit(1);
+                if (defaultValue != NULL) { return *defaultValue; }
+                printf("EOF detected. Enter a number (%d-%d): ", min, max);
+                continue;
             }
+            // 如果有错误却又不是 EOF，清除错误标志并继续
             clearerr(stdin);
             continue;
         }
         if(buf[0]=='\n') {
             if(defaultValue!=NULL) { return *defaultValue; }
-            printf("Empty input. Enter a number between %d and %d: ",min,max);
+            printf("Empty input. Enter a number (%d-%d): ",min,max);
             continue;
         }
-        if(!strchr(buf,'\n')) {
-            printf("Input too long. Enter a number between %d and %d: ",min,max);
+        char ending = buf[63];
+        if(!strchr(buf,'\n')&&!strchr(buf, '\x1a')) {
+            printf("Input too long. Enter a number (%d-%d): ",min,max);
+            // 只有这一种情况说明输入没有读完，需要清空输入缓冲区
+            
+            // 请不要不小心正好输入 63 个字符，然后再不小心输入 '\x1a' （按 Ctrl+Z），然后再不小心回车，
+            // 这样的话，clearInputBuffer() 读到的正好是 '\x1a' ，
+            // 于是它会无提示要求用户输入一行字符并丢弃，然后才是 fgets() 在读取
             clearInputBuffer();
+            
             continue;
         }
+        // 到这就不需要清空输入缓冲区了
         errno=0;
         val=strtol(buf,&end,10);
-        if(end==buf||(*end!='\n'&&*end!='\0')) {
-            printf("Invalid input. Enter a valid integer between %d and %d: ",min,max);
+        if(end==buf||(*end!='\n'&&*end!='\0'&&*end!='\r'&&*end!=EOF && *end != '\x1a')) {
+            printf("Invalid input. Enter a valid integer (%d-%d): ",min,max);
             continue;
         }
         if(errno==ERANGE||val < min||val > max) {
-            printf("Out of range. Enter a number between %d and %d: ",min,max);
+            printf("Out of range. Enter a number (%d-%d): ",min,max);
             continue;
         }
         return (int)val;

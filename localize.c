@@ -13,10 +13,7 @@ size_t localizedVisualLen(const wchar_t* source)
 {
 #ifdef _WIN32
     LPWORD widthArray=(LPWORD)malloc(sizeof(WORD)*(wcslen(source)+1));
-    if (widthArray == NULL) { 
-        puts("Failed to allocate memory for widthArray.");
-        return 0; 
-    }
+    RETURN_IF_NULL(widthArray, 0, -1);
     if(GetStringTypeW(CT_CTYPE3,source,(int)wcslen(source),widthArray)==0) {
         free(widthArray);
         return 0;
@@ -41,10 +38,7 @@ char* localize(const wchar_t* source)
     int destSize=WideCharToMultiByte(CP_ACP,0,(LPCWSTR)source,-1,NULL,0,NULL,NULL);
     if(destSize==0) return NULL;
     char* localizedStr=(char*)malloc(sizeof(char)*(size_t)destSize);
-    if(localizedStr==NULL) {
-        puts("Failed to allocate memory for localizedStr.");
-        return NULL;
-    }
+    RETURN_IF_NULL(localizedStr, NULL, -1);
     if(WideCharToMultiByte(CP_ACP,0,(LPCWSTR)source,-1,localizedStr,destSize,NULL,NULL)==0) {
         free(localizedStr);
         return NULL;
@@ -54,10 +48,7 @@ char* localize(const wchar_t* source)
     size_t destSize=wcstombs(NULL,source,0)+1;
     if(destSize==0) return NULL;
     char* localizedStr=(char*)malloc(sizeof(char)*destSize);
-    if(localizedStr==NULL) {
-        puts("Failed to allocate memory for localizedStr.");
-        return NULL;
-    }
+    RETURN_IF_NULL(localizedStr, NULL, -1);
     if(wcstombs(localizedStr,source,destSize)==0) {
         free(localizedStr);
         return NULL;
