@@ -324,7 +324,7 @@ void clearInputBuffer(void)
     int current='\0';
     do {
         current=getchar();
-    } while(current!='\n'&&current!=EOF&&current!='\0');
+    } while(current!='\n'&&current!=EOF&&current!='\0'&&current!='\x1a');
 }
 
 void printPoolLinkList(PoolLinkList current)
@@ -361,14 +361,10 @@ int readIntInRange(int min,int max,const int* defaultValue)
         }
         char ending = buf[63];
         if(!strchr(buf,'\n')&&!strchr(buf, '\x1a')) {
+            // '\n' 和 '\x1a' 都不在 buf 中，说明输入太长了 
             printf("Input too long. Enter a number (%d-%d): ",min,max);
             // 只有这一种情况说明输入没有读完，需要清空输入缓冲区
-            
-            // 请不要不小心正好输入 63 个字符，然后再不小心输入 '\x1a' （按 Ctrl+Z），然后再不小心回车，
-            // 这样的话，clearInputBuffer() 读到的正好是 '\x1a' ，
-            // 于是它会无提示要求用户输入一行字符并丢弃，然后才是 fgets() 在读取
             clearInputBuffer();
-            
             continue;
         }
         // 到这就不需要清空输入缓冲区了
