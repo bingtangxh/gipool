@@ -359,7 +359,7 @@ int readIntInRange(int min,int max,const int* defaultValue)
             printf("Empty input. Enter a number (%d-%d): ",min,max);
             continue;
         }
-        char ending = buf[63];
+        // char ending = buf[63];
         if(!strchr(buf,'\n')&&!strchr(buf, '\x1a')) {
             // '\n' 和 '\x1a' 都不在 buf 中，说明输入太长了 
             printf("Input too long. Enter a number (%d-%d): ",min,max);
