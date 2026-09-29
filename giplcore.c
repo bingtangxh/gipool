@@ -81,6 +81,7 @@ _Bool isPoolInOrder(int i)
 
 void initDynamicThings(void)
 {
+    // 待修复：该函数当中如果中途分配失败，调用的 EXIT_IF_NULL 宏会导致还没有被分配的指针也被 free
     size_t i=0;
     getCharandPoolCount();
     longestChineseIndex=(size_t)findLongest(CharMap);
@@ -100,10 +101,7 @@ void initDynamicThings(void)
 
     PoolLinkLists=(PoolLinkList*)malloc(sizeof(PoolLinkList)*charCount);
     EXIT_IF_NULL(PoolLinkLists,-1);
-
-    for(i=0; i<charCount; i++) {
-        PoolLinkLists[i]=NULL;
-    }
+    memset(PoolLinkLists,0,sizeof(PoolLinkList)*charCount);
 
     localizedNames=(char**)malloc(charCount*sizeof(char*));
     EXIT_IF_NULL(localizedNames,-1);
@@ -193,10 +191,7 @@ void getDaysPassedSinceLastUp(void)
     }
 
     daysPassedSinceLastUP=(int*)malloc(sizeof(int)*charCount);
-    if(daysPassedSinceLastUP==NULL) {
-        puts("Failed to allocate memory for daysPassedSinceLastUP.");
-        exit(1);
-    }
+    EXIT_IF_NULL(daysPassedSinceLastUP,-1);
 
     for(c=0; c<charCount; c++) {
         int lastPoolIndex=-1;
@@ -441,8 +436,8 @@ _Bool buildPoolLinkList(size_t index,const WishPoolType WishPools[])
                     else {
                         puts(
                             CharMap[index].attrib==5 ?
-                            "Error: 'current' is NULL while building pool link list for 4-star character.\r\nPlease report this bug to the developer.\r" :
-                            "Error: 'current' is NULL while building pool link list for 5-star character.\r\nPlease report this bug to the developer.\r"
+                            "Error: 'current' is NULL while building pool link list for 5-star character.\r\nPlease report this bug to the developer.\r" :
+                            "Error: 'current' is NULL while building pool link list for 4-star character.\r\nPlease report this bug to the developer.\r"
                         );
                         free(currentNext);
                         return 1;
