@@ -55,7 +55,7 @@ void putPool(const WishPoolType WishPool1)
     }
 
     for(i=0; i<fiveCount&&WishPool1.up5[i]!=0; i++) {
-        currentIndex = id2Index(WishPool1.up5[i]);
+        currentIndex=id2Index(WishPool1.up5[i]);
         for(j=0;
             j<localizedVisualLen(CharMap[longestChineseIndex].name_cn)-localizedVisualLen(CharMap[currentIndex].name_cn)&&
             WishPool1.half<10;
@@ -71,7 +71,7 @@ void putPool(const WishPoolType WishPool1)
     }
 
     for(i=0; i<fourCount&&WishPool1.up4[i]!=0; i++) {
-        currentIndex = id2Index(WishPool1.up4[i]);
+        currentIndex=id2Index(WishPool1.up4[i]);
         SetConsoleColorByCharacter(CharMap[currentIndex]);
         printf("%s ",localizedNames[currentIndex]==NULL ? "" : localizedNames[currentIndex]);
         ResetConsoleColor();
@@ -112,7 +112,7 @@ int typeMenu(const wchar_t* menuItems[],int itemCount,const wchar_t* title)
             longestIndexLength++;
         }
         localizedItemNames=(char**)malloc(itemCount*sizeof(char*));
-        EXIT_IF_NULL(localizedItemNames, -1);
+        EXIT_IF_NULL(localizedItemNames,-1);
         for(i1=0; i1<itemCount; i1++) {
             if((currentExpectedLength=localizedVisualLen(menuItems[i1]))>maxItemLength) {
                 maxItemLength=currentExpectedLength;
@@ -158,12 +158,12 @@ int typeMenu(const wchar_t* menuItems[],int itemCount,const wchar_t* title)
             currentIndexColLen=printf(" [%d] ",i1==itemCount-1 ? 0 : i1+1);
             currentIndexColLen=currentIndexColLen<0 ? 0 : currentIndexColLen;
             gaptoMax_num=longestIndexLength-(size_t)currentIndexColLen+4;
-            for(j=0; j<gaptoMax_num; j++) {SPACE;}
+            for(j=0; j<gaptoMax_num; j++) { SPACE; }
             printW(L"│");
             if(localizedItemNames[i1]!=NULL) {
                 printf(" %s ",localizedItemNames[i1]);
                 gaptoMax=maxItemLength-localizedVisualLen(menuItems[i1]);
-                for(j=0; j<gaptoMax; j++) {SPACE;}
+                for(j=0; j<gaptoMax; j++) { SPACE; }
                 printW(L"║"); ENDL;
             }
             else ENDL;
@@ -207,7 +207,7 @@ int choiceMenu(const wchar_t* menuItems[],int itemCount,const wchar_t* title)
         currentExpectedLength=maxItemLength=gaptoMax=gaptoMax_num=titleLineSpaces=0;
         longestIndexLength=1;
         localizedItemNames=(char**)malloc(itemCount*sizeof(char*));
-        EXIT_IF_NULL(localizedItemNames, -1);
+        EXIT_IF_NULL(localizedItemNames,-1);
         for(i1=0; i1<itemCount; i1++) {
             if((currentExpectedLength=localizedVisualLen(menuItems[i1]))>maxItemLength) {
                 maxItemLength=currentExpectedLength;
@@ -264,12 +264,12 @@ int choiceMenu(const wchar_t* menuItems[],int itemCount,const wchar_t* title)
             }
             currentIndexColLen=currentIndexColLen<0 ? 0 : currentIndexColLen;
             gaptoMax_num=longestIndexLength-(size_t)currentIndexColLen+4;
-            for(j=0; j<gaptoMax_num; j++) {SPACE;}
+            for(j=0; j<gaptoMax_num; j++) { SPACE; }
             printW(L"│");
             if(localizedItemNames[i1]!=NULL) {
                 printf(" %s ",localizedItemNames[i1]);
                 gaptoMax=maxItemLength-localizedVisualLen(menuItems[i1]);
-                for(j=0; j<gaptoMax; j++) {SPACE;}
+                for(j=0; j<gaptoMax; j++) { SPACE; }
                 printW(L"║"); ENDL;
             }
             else ENDL;
@@ -352,13 +352,13 @@ void printPoolLinkList(PoolLinkList current)
 
 int readIntInRange(int min,int max,const int* defaultValue)
 {
-    char buf[64],*end;
+    char buf[64],* end;
     long val;
     while(1) {
         if(!fgets(buf,sizeof(buf),stdin)) {
             // 说明 fgets 读取失败，可能是 EOF 或者其他错误
             if(feof(stdin)) {
-                if (defaultValue != NULL) { return *defaultValue; }
+                if(defaultValue!=NULL) { return *defaultValue; }
                 // printf("EOF detected. Enter a number (%d-%d): ", min, max);
                 // continue;
                 puts("EOF detected. Consider not to type Ctrl+Z when you are using me in CLI mode. gipool will now exit.");
@@ -375,7 +375,7 @@ int readIntInRange(int min,int max,const int* defaultValue)
             continue;
         }
         // char ending = buf[63];
-        if(!strchr(buf,'\n')&&!strchr(buf, '\x1a')) {
+        if(!strchr(buf,'\n')&&!strchr(buf,'\x1a')) {
             // '\n' 和 '\x1a' 都不在 buf 中，说明输入太长了 
             printf("Input too long. Enter a number (%d-%d): ",min,max);
             // 只有这一种情况说明输入没有读完，需要清空输入缓冲区
@@ -385,7 +385,7 @@ int readIntInRange(int min,int max,const int* defaultValue)
         // 到这就不需要清空输入缓冲区了
         errno=0;
         val=strtol(buf,&end,10);
-        if(end==buf||(*end!='\n'&&*end!='\0'&&*end!='\r'&&*end!=EOF && *end != '\x1a')) {
+        if(end==buf||(*end!='\n'&&*end!='\0'&&*end!='\r'&&*end!=EOF&&*end!='\x1a')) {
             printf("Invalid input. Enter a valid integer (%d-%d): ",min,max);
             continue;
         }

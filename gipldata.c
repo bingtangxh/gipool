@@ -125,8 +125,13 @@ CharMapType const CharMap[]={
     ,{119,L"阿罗夏","Alyosha",ELECTRO,4}
     ,{120,L"薇斯纳","Vesna",ANEMO,5}
     ,{121,L"沃雅妮莎","Vodyanitsa",HYDRO,5}
-        
-
+    ,{122,L"米提亚","Mitya",ELECTRO,5}
+    ,{364,L"瓦列里","Valeriy",ELECTRO,ROLE_TYPE_UNKNOWN}
+    // 此处的 364 并不是打字错误，只是瓦列里尚未进入卡池，仅仅是官方发布了立绘介绍，
+    // 所以刚好用这个来测试程序哪些功能逻辑会在 index<=charCount 但是 id>charCount 的情况下误判断为不正确的参数
+    // 因为前段时间 v2.0.0 版本，这个程序才终于允许了 id 和 index 不对应的情况，
+    // 但是有些边界检测可能不是用 index<=charCount 来判断的，
+    // 而是用 id<=charCount 来判断的，那就不对了，所以用这个 364 检测对不对
 };
 
 WishPoolType const WishPool[]={

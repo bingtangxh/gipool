@@ -105,24 +105,24 @@ void initDynamicThings(void)
         PoolLinkLists[i]=NULL;
     }
 
-    localizedNames=(char**)malloc(charCount * sizeof(char*));
+    localizedNames=(char**)malloc(charCount*sizeof(char*));
     EXIT_IF_NULL(localizedNames,-1);
     memset(localizedNames,0,charCount*sizeof(char*));
-    for (i=0; i<charCount; i++) {
-        localizedNames[i] = localize(CharMap[i].name_cn);
-        EXIT_IF_NULL(localizedNames[i], index2Id(i));
+    for(i=0; i<charCount; i++) {
+        localizedNames[i]=localize(CharMap[i].name_cn);
+        EXIT_IF_NULL(localizedNames[i],index2Id(i));
     }
 }
 
 size_t getSplitResultExpectedLength(void)
 {
-    size_t result = 0;
-    result += 3 + 3; // 3 digits for ID, 3 for " | "
-    result += (int)localizedMemLen(CharMap[longestChineseIndex].name_cn);
-    result += 3; // 3 for " | "
-    result += (int)longestEnglishNameLength;
-    result += 1; // 1 for "\n"
-    result *= charCount;
+    size_t result=0;
+    result+=3+3; // 3 digits for ID, 3 for " | "
+    result+=(int)localizedMemLen(CharMap[longestChineseIndex].name_cn);
+    result+=3; // 3 for " | "
+    result+=(int)longestEnglishNameLength;
+    result+=1; // 1 for "\n"
+    result*=charCount;
     return result;
 }
 
@@ -193,7 +193,7 @@ void getDaysPassedSinceLastUp(void)
     }
 
     daysPassedSinceLastUP=(int*)malloc(sizeof(int)*charCount);
-    if (daysPassedSinceLastUP == NULL) {
+    if(daysPassedSinceLastUP==NULL) {
         puts("Failed to allocate memory for daysPassedSinceLastUP.");
         exit(1);
     }
@@ -208,7 +208,7 @@ void getDaysPassedSinceLastUp(void)
 
         for(p=poolCount-1; p+1!=0; p--) {
             // 等同于循环条件写 (p--)>0,循环后操作不写，但我不喜欢写(p--)>0这样的
-            
+
             if(CharMap[c].attrib==5) {
                 for(i=0; i<MAX_POOL_UP5_COUNT&&WishPool[p].up5[i]!=0; i++) {
                     if(WishPool[p].up5[i]==index2Id(c)) {
@@ -242,7 +242,7 @@ void getDaysPassedSinceLastUp(void)
 
 time_t makeTimeFromYMDHMS(uint16_t y,uint8_t m,uint8_t d,int hour,int min,int sec)
 {
-    struct tm t={0};
+    struct tm t={ 0 };
     t.tm_year=y-1900;
     t.tm_mon=m-1;
     t.tm_mday=d;
@@ -348,15 +348,15 @@ void freeDynamicThings(void)
     free(splitResult);
     splitResult=NULL;
 
-    if (localizedNames != NULL) {
-        for (i=0; i < charCount; i++) {
-            if (localizedNames[i] != NULL) {
+    if(localizedNames!=NULL) {
+        for(i=0; i<charCount; i++) {
+            if(localizedNames[i]!=NULL) {
                 free(localizedNames[i]);
-                localizedNames[i] = NULL;
+                localizedNames[i]=NULL;
             }
         }
         free(localizedNames);
-        localizedNames = NULL;
+        localizedNames=NULL;
     }
 }
 
@@ -401,29 +401,29 @@ _Bool buildPoolLinkList(size_t index,const WishPoolType WishPools[])
         PoolLinkLists[index]=NULL;
     }
 
-    id = index2Id(index);
+    id=index2Id(index);
 
-    if (CharMap[index].attrib != 5 && CharMap[index].attrib != 4 && (CharMap[index].attrib&3)!=3) {
+    if(CharMap[index].attrib!=5&&CharMap[index].attrib!=4&&(CharMap[index].attrib&3)!=3) {
         // 来到这里说明查询的角色类型不是会UP的
         // 注意刻晴是特殊的开服常驻但是海灯节被拉出来UP了一次，因为过年不能让看殡仪馆的胡桃UP
         return 1;
     }
-    else 
+    else
     {
         for(i=0; i<poolCount; i++) {
             for(
                 j=0;
-                CharMap[index].attrib == 4?
-                j<fourCount&&WishPools[i].up4[j]!=0: 
+                CharMap[index].attrib==4 ?
+                j<fourCount&&WishPools[i].up4[j]!=0 :
                 j<fiveCount&&WishPools[i].up5[j]!=0;
                 j++
                 ) {
                 if(
-                    CharMap[index].attrib == 4 ?
-                    WishPools[i].up4[j] == id :
-                    WishPools[i].up5[j] == id 
+                    CharMap[index].attrib==4 ?
+                    WishPools[i].up4[j]==id :
+                    WishPools[i].up5[j]==id
                     ) {
-                    
+
                     currentNext=createPoolNode(WishPools[i]);
                     if(currentNext==NULL) {
                         puts("Failed to allocate memory for a new pool node while building pool link list.\r");
@@ -433,14 +433,15 @@ _Bool buildPoolLinkList(size_t index,const WishPoolType WishPools[])
                     if(PoolLinkLists[index]==NULL) {
                         PoolLinkLists[index]=current=currentNext;
                     }
-                    else if (current != NULL) {
+                    else if(current!=NULL) {
                         current->next=currentNext;
                         current=current->next;
-                    } else {
+                    }
+                    else {
                         puts(
-                            CharMap[index].attrib == 5 ?
+                            CharMap[index].attrib==5 ?
                             "Error: 'current' is NULL while building pool link list for 4-star character.\r\nPlease report this bug to the developer.\r" :
-                            "Error: 'current' is NULL while building pool link list for 5-star character.\r\nPlease report this bug to the developer.\r" 
+                            "Error: 'current' is NULL while building pool link list for 5-star character.\r\nPlease report this bug to the developer.\r"
                         );
                         free(currentNext);
                         return 1;
@@ -457,7 +458,7 @@ _Bool buildPoolLinkList(size_t index,const WishPoolType WishPools[])
 PoolLinkList createPoolNode(const WishPoolType WishPool1)
 {
     PoolLinkList target=(PoolLinkList)malloc(sizeof(PoolNodeType));
-    RETURN_IF_NULL(target, NULL, -1);
+    RETURN_IF_NULL(target,NULL,-1);
     target->major=WishPool1.major;
     target->minor=WishPool1.minor;
     target->half=WishPool1.half;

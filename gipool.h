@@ -30,7 +30,7 @@
 
 #define EXIT_IF_NULL(ptr,id) \
     do { \
-        if ((ptr) == NULL) { \
+        if ((ptr)==NULL) { \
             fprintf(stderr, "Error: %s is unexpectedly NULL at %s:%d, may be allocating memory failed\n", #ptr, __FILE__, __LINE__); \
             exitDuetoFatalError(2,"",id); \
             exit(2); \
@@ -39,7 +39,7 @@
 
 #define RETURN_IF_NULL(ptr,result,id) \
     do { \
-        if ((ptr) == NULL) { \
+        if ((ptr)==NULL) { \
             if(id>=0){\
                 fprintf(stderr, "Error: %s is unexpectedly NULL at %s:%d, may be allocating memory failed\nThe error occurred when id is: %d. ", #ptr, __FILE__, __LINE__, id); \
             } else { \
@@ -55,11 +55,11 @@
 #define ENDL putchar('\n')
 #define putws(wstr) do { printW(wstr); putwchar(L'\n'); } while(0)
 #ifdef _MSC_VER
-#define PAUSE ending = _getch()
+#define PAUSE ending=_getch()
 #define getch() _getch()
 #define getche() _getche()
 #else
-#define PAUSE ending = getch()
+#define PAUSE ending=getch()
 #endif
 #else
 #define CLS system("clear")
@@ -69,8 +69,8 @@
 #define getch() getch_my()
 #define PAUSE \
     do { \
-    ending = getchar(); \
-    if (ending != EOF && ending != '\0' && ending != '\n') { clearInputBuffer(); } \
+    ending=getchar(); \
+    if (ending!=EOF && ending!='\0' && ending!='\n') { clearInputBuffer(); } \
     } while(0)
 #endif
 
@@ -171,7 +171,7 @@ typedef struct poolNode {
     uint8_t minor;
     uint8_t half;
     struct poolNode* next;
-} PoolNodeType,*PoolLinkList,**PoolLinkListArray;
+} PoolNodeType,* PoolLinkList,** PoolLinkListArray;
 
 extern const CharMapType CharMap[];
 extern const WishPoolType WishPool[];
@@ -220,7 +220,7 @@ void initConsole(void);
 void printCompileTime(void);
 void printTestInfo(void);
 void beforeTerminate(void);
-void exitDuetoFatalError(const int code, const char* message, const int id);
+void exitDuetoFatalError(const int code,const char* message,const int id);
 
 int typeMenu(const wchar_t* menuItems[],int itemCount,const wchar_t* title);
 int choiceMenu(const wchar_t* menuItems[],int itemCount,const wchar_t* title);
@@ -256,7 +256,7 @@ int choiceOneCharacter(void);
 void printAllPools(void);
 void printDaysofAllLimited5StarCharacters(void);
 int choiceOneCharacter4Test(void);
-int choiceOneCharacterwithSpliterBefore(int list[], size_t length);
+int choiceOneCharacterwithSpliterBefore(int list[],size_t length);
 int choiceOneCharacterUsingChineseNameLength(void);
 int choiceOneCharacterUsingEnglishNameLength(void);
 int choiceOneCharacterUsingVisionType(void);
