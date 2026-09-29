@@ -255,6 +255,7 @@ time_t makeTimeFromYMDHMS(uint16_t y,uint8_t m,uint8_t d,int hour,int min,int se
 
 int daysSinceSinglePoolEnds(const WishPoolType pool)
 {
+    // 待修复：仅在用户电脑时区为 GMT+8 时，此处获得天数才是正确的
     time_t now=time(NULL);
     int hour=poolEndHour(pool.half);
     time_t end;
