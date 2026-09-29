@@ -81,7 +81,6 @@ _Bool isPoolInOrder(int i)
 
 void initDynamicThings(void)
 {
-    // 待修复：该函数当中如果中途分配失败，调用的 EXIT_IF_NULL 宏会导致还没有被分配的指针也被 free
     size_t i=0;
     getCharandPoolCount();
     longestChineseIndex=(size_t)findLongest(CharMap);
