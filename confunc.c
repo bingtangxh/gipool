@@ -29,12 +29,13 @@ void putPool(const WishPoolType WishPool1)
 {
     size_t fiveCount=ARRAY_SIZE(WishPool1.up5);
     size_t fourCount=ARRAY_SIZE(WishPool1.up4);
+    size_t i=0,currentIndex=0,j=0;
 
     if(WishPool1.half>=10) {
         puts(splitLine);
     }
 
-    for(size_t i=0; i<fiveCount; i++) {
+    for(i=0; i<fiveCount; i++) {
         if(WishPool1.up5[i]==0) {
             fiveCount=i;
             break;
@@ -46,16 +47,16 @@ void putPool(const WishPoolType WishPool1)
         WishPool1.startY,WishPool1.startM,WishPool1.startD,
         WishPool1.endY,WishPool1.endM,WishPool1.endD);
 
-    for(size_t i=0; i<2-fiveCount&&WishPool1.half<10; i++) {
-        for(size_t j=0; j<=localizedVisualLen(CharMap[longestChineseIndex].name_cn); j++) {
+    for(i=0; i<2-fiveCount&&WishPool1.half<10; i++) {
+        for(j=0; j<=localizedVisualLen(CharMap[longestChineseIndex].name_cn); j++) {
             SPACE;
         }
         printf("| ");
     }
 
-    for(size_t i=0; i<fiveCount&&WishPool1.up5[i]!=0; i++) {
-        size_t currentIndex = id2Index(WishPool1.up5[i]);
-        for(size_t j=0;
+    for(i=0; i<fiveCount&&WishPool1.up5[i]!=0; i++) {
+        currentIndex = id2Index(WishPool1.up5[i]);
+        for(j=0;
             j<localizedVisualLen(CharMap[longestChineseIndex].name_cn)-localizedVisualLen(CharMap[currentIndex].name_cn)&&
             WishPool1.half<10;
             j++) {
@@ -69,13 +70,13 @@ void putPool(const WishPoolType WishPool1)
         }
     }
 
-    for(size_t i=0; i<fourCount&&WishPool1.up4[i]!=0; i++) {
-        size_t currentIndex = id2Index(WishPool1.up4[i]);
+    for(i=0; i<fourCount&&WishPool1.up4[i]!=0; i++) {
+        currentIndex = id2Index(WishPool1.up4[i]);
         SetConsoleColorByCharacter(CharMap[currentIndex]);
         printf("%s ",localizedNames[currentIndex]==NULL ? "" : localizedNames[currentIndex]);
         ResetConsoleColor();
 
-        for(size_t j=0; j<localizedVisualLen(CharMap[longestChineseIndex].name_cn)-
+        for(j=0; j<localizedVisualLen(CharMap[longestChineseIndex].name_cn)-
             localizedVisualLen(CharMap[currentIndex].name_cn);
             j++) {
             SPACE;
@@ -98,84 +99,89 @@ void printCompileTime(void)
 
 int typeMenu(const wchar_t* menuItems[],int itemCount,const wchar_t* title)
 {
+    size_t currentExpectedLength=0,maxItemLength=0,gaptoMax=0,gaptoMax_num=0,longestIndexLength=0,titleLineSpaces=0;
+    char** localizedItemNames=NULL;
+    int temp=0,i1=0,currentIndexColLen=0,choice=0;
+    size_t i=0,j=0;
+    char* localizedTitle=NULL;
     do {
-        size_t currentExpectedLength=0,maxItemLength=0,gaptoMax=0,gaptoMax_num=0,longestIndexLength=0,titleLineSpaces=0;
-        char** localizedItemNames=NULL;
+        currentExpectedLength=maxItemLength=gaptoMax=gaptoMax_num=longestIndexLength=titleLineSpaces=0;
+        localizedItemNames=NULL;
 
-        for(int temp=itemCount; temp>0; temp/=10) {
+        for(temp=itemCount; temp>0; temp/=10) {
             longestIndexLength++;
         }
         localizedItemNames=(char**)malloc(itemCount*sizeof(char*));
         EXIT_IF_NULL(localizedItemNames, -1);
-        for(int i=0; i<itemCount; i++) {
-            if((currentExpectedLength=localizedVisualLen(menuItems[i]))>maxItemLength) {
+        for(i1=0; i1<itemCount; i1++) {
+            if((currentExpectedLength=localizedVisualLen(menuItems[i1]))>maxItemLength) {
                 maxItemLength=currentExpectedLength;
             }
         }
         if(localizedItemNames!=NULL) {
-            for(int i=0; i<itemCount; i++) {
-                localizedItemNames[i]=localize(menuItems[i]);
+            for(i1=0; i1<itemCount; i1++) {
+                localizedItemNames[i1]=localize(menuItems[i1]);
             }
         }
 
-        char* localizedTitle=localize(title);
+        localizedTitle=localize(title);
         if(localizedTitle!=NULL) {
             if((localizedVisualLen(title)>=4)&&localizedVisualLen(title)-4>maxItemLength) {
                 maxItemLength=localizedVisualLen(title)-4;
             }
             titleLineSpaces=maxItemLength+5-localizedVisualLen(title)+longestIndexLength;
             printW(L"╔");
-            for(size_t i=0; i<longestIndexLength+maxItemLength+7; i++) { printW(doubleEdge); }
+            for(i=0; i<longestIndexLength+maxItemLength+7; i++) { printW(doubleEdge); }
             printW(L"╗"); ENDL;
 
             printW(L"║"); SPACE;
-            for(size_t i=0; i<titleLineSpaces/2+titleLineSpaces%2; i++) { SPACE; }
+            for(i=0; i<titleLineSpaces/2+titleLineSpaces%2; i++) { SPACE; }
             printf("%s",localizedTitle);
-            for(size_t i=0; i<titleLineSpaces/2; i++) { SPACE; }
+            for(i=0; i<titleLineSpaces/2; i++) { SPACE; }
             SPACE;
             printW(L"║"); ENDL;
             printW(L"╟");
-            for(size_t i=0; i<longestIndexLength+4; i++) { printW(singleEdge); }
+            for(i=0; i<longestIndexLength+4; i++) { printW(singleEdge); }
             printW(L"┬");
-            for(size_t i=0; i<maxItemLength+2; i++) { printW(singleEdge); }
+            for(i=0; i<maxItemLength+2; i++) { printW(singleEdge); }
             printW(L"╢"); ENDL;
         }
         else {
             printW(L"╔");
-            for(size_t i=0; i<longestIndexLength+4; i++) { printW(doubleEdge); }
+            for(i=0; i<longestIndexLength+4; i++) { printW(doubleEdge); }
             printW(L"╤");
-            for(size_t i=0; i<maxItemLength+2; i++) { printW(doubleEdge); }
+            for(i=0; i<maxItemLength+2; i++) { printW(doubleEdge); }
             printW(L"╗"); ENDL;
         }
-        for(int i=0,currentIndexColLen=0; i<itemCount; i++) {
+        for(i1=0,currentIndexColLen=0; i1<itemCount; i1++) {
             printW(L"║");
-            currentIndexColLen=printf(" [%d] ",i==itemCount-1 ? 0 : i+1);
+            currentIndexColLen=printf(" [%d] ",i1==itemCount-1 ? 0 : i1+1);
             currentIndexColLen=currentIndexColLen<0 ? 0 : currentIndexColLen;
             gaptoMax_num=longestIndexLength-(size_t)currentIndexColLen+4;
-            for(size_t j=0; j<gaptoMax_num; j++) SPACE;
+            for(j=0; j<gaptoMax_num; j++) {SPACE;}
             printW(L"│");
-            if(localizedItemNames[i]!=NULL) {
-                printf(" %s ",localizedItemNames[i]);
-                gaptoMax=maxItemLength-localizedVisualLen(menuItems[i]);
-                for(size_t j=0; j<gaptoMax; j++) SPACE;
+            if(localizedItemNames[i1]!=NULL) {
+                printf(" %s ",localizedItemNames[i1]);
+                gaptoMax=maxItemLength-localizedVisualLen(menuItems[i1]);
+                for(j=0; j<gaptoMax; j++) {SPACE;}
                 printW(L"║"); ENDL;
             }
             else ENDL;
         }
         printW(L"╚");
-        for(size_t i=0; i<longestIndexLength+4; i++) { printW(doubleEdge); }
+        for(i=0; i<longestIndexLength+4; i++) { printW(doubleEdge); }
         printW(L"╧");
-        for(size_t i=0; i<maxItemLength+2; i++) { printW(doubleEdge); }
+        for(i=0; i<maxItemLength+2; i++) { printW(doubleEdge); }
         printW(L"╝"); ENDL;
         ENDL;
         printf("Please select an option (0-%d) and press ENTER: ",itemCount-1);
-        for(int i=0; i<itemCount; i++) {
-            free(localizedItemNames[i]);
+        for(i1=0; i1<itemCount; i1++) {
+            free(localizedItemNames[i1]);
         }
         free(localizedItemNames);
         free(localizedTitle);
         do {
-            int choice=readIntInRange(-1,itemCount-1,NULL);
+            choice=readIntInRange(-1,itemCount-1,NULL);
             if(choice==-1) {
                 CLS;
                 break;
@@ -192,80 +198,86 @@ int typeMenu(const wchar_t* menuItems[],int itemCount,const wchar_t* title)
 
 int choiceMenu(const wchar_t* menuItems[],int itemCount,const wchar_t* title)
 {
+    size_t currentExpectedLength=0,maxItemLength=0,gaptoMax=0,gaptoMax_num=0,longestIndexLength=0,titleLineSpaces=0;
+    char** localizedItemNames=NULL;
+    int i1=0,currentIndexColLen=0,choice=0;
+    size_t i=0,j=0;
+    char* localizedTitle=NULL;
     do {
-        size_t currentExpectedLength=0,maxItemLength=0,gaptoMax=0,gaptoMax_num=0,longestIndexLength=1,titleLineSpaces=0;
-        char** localizedItemNames=(char**)malloc(itemCount*sizeof(char*));
+        currentExpectedLength=maxItemLength=gaptoMax=gaptoMax_num=titleLineSpaces=0;
+        longestIndexLength=1;
+        localizedItemNames=(char**)malloc(itemCount*sizeof(char*));
         EXIT_IF_NULL(localizedItemNames, -1);
-        for(int i=0; i<itemCount; i++) {
-            if((currentExpectedLength=localizedVisualLen(menuItems[i]))>maxItemLength) {
+        for(i1=0; i1<itemCount; i1++) {
+            if((currentExpectedLength=localizedVisualLen(menuItems[i1]))>maxItemLength) {
                 maxItemLength=currentExpectedLength;
             }
         }
         if(localizedItemNames!=NULL) {
-            for(int i=0; i<itemCount; i++) {
-                localizedItemNames[i]=localize(menuItems[i]);
+            for(i1=0; i1<itemCount; i1++) {
+                localizedItemNames[i1]=localize(menuItems[i1]);
             }
         }
 
-        char* localizedTitle=localize(title);
+        localizedTitle=localize(title);
         if(localizedTitle!=NULL) {
             if((localizedVisualLen(title)>=4)&&localizedVisualLen(title)-4>maxItemLength) {
                 maxItemLength=localizedVisualLen(title)-4;
             }
             titleLineSpaces=maxItemLength+5-localizedVisualLen(title)+longestIndexLength;
             printW(L"╔");
-            for(size_t i=0; i<longestIndexLength+maxItemLength+7; i++) { printW(doubleEdge); }
+            for(i=0; i<longestIndexLength+maxItemLength+7; i++) { printW(doubleEdge); }
             printW(L"╗"); ENDL;
 
             printW(L"║"); SPACE;
-            for(size_t i=0; i<titleLineSpaces/2+titleLineSpaces%2; i++) { SPACE; }
+            for(i=0; i<titleLineSpaces/2+titleLineSpaces%2; i++) { SPACE; }
             printf("%s",localizedTitle);
-            for(size_t i=0; i<titleLineSpaces/2; i++) { SPACE; }
+            for(i=0; i<titleLineSpaces/2; i++) { SPACE; }
             SPACE;
             printW(L"║"); ENDL;
             printW(L"╟");
-            for(size_t i=0; i<longestIndexLength+4; i++) { printW(singleEdge); }
+            for(i=0; i<longestIndexLength+4; i++) { printW(singleEdge); }
             printW(L"┬");
-            for(size_t i=0; i<maxItemLength+2; i++) { printW(singleEdge); }
+            for(i=0; i<maxItemLength+2; i++) { printW(singleEdge); }
             printW(L"╢"); ENDL;
         }
         else {
             printW(L"╔");
-            for(size_t i=0; i<longestIndexLength+4; i++) { printW(doubleEdge); }
+            for(i=0; i<longestIndexLength+4; i++) { printW(doubleEdge); }
             printW(L"╤");
-            for(size_t i=0; i<maxItemLength+2; i++) { printW(doubleEdge); }
+            for(i=0; i<maxItemLength+2; i++) { printW(doubleEdge); }
             printW(L"╗"); ENDL;
         }
-        for(int i=0,currentIndexColLen=0; i<itemCount; i++) {
-            if(i>=MAX_CHOICE_MENU_ITEMS&&i!=itemCount-1) {
+        for(i1=0,currentIndexColLen=0; i1<itemCount; i1++) {
+            if(i1>=MAX_CHOICE_MENU_ITEMS&&i1!=itemCount-1) {
                 continue;
             }
             printW(L"║");
-            if(i<9) {
-                currentIndexColLen=printf(" [%d] ",i==itemCount-1 ? 0 : i+1);
+            if(i1<9) {
+                currentIndexColLen=printf(" [%d] ",i1==itemCount-1 ? 0 : i1+1);
             }
-            else if(i>=9&&i<itemCount-1&&i<MAX_CHOICE_MENU_ITEMS) {
-                currentIndexColLen=printf(" [%c] ",'A'+i-9);
+            else if(i1>=9&&i1<itemCount-1&&i1<MAX_CHOICE_MENU_ITEMS) {
+                currentIndexColLen=printf(" [%c] ",'A'+i1-9);
             }
-            else if(i==itemCount-1) {
+            else if(i1==itemCount-1) {
                 currentIndexColLen=printf(" [%d] ",0);
             }
             currentIndexColLen=currentIndexColLen<0 ? 0 : currentIndexColLen;
             gaptoMax_num=longestIndexLength-(size_t)currentIndexColLen+4;
-            for(size_t j=0; j<gaptoMax_num; j++) SPACE;
+            for(j=0; j<gaptoMax_num; j++) {SPACE;}
             printW(L"│");
-            if(localizedItemNames[i]!=NULL) {
-                printf(" %s ",localizedItemNames[i]);
-                gaptoMax=maxItemLength-localizedVisualLen(menuItems[i]);
-                for(size_t j=0; j<gaptoMax; j++) SPACE;
+            if(localizedItemNames[i1]!=NULL) {
+                printf(" %s ",localizedItemNames[i1]);
+                gaptoMax=maxItemLength-localizedVisualLen(menuItems[i1]);
+                for(j=0; j<gaptoMax; j++) {SPACE;}
                 printW(L"║"); ENDL;
             }
             else ENDL;
         }
         printW(L"╚");
-        for(size_t i=0; i<longestIndexLength+4; i++) { printW(doubleEdge); }
+        for(i=0; i<longestIndexLength+4; i++) { printW(doubleEdge); }
         printW(L"╧");
-        for(size_t i=0; i<maxItemLength+2; i++) { printW(doubleEdge); }
+        for(i=0; i<maxItemLength+2; i++) { printW(doubleEdge); }
         printW(L"╝"); ENDL;
         ENDL;
         printf(
@@ -276,13 +288,12 @@ int choiceMenu(const wchar_t* menuItems[],int itemCount,const wchar_t* title)
 #endif
             itemCount<=10 ? itemCount-1+'0' : itemCount<=MAX_CHOICE_MENU_ITEMS ? itemCount-11+'A' : 'Z'
         );
-        for(int i=0; i<itemCount; i++) {
-            free(localizedItemNames[i]);
+        for(i1=0; i1<itemCount; i1++) {
+            free(localizedItemNames[i1]);
         }
         free(localizedItemNames);
         free(localizedTitle);
         do {
-            int choice;
 #ifndef _WIN32
             fflush(stdout);
 #endif
@@ -329,9 +340,10 @@ void clearInputBuffer(void)
 
 void printPoolLinkList(PoolLinkList current)
 {
+    int i1=0;
     if(current==NULL) { ENDL; puts("This character have't been UP yet."); }
-    for(int i=0; current!=NULL; i++) {
-        if(i%3==0) ENDL;
+    for(i1=0; current!=NULL; i1++) {
+        if(i1%3==0) ENDL;
         printf("%hu.%hu.%hu\t",current->major,current->minor,current->half);
         current=current->next;
     }
@@ -347,8 +359,11 @@ int readIntInRange(int min,int max,const int* defaultValue)
             // 说明 fgets 读取失败，可能是 EOF 或者其他错误
             if(feof(stdin)) {
                 if (defaultValue != NULL) { return *defaultValue; }
-                printf("EOF detected. Enter a number (%d-%d): ", min, max);
-                continue;
+                // printf("EOF detected. Enter a number (%d-%d): ", min, max);
+                // continue;
+                puts("EOF detected. Consider not to type Ctrl+Z when you are using me in CLI mode. gipool will now exit.");
+                freeDynamicThings();
+                exit(3);
             }
             // 如果有错误却又不是 EOF，清除错误标志并继续
             clearerr(stdin);
@@ -447,7 +462,8 @@ _Bool ResetConsoleColor(void)
 
 size_t id2Index(int id)
 {
-    for(size_t i=0; i<charCount; i++) {
+    size_t i=0;
+    for(i=0; i<charCount; i++) {
         if(CharMap[i].id==id) {
             return i;
         }

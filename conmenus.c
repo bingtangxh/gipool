@@ -43,6 +43,8 @@ const wchar_t* splitByVisionType[] = {
 void mainMenu(void)
 {
     static int prevSlt=0;
+    size_t choicedIndex=0;
+    int choice=0;
     while(1) {
     main_menu:
         if(prevSlt==0||prevSlt==-1) {
@@ -75,13 +77,17 @@ void mainMenu(void)
         case 3:
             ENDL;
             do {
-                int choice=choiceOneCharacter();
+                choice=choiceOneCharacter();
                 if(choice==-1) {
                     CLS;
                     prevSlt=0;
                     goto main_menu;
                 }
-                size_t choicedIndex = id2Index((unsigned int)choice);
+                choicedIndex = id2Index((unsigned int)choice);
+                if(choicedIndex==SIZE_MAX) {
+                    puts("An invalid id sent to id2Index function. Please try again.");
+                    continue;
+                }
                 if(buildPoolLinkList(choicedIndex,WishPool))
                 {
                     // 来到这里
@@ -180,20 +186,22 @@ int choiceOneCharacter(void)
 
 void printAllPools(void)
 {
+    size_t i=0;
     CLS;
-    for (size_t i = 0; i < poolCount; i++) {
+    for (i=0; i < poolCount; i++) {
         putPool(WishPool[i]);
     }
 }
 
 void printDaysofAllLimited5StarCharacters(void)
 {
+    size_t i=0,index=0,j=0;
     CLS;
-    for (size_t i = 0; i < charCount; i++) {
-        size_t index = (size_t)arrangedInOrderOfDays[i];
+    for (i=0; i < charCount; i++) {
+        index = (size_t)arrangedInOrderOfDays[i];
         if ((daysPassedSinceLastUP[index] != INT_MIN) &&
             ((CharMap[index].attrib == 9) || (CharMap[index].attrib == 5))) {
-            for (size_t j = 0; j < localizedVisualLen(CharMap[longestChineseIndex].name_cn) - localizedVisualLen(CharMap[index].name_cn); j++) { SPACE; }
+            for (j=0; j < localizedVisualLen(CharMap[longestChineseIndex].name_cn) - localizedVisualLen(CharMap[index].name_cn); j++) { SPACE; }
             SetConsoleColorByCharacter(CharMap[index]);
             printf("%s", localizedNames[index]);
             ResetConsoleColor();
@@ -205,7 +213,7 @@ void printDaysofAllLimited5StarCharacters(void)
 
 int choiceOneCharacter4Test(void)
 {
-    int result = -1;
+    int result=-1;
     ENDL;
     printf("Please type a char index number, type -1 to go back (-1-%u): ", (unsigned int)charCount - 1);
     do {
@@ -226,7 +234,8 @@ int choiceOneCharacter4Test(void)
 
 int choiceOneCharacterwithSpliterBefore(int list[], size_t length)
 {
-    int result = -1;
+    int result=-1;
+    size_t i=0;
     do {
         result = choiceOneCharacter4Test();
         if (result == -1) {
@@ -234,7 +243,7 @@ int choiceOneCharacterwithSpliterBefore(int list[], size_t length)
         }
         if (1)
         {
-            for (size_t i = 0; i < length; i++) {
+            for (i=0; i < length; i++) {
                 if (list[i] == result) {
                     if (id2Index(result) == SIZE_MAX)
                     {
@@ -254,13 +263,14 @@ int choiceOneCharacterwithSpliterBefore(int list[], size_t length)
 }
 
 int choiceOneCharacterUsingChineseNameLength(void) {
-    int foundAny = 0, found = 0, currentIndex = 0, selection = -1;
-    int* foundList = NULL;
+    int foundAny=0,found=0,currentIndex=0,selection=-1,length=0;
+    int* foundList=NULL;
+    size_t i=0;
 typeChineseName:
     {
         ENDL;
         printf("Please type how long the Chinese name is and press ENTER, type -1 or 0 for go back (-1-%zu): ", longestChineseNameLength);
-        int length = 0;
+        length=0;
         do {
             length = readIntInRange(-1, (int)longestChineseNameLength, NULL);
             if (length == -1 || length == 0) {
@@ -276,7 +286,7 @@ typeChineseName:
         CLS;
         foundAny = 0;
         found = 0;
-        for (size_t i = 0; i < charCount; i++) {
+        for (i=0; i < charCount; i++) {
             if (CHINESE_SPLITER) {
                 foundAny = 1;
                 found++;
@@ -294,7 +304,7 @@ typeChineseName:
         RETURN_IF_NULL(foundList, -2,-1);
         // 这里只是筛选失败，应该返回重新询问角色名长度，不退出
         currentIndex = 0;
-        for (size_t i = 0; i < charCount; i++) {
+        for (i = 0; i < charCount; i++) {
             if (CHINESE_SPLITER) {
                 EXIT_IF_NULL(foundList, index2Id(i));
                 foundList[currentIndex++] = index2Id(i);
@@ -315,13 +325,14 @@ typeChineseName:
 }
 
 int choiceOneCharacterUsingEnglishNameLength(void) {
-    int foundAny = 0, found = 0, currentIndex = 0, selection = -1;
+    int foundAny = 0, found = 0, currentIndex = 0, selection = -1,length=0;
     int* foundList = NULL;
+    size_t i=0;
 typeEnglishName:
     {
         ENDL;
         printf("Please type how long the English name is and press ENTER, type -1 or 0 for go back (-1-%zu): ", longestEnglishNameLength);
-        int length = 0;
+        length = 0;
         do {
             length = readIntInRange(-1, (int)longestEnglishNameLength, NULL);
             if (length == -1 || length == 0) {
@@ -338,7 +349,7 @@ typeEnglishName:
         CLS;
         foundAny = 0;
         found = 0;
-        for (size_t i = 0; i < charCount; i++) {
+        for (i = 0; i < charCount; i++) {
             if (ENGLISH_SPLITER) {
                 foundAny = 1;
                 found++;
@@ -355,7 +366,7 @@ typeEnglishName:
         foundList = (int*)malloc(sizeof(int) * (found + 1));
         RETURN_IF_NULL(foundList, -2,-1);
         currentIndex = 0;
-        for (size_t i = 0; i < charCount; i++) {
+        for (i = 0; i < charCount; i++) {
             if (ENGLISH_SPLITER) {
                 if (foundList == NULL)
                 {
@@ -380,17 +391,19 @@ typeEnglishName:
 }
 
 int choiceOneCharacterUsingVisionType(void) {
-    size_t found = 0, currentIndex = 0;
-    int selection = -1;
-    int* foundList = NULL;
-
-    splitResultLength = getSplitResultExpectedLength();
-    splitResult = (char*)malloc(sizeof(char) * (splitResultLength + 1));
+    size_t found=0,currentIndex=0,i=0,j=0;
+    int selection=-1;
+    int* foundList=NULL;
+    int visionSelection=VISION_UNKNOWN;
+    int visionUserChoice=visionSelection;
+#ifdef _MSC_VER
+    int sprintfResult=0;
+#endif    
+    splitResultLength=getSplitResultExpectedLength();
+    splitResult=(char*)malloc(sizeof(char) * (splitResultLength + 1));
     RETURN_IF_NULL(splitResult, -2,-1);
-    int visionSelection = VISION_UNKNOWN;
     ENDL;
-    visionSelection = choiceMenu(splitByVisionType, (int)ARRAY_SIZE(splitByVisionType), L"选择一个神之眼类型");
-    int visionUserChoice = visionSelection;
+    visionSelection=choiceMenu(splitByVisionType, (int)ARRAY_SIZE(splitByVisionType), L"选择一个神之眼类型");
     switch (visionSelection) {
     case 1: visionSelection = ANEMO; break;
     case 2: visionSelection = GEO; break;
@@ -400,7 +413,12 @@ int choiceOneCharacterUsingVisionType(void) {
     case 6: visionSelection = PYRO; break;
     case 7: visionSelection = CRYO; break;
     case 0:
-        return -1;
+        {
+            free(splitResult);
+            splitResult=NULL;
+            splitResultLength=0;
+            return -1;
+        }
     }
     CLS;
     SetConsoleColorByVision((uint8_t)visionSelection);
@@ -409,47 +427,53 @@ int choiceOneCharacterUsingVisionType(void) {
     ENDL;
     found = 0;
     splitResultCurrent = splitResult;
-    for (size_t i = 0; i < charCount; i++) {
+    for (i = 0; i < charCount; i++) {
         if (CharMap[i].vision == visionSelection) {
             // 将上面的判断条件后面加个 ||1 用来测试字符串内存空间申请的够不够长
+
+            // 待修复：如果 sprintf_s 返回的是负值，会导致指针向缓冲区之前移动
             found++;
             splitResultCurrent+=
 #ifdef _MSC_VER
                 sprintf_s(splitResultCurrent, splitResultLength-(splitResultCurrent - splitResult), "%3d | ", index2Id(i));
 #else
-                sprintf(splitResultCurrent,"%3d | ", index2Id(i));
+                snprintf(splitResultCurrent,splitResultLength-(splitResultCurrent - splitResult)-1,"%3d | ", index2Id(i));
 #endif
-            for (size_t j = 0; j < localizedVisualLen(CharMap[longestChineseIndex].name_cn) - localizedVisualLen(CharMap[i].name_cn); j++) { 
+            for (j=0; j < localizedVisualLen(CharMap[longestChineseIndex].name_cn) - localizedVisualLen(CharMap[i].name_cn); j++) { 
                 splitResultCurrent +=
 #ifdef _MSC_VER
                     sprintf_s(splitResultCurrent, splitResultLength - (splitResultCurrent - splitResult), " ");
 #else
-                    sprintf(splitResultCurrent, " ");
+                    snprintf(splitResultCurrent, splitResultLength-(splitResultCurrent - splitResult)-1," ");
 #endif
             }
             splitResultCurrent+=
 #ifdef _MSC_VER
                 sprintf_s(splitResultCurrent, splitResultLength - (splitResultCurrent - splitResult), "%s | %s", localizedNames[i], CharMap[i].name);
 #else
-                sprintf(splitResultCurrent,"%s | %s", localizedNames[i], CharMap[i].name);
+                snprintf(splitResultCurrent,splitResultLength-(splitResultCurrent - splitResult)-1,"%s | %s", localizedNames[i], CharMap[i].name);
 #endif
             splitResultCurrent+=
 #ifdef _MSC_VER
             sprintf_s(splitResultCurrent, splitResultLength - (splitResultCurrent - splitResult), "\n");
 #else
-            sprintf(splitResultCurrent, "\n");
+            snprintf(splitResultCurrent,splitResultLength-(splitResultCurrent - splitResult)-1, "\n");
 #endif
         }
     }
     puts(splitResult);
+    free(splitResult);
+    splitResult=NULL;
+    splitResultLength=0;
     foundList = (int*)malloc(sizeof(int) * (found + 0));
     RETURN_IF_NULL(foundList, -2,-1);
     currentIndex = 0;
-    for (size_t i = 0; i < charCount; i++) {
+    for (i=0; i < charCount; i++) {
         if (CharMap[i].vision == visionSelection) {
             EXIT_IF_NULL(foundList, index2Id(i));
             if (currentIndex>=found) {
                 puts("Unexpected index out of bounds in foundList.");
+                free(foundList);
                 exit(1);
             } else foundList[currentIndex++] = index2Id(i);
         }
@@ -457,14 +481,8 @@ int choiceOneCharacterUsingVisionType(void) {
     printf("Found %zu characters.", found);
     ENDL;
     selection = choiceOneCharacterwithSpliterBefore(foundList, (size_t)found);
-    if (selection == -1) {
-        free(foundList);
-        foundList = NULL;
-        return -2;
-    }
-    else {
-        free(foundList);
-        foundList = NULL;
-        return selection;
-    }
+    free(foundList);
+    foundList = NULL;
+    if (selection == -1) { return -2; } 
+                    else { return selection;}
 }

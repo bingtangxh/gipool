@@ -81,6 +81,7 @@ _Bool isPoolInOrder(int i)
 
 void initDynamicThings(void)
 {
+    size_t i=0;
     getCharandPoolCount();
     longestChineseIndex=(size_t)findLongest(CharMap);
     longestChineseNameLength=wcslen(CharMap[longestChineseIndex].name_cn);
@@ -92,7 +93,7 @@ void initDynamicThings(void)
     arrangedInOrderOfDays=(int*)malloc(charCount*sizeof(int));
     EXIT_IF_NULL(arrangedInOrderOfDays,-1);
 
-    for(size_t i=0; i<charCount; i++) {
+    for(i=0; i<charCount; i++) {
         arrangedInOrderOfDays[i]=(int)i;
     }
     arrangeByDaysPassedSinceLastUp();
@@ -100,14 +101,14 @@ void initDynamicThings(void)
     PoolLinkLists=(PoolLinkList*)malloc(sizeof(PoolLinkList)*charCount);
     EXIT_IF_NULL(PoolLinkLists,-1);
 
-    for(size_t i=0; i<charCount; i++) {
+    for(i=0; i<charCount; i++) {
         PoolLinkLists[i]=NULL;
     }
 
-    localizedNames = (char**)malloc(charCount * sizeof(char*));
+    localizedNames=(char**)malloc(charCount * sizeof(char*));
     EXIT_IF_NULL(localizedNames,-1);
-
-    for (size_t i = 0; i < charCount; i++) {
+    memset(localizedNames,0,charCount*sizeof(char*));
+    for (i=0; i<charCount; i++) {
         localizedNames[i] = localize(CharMap[i].name_cn);
         EXIT_IF_NULL(localizedNames[i], index2Id(i));
     }
@@ -117,7 +118,7 @@ size_t getSplitResultExpectedLength(void)
 {
     size_t result = 0;
     result += 3 + 3; // 3 digits for ID, 3 for " | "
-    result += (int)localizedVisualLen(CharMap[longestChineseIndex].name_cn);
+    result += (int)localizedMemLen(CharMap[longestChineseIndex].name_cn);
     result += 3; // 3 for " | "
     result += (int)longestEnglishNameLength;
     result += 1; // 1 for "\n"
@@ -130,21 +131,22 @@ int checkIntegrity(void)
     // 该函数用到了 charCount 和 poolCount 这两个全局变量
     // 所以在调用该函数之前必须先调用 getCharandPoolCount() 或者 initDynamicThings() 函数来初始化这两个变量
     // 不过该函数也只会在 main 函数中被调用了
-    int errorlevel=0;
+    int errorlevel=0,i=0;
+    unsigned int i1=0;
     size_t excludedPoolIndex=0;
 
-    for(unsigned int i=0; i<charCount; i++) {
-        if(CharMap[i].attrib==ROLE_TYPE_EXCLUDED) {
+    for(i1=0; i1<charCount; i1++) {
+        if(CharMap[i1].attrib==ROLE_TYPE_EXCLUDED) {
             excludedPoolIndex++;
             continue;
         }
-        if(CharMap[i].id!=(int)(i-excludedPoolIndex)) {
+        if(CharMap[i1].id!=(int)(i1-excludedPoolIndex)) {
             errorlevel++;
             excludedPoolIndex++;
         }
     }
 
-    for(int i=0; i+1<(int)poolCount; i++) {
+    for(i=0; i+1<(int)poolCount; i++) {
         if(isPoolInOrder(i)) {
             errorlevel++;
         }
@@ -155,11 +157,10 @@ int checkIntegrity(void)
 
 int findLongest(const CharMapType CharMap1[])
 {
-    size_t currentLen=0;
-    size_t maxLen=0;
+    size_t currentLen=0,maxLen=0,i=0;
     int maxIndex=-1;
 
-    for(size_t i=0; i<charCount; i++) {
+    for(i=0; i<charCount; i++) {
         currentLen=wcslen(CharMap1[i].name_cn);
         if(currentLen>maxLen) {
             maxIndex=(int)i;
@@ -171,11 +172,10 @@ int findLongest(const CharMapType CharMap1[])
 
 int findLongestEnglish(const CharMapType CharMap1[])
 {
-    size_t currentLen=0;
-    size_t maxLen=0;
+    size_t currentLen=0,maxLen=0,i=0;
     int maxIndex=-1;
 
-    for(size_t i=0; i<charCount; i++) {
+    for(i=0; i<charCount; i++) {
         currentLen=strlen(CharMap1[i].name);
         if(currentLen>maxLen) {
             maxIndex=(int)i;
@@ -187,6 +187,7 @@ int findLongestEnglish(const CharMapType CharMap1[])
 
 void getDaysPassedSinceLastUp(void)
 {
+    size_t c=0,p=0,i=0;
     if(daysPassedSinceLastUP!=NULL) {
         free(daysPassedSinceLastUP);
     }
@@ -197,7 +198,7 @@ void getDaysPassedSinceLastUp(void)
         exit(1);
     }
 
-    for(size_t c=0; c<charCount; c++) {
+    for(c=0; c<charCount; c++) {
         int lastPoolIndex=-1;
 
         if(poolCount<=0) {
@@ -205,11 +206,11 @@ void getDaysPassedSinceLastUp(void)
             continue;
         }
 
-        for(size_t p=poolCount-1; p+1!=0; p--) {
+        for(p=poolCount-1; p+1!=0; p--) {
             // 等同于循环条件写 (p--)>0,循环后操作不写，但我不喜欢写(p--)>0这样的
             
             if(CharMap[c].attrib==5) {
-                for(size_t i=0; i<MAX_POOL_UP5_COUNT&&WishPool[p].up5[i]!=0; i++) {
+                for(i=0; i<MAX_POOL_UP5_COUNT&&WishPool[p].up5[i]!=0; i++) {
                     if(WishPool[p].up5[i]==index2Id(c)) {
                         lastPoolIndex=(int)p;
                         goto FOUND;
@@ -217,7 +218,7 @@ void getDaysPassedSinceLastUp(void)
                 }
             }
             else if(CharMap[c].attrib==4) {
-                for(size_t i=0; i<MAX_POOL_UP4_COUNT&&WishPool[p].up4[i]!=0; i++) {
+                for(i=0; i<MAX_POOL_UP4_COUNT&&WishPool[p].up4[i]!=0; i++) {
                     if(WishPool[p].up4[i]==index2Id(c)) {
                         lastPoolIndex=(int)p;
                         goto FOUND;
@@ -277,10 +278,11 @@ int daysSinceSinglePoolEnds(const WishPoolType pool)
 
 void swap(int* a,int* b)
 {
+    int temp=0;
     if(a==b||*a==*b) {
         return;
     }
-    int temp=*a;
+    temp=*a;
     *a=*b;
     *b=temp;
 }
@@ -288,9 +290,9 @@ void swap(int* a,int* b)
 int partition(int days[],int indices[],int low,int high)
 {
     int pivot=days[indices[high]];
-    int i=low-1;
+    int i=low-1,j=0;
 
-    for(int j=low; j<=high-1; j++) {
+    for(j=low; j<=high-1; j++) {
         if(days[indices[j]]>pivot) {
             i++;
             swap(&indices[i],&indices[j]);
@@ -303,8 +305,9 @@ int partition(int days[],int indices[],int low,int high)
 
 void quickSort(int days[],int indices[],int low,int high)
 {
+    int pi=0;
     if(low<high) {
-        int pi=partition(days,indices,low,high);
+        pi=partition(days,indices,low,high);
         quickSort(days,indices,low,pi-1);
         quickSort(days,indices,pi+1,high);
     }
@@ -321,6 +324,7 @@ void freeDynamicThings(void)
 {
     PoolLinkList currentNode=NULL;
     PoolLinkList currentNext=NULL;
+    size_t i=0;
 
     free(daysPassedSinceLastUP);
     daysPassedSinceLastUP=NULL;
@@ -329,7 +333,7 @@ void freeDynamicThings(void)
     arrangedInOrderOfDays=NULL;
 
     if(PoolLinkLists!=NULL) {
-        for(size_t i=0; i<charCount; i++) {
+        for(i=0; i<charCount; i++) {
             currentNode=PoolLinkLists[i];
             while(currentNode!=NULL) {
                 currentNext=currentNode->next;
@@ -342,10 +346,10 @@ void freeDynamicThings(void)
     }
 
     free(splitResult);
-    splitResult = NULL;
+    splitResult=NULL;
 
     if (localizedNames != NULL) {
-        for (size_t i = 0; i < charCount; i++) {
+        for (i=0; i < charCount; i++) {
             if (localizedNames[i] != NULL) {
                 free(localizedNames[i]);
                 localizedNames[i] = NULL;
@@ -376,11 +380,16 @@ _Bool buildPoolLinkList(size_t index,const WishPoolType WishPools[])
     PoolLinkList currentNext=NULL;
     size_t fiveCount=ARRAY_SIZE(WishPools[0].up5);
     size_t fourCount=ARRAY_SIZE(WishPools[0].up4);
+    size_t i=0,j=0;
+    int id=0;
 
-    if(PoolLinkLists==NULL) {
-        puts("Error: PoolLinkLists is NULL.");
+    if(index>=charCount)
+    {
+        puts("Error: index is greater that charCount. buildPoolLinkList failed.");
         return 1;
     }
+    RETURN_IF_NULL(WishPools,1,-1);
+    RETURN_IF_NULL(PoolLinkLists,1,-1);
     // 如果链表不是空，那就先先清空，从头重建
     if(PoolLinkLists[index]!=NULL) {
         current=PoolLinkLists[index];
@@ -392,7 +401,7 @@ _Bool buildPoolLinkList(size_t index,const WishPoolType WishPools[])
         PoolLinkLists[index]=NULL;
     }
 
-    int id = index2Id(index);
+    id = index2Id(index);
 
     if (CharMap[index].attrib != 5 && CharMap[index].attrib != 4 && (CharMap[index].attrib&3)!=3) {
         // 来到这里说明查询的角色类型不是会UP的
@@ -401,14 +410,12 @@ _Bool buildPoolLinkList(size_t index,const WishPoolType WishPools[])
     }
     else 
     {
-        for(size_t i=0; i<poolCount; i++) {
+        for(i=0; i<poolCount; i++) {
             for(
-                size_t j=0; 
-
+                j=0;
                 CharMap[index].attrib == 4?
                 j<fourCount&&WishPools[i].up4[j]!=0: 
                 j<fiveCount&&WishPools[i].up5[j]!=0;
-                
                 j++
                 ) {
                 if(

@@ -1,7 +1,5 @@
 ﻿#include "gipool.h"
 
-#include "gipool.h"
-
 PoolLinkList* PoolLinkLists=NULL;
 size_t charCount=0;
 size_t poolCount=0;
@@ -57,6 +55,7 @@ int main(int argc,char** argv)
     freeDynamicThings();
     return 0;
 }
+// Codex write test: September 29, 2026.
 
 void printTestInfo(void)
 {
