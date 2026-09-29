@@ -368,12 +368,7 @@ typeEnglishName:
         currentIndex=0;
         for(i=0; i<charCount; i++) {
             if(ENGLISH_SPLITER) {
-                if(foundList==NULL)
-                {
-                    puts("Unexpected null pointer foundList.");
-                    exit(1);
-                }
-                else foundList[currentIndex++]=index2Id(i);
+                foundList[currentIndex++]=index2Id(i);
             }
         }
         selection=choiceOneCharacterwithSpliterBefore(foundList,(size_t)found);
