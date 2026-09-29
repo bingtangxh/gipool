@@ -392,10 +392,8 @@ typeEnglishName:
 
 int choiceOneCharacterUsingVisionType(void) {
     size_t found=0,currentIndex=0,i=0,j=0;
-    int selection=-1;
     int* foundList=NULL;
-    int visionSelection=VISION_UNKNOWN;
-    int visionUserChoice=visionSelection;
+    int visionSelection=VISION_UNKNOWN,visionUserChoice=0,selection=-1;
 #ifdef _MSC_VER
     int sprintfResult=0;
 #endif    
@@ -404,6 +402,7 @@ int choiceOneCharacterUsingVisionType(void) {
     RETURN_IF_NULL(splitResult,-2,-1);
     ENDL;
     visionSelection=choiceMenu(splitByVisionType,(int)ARRAY_SIZE(splitByVisionType),L"选择一个神之眼类型");
+    visionUserChoice=visionSelection;
     switch(visionSelection) {
     case 1: visionSelection=ANEMO; break;
     case 2: visionSelection=GEO; break;
@@ -420,6 +419,7 @@ int choiceOneCharacterUsingVisionType(void) {
         return -1;
     }
     }
+    // switch 语句的 break 来到这里
     CLS;
     SetConsoleColorByVision((uint8_t)visionSelection);
     putws(splitByVisionType[visionUserChoice-1]);
