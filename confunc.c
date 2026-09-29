@@ -111,7 +111,7 @@ int typeMenu(const wchar_t* menuItems[],int itemCount,const wchar_t* title)
         for(temp=itemCount; temp>0; temp/=10) {
             longestIndexLength++;
         }
-        localizedItemNames=(char**)malloc(itemCount*sizeof(char*));
+        localizedItemNames=(char**)trackedMalloc(itemCount*sizeof(char*));
         EXIT_IF_NULL(localizedItemNames,-1);
         for(i1=0; i1<itemCount; i1++) {
             if((currentExpectedLength=localizedVisualLen(menuItems[i1]))>maxItemLength) {
@@ -176,10 +176,10 @@ int typeMenu(const wchar_t* menuItems[],int itemCount,const wchar_t* title)
         ENDL;
         printf("Please select an option (0-%d) and press ENTER: ",itemCount-1);
         for(i1=0; i1<itemCount; i1++) {
-            free(localizedItemNames[i1]);
+            trackedFree(localizedItemNames[i1]);
         }
-        free(localizedItemNames);
-        free(localizedTitle);
+        trackedFree(localizedItemNames);
+        trackedFree(localizedTitle);
         do {
             choice=readIntInRange(-1,itemCount-1,NULL);
             if(choice==-1) {
@@ -206,7 +206,7 @@ int choiceMenu(const wchar_t* menuItems[],int itemCount,const wchar_t* title)
     do {
         currentExpectedLength=maxItemLength=gaptoMax=gaptoMax_num=titleLineSpaces=0;
         longestIndexLength=1;
-        localizedItemNames=(char**)malloc(itemCount*sizeof(char*));
+        localizedItemNames=(char**)trackedMalloc(itemCount*sizeof(char*));
         EXIT_IF_NULL(localizedItemNames,-1);
         for(i1=0; i1<itemCount; i1++) {
             if((currentExpectedLength=localizedVisualLen(menuItems[i1]))>maxItemLength) {
@@ -289,10 +289,10 @@ int choiceMenu(const wchar_t* menuItems[],int itemCount,const wchar_t* title)
             itemCount<=10 ? itemCount-1+'0' : itemCount<=MAX_CHOICE_MENU_ITEMS ? itemCount-11+'A' : 'Z'
         );
         for(i1=0; i1<itemCount; i1++) {
-            free(localizedItemNames[i1]);
+            trackedFree(localizedItemNames[i1]);
         }
-        free(localizedItemNames);
-        free(localizedTitle);
+        trackedFree(localizedItemNames);
+        trackedFree(localizedTitle);
         do {
 #ifndef _WIN32
             fflush(stdout);
@@ -362,8 +362,7 @@ int readIntInRange(int min,int max,const int* defaultValue)
                 // printf("EOF detected. Enter a number (%d-%d): ", min, max);
                 // continue;
                 puts("EOF detected. Consider not to type Ctrl+Z when you are using me in CLI mode. gipool will now exit.");
-                freeDynamicThings();
-                exit(3);
+                EXIT_IF_NULL(NULL,-1);
             }
             // 如果有错误却又不是 EOF，清除错误标志并继续
             clearerr(stdin);

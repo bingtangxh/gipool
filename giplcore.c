@@ -91,7 +91,7 @@ void initDynamicThings(void)
 
     getDaysPassedSinceLastUp();
 
-    arrangedInOrderOfDays=(int*)malloc(charCount*sizeof(int));
+    arrangedInOrderOfDays=(int*)trackedMalloc(charCount*sizeof(int));
     EXIT_IF_NULL(arrangedInOrderOfDays,-1);
 
     for(i=0; i<charCount; i++) {
@@ -99,11 +99,11 @@ void initDynamicThings(void)
     }
     arrangeByDaysPassedSinceLastUp();
 
-    PoolLinkLists=(PoolLinkList*)malloc(sizeof(PoolLinkList)*charCount);
+    PoolLinkLists=(PoolLinkList*)trackedMalloc(sizeof(PoolLinkList)*charCount);
     EXIT_IF_NULL(PoolLinkLists,-1);
     memset(PoolLinkLists,0,sizeof(PoolLinkList)*charCount);
 
-    localizedNames=(char**)malloc(charCount*sizeof(char*));
+    localizedNames=(char**)trackedMalloc(charCount*sizeof(char*));
     EXIT_IF_NULL(localizedNames,-1);
     memset(localizedNames,0,charCount*sizeof(char*));
     for(i=0; i<charCount; i++) {
@@ -187,10 +187,10 @@ void getDaysPassedSinceLastUp(void)
 {
     size_t c=0,p=0,i=0;
     if(daysPassedSinceLastUP!=NULL) {
-        free(daysPassedSinceLastUP);
+        trackedFree(daysPassedSinceLastUP);
     }
 
-    daysPassedSinceLastUP=(int*)malloc(sizeof(int)*charCount);
+    daysPassedSinceLastUP=(int*)trackedMalloc(sizeof(int)*charCount);
     EXIT_IF_NULL(daysPassedSinceLastUP,-1);
 
     for(c=0; c<charCount; c++) {
@@ -322,10 +322,10 @@ void freeDynamicThings(void)
     PoolLinkList currentNext=NULL;
     size_t i=0;
 
-    free(daysPassedSinceLastUP);
+    trackedFree(daysPassedSinceLastUP);
     daysPassedSinceLastUP=NULL;
 
-    free(arrangedInOrderOfDays);
+    trackedFree(arrangedInOrderOfDays);
     arrangedInOrderOfDays=NULL;
 
     if(PoolLinkLists!=NULL) {
@@ -333,25 +333,25 @@ void freeDynamicThings(void)
             currentNode=PoolLinkLists[i];
             while(currentNode!=NULL) {
                 currentNext=currentNode->next;
-                free(currentNode);
+                trackedFree(currentNode);
                 currentNode=currentNext;
             }
         }
-        free(PoolLinkLists);
+        trackedFree(PoolLinkLists);
         PoolLinkLists=NULL;
     }
 
-    free(splitResult);
+    trackedFree(splitResult);
     splitResult=NULL;
 
     if(localizedNames!=NULL) {
         for(i=0; i<charCount; i++) {
             if(localizedNames[i]!=NULL) {
-                free(localizedNames[i]);
+                trackedFree(localizedNames[i]);
                 localizedNames[i]=NULL;
             }
         }
-        free(localizedNames);
+        trackedFree(localizedNames);
         localizedNames=NULL;
     }
 }
@@ -391,7 +391,7 @@ _Bool buildPoolLinkList(size_t index,const WishPoolType WishPools[])
         current=PoolLinkLists[index];
         while(current!=NULL) {
             currentNext=current->next;
-            free(current);
+            trackedFree(current);
             current=currentNext;
         }
         PoolLinkLists[index]=NULL;
@@ -439,7 +439,7 @@ _Bool buildPoolLinkList(size_t index,const WishPoolType WishPools[])
                             "Error: 'current' is NULL while building pool link list for 5-star character.\r\nPlease report this bug to the developer.\r" :
                             "Error: 'current' is NULL while building pool link list for 4-star character.\r\nPlease report this bug to the developer.\r"
                         );
-                        free(currentNext);
+                        trackedFree(currentNext);
                         return 1;
                     }
                 }
@@ -453,7 +453,7 @@ _Bool buildPoolLinkList(size_t index,const WishPoolType WishPools[])
 
 PoolLinkList createPoolNode(const WishPoolType WishPool1)
 {
-    PoolLinkList target=(PoolLinkList)malloc(sizeof(PoolNodeType));
+    PoolLinkList target=(PoolLinkList)trackedMalloc(sizeof(PoolNodeType));
     RETURN_IF_NULL(target,NULL,-1);
     target->major=WishPool1.major;
     target->minor=WishPool1.minor;

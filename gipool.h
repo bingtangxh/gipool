@@ -28,6 +28,20 @@
 // #define ARRAY_SIZE(arr) (sizeof(arr) == 0 ? 0 : sizeof(arr) / sizeof((arr)[0]))
 #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]))
 
+typedef struct allocationNode {
+    void* address;
+    struct allocationNode* next;
+} AllocationNode;
+
+extern AllocationNode* allocatedMemoryList;
+
+_Bool appendAllocation(void* address);
+_Bool removeAllocation(void* address);
+_Bool isAllocationInList(const void* address);
+void* trackedMalloc(size_t size);
+void trackedFree(void* address);
+void freeAllTrackedAllocations(void);
+
 #define EXIT_IF_NULL(ptr,id) \
     do { \
         if ((ptr)==NULL) { \

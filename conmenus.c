@@ -300,7 +300,7 @@ typeChineseName:
             printf("No character found with Chinese name length %d. Please try again.\n",length);
             goto typeChineseName;
         }
-        foundList=(int*)malloc(sizeof(int)*(found+1));
+        foundList=(int*)trackedMalloc(sizeof(int)*(found+1));
         RETURN_IF_NULL(foundList,-2,-1);
         // 这里只是筛选失败，应该返回重新询问角色名长度，不退出
         currentIndex=0;
@@ -312,12 +312,12 @@ typeChineseName:
         }
         selection=choiceOneCharacterwithSpliterBefore(foundList,(size_t)found);
         if(selection==-1) {
-            free(foundList);
+            trackedFree(foundList);
             foundList=NULL;
             return -2;
         }
         else {
-            free(foundList);
+            trackedFree(foundList);
             foundList=NULL;
             return selection;
         }
@@ -363,7 +363,7 @@ typeEnglishName:
             printf("No character found with English name length %d. Please try again.\n",length);
             goto typeEnglishName;
         }
-        foundList=(int*)malloc(sizeof(int)*(found+1));
+        foundList=(int*)trackedMalloc(sizeof(int)*(found+1));
         RETURN_IF_NULL(foundList,-2,-1);
         currentIndex=0;
         for(i=0; i<charCount; i++) {
@@ -373,12 +373,12 @@ typeEnglishName:
         }
         selection=choiceOneCharacterwithSpliterBefore(foundList,(size_t)found);
         if(selection==-1) {
-            free(foundList);
+            trackedFree(foundList);
             foundList=NULL;
             return -2;
         }
         else {
-            free(foundList);
+            trackedFree(foundList);
             foundList=NULL;
             return selection;
         }
@@ -393,7 +393,7 @@ int choiceOneCharacterUsingVisionType(void) {
     int sprintfResult=0;
 #endif    
     splitResultLength=getSplitResultExpectedLength();
-    splitResult=(char*)malloc(sizeof(char)*(splitResultLength+1));
+    splitResult=(char*)trackedMalloc(sizeof(char)*(splitResultLength+1));
     RETURN_IF_NULL(splitResult,-2,-1);
     ENDL;
     visionSelection=choiceMenu(splitByVisionType,(int)ARRAY_SIZE(splitByVisionType),L"选择一个神之眼类型");
@@ -408,7 +408,7 @@ int choiceOneCharacterUsingVisionType(void) {
     case 7: visionSelection=CRYO; break;
     case 0:
     {
-        free(splitResult);
+        trackedFree(splitResult);
         splitResult=NULL;
         splitResultLength=0;
         return -1;
@@ -457,10 +457,10 @@ int choiceOneCharacterUsingVisionType(void) {
         }
     }
     puts(splitResult);
-    free(splitResult);
+    trackedFree(splitResult);
     splitResult=NULL;
     splitResultLength=0;
-    foundList=(int*)malloc(sizeof(int)*(found+0));
+    foundList=(int*)trackedMalloc(sizeof(int)*(found+0));
     RETURN_IF_NULL(foundList,-2,-1);
     currentIndex=0;
     for(i=0; i<charCount; i++) {
@@ -468,8 +468,9 @@ int choiceOneCharacterUsingVisionType(void) {
             EXIT_IF_NULL(foundList,index2Id(i));
             if(currentIndex>=found) {
                 puts("Unexpected index out of bounds in foundList.");
-                free(foundList);
-                exit(1);
+                trackedFree(foundList);
+                foundList=NULL;
+                EXIT_IF_NULL(NULL,index2Id(i));
             }
             else foundList[currentIndex++]=index2Id(i);
         }
@@ -477,7 +478,7 @@ int choiceOneCharacterUsingVisionType(void) {
     printf("Found %zu characters.",found);
     ENDL;
     selection=choiceOneCharacterwithSpliterBefore(foundList,(size_t)found);
-    free(foundList);
+    trackedFree(foundList);
     foundList=NULL;
     if(selection==-1) { return -2; }
     else { return selection; }
