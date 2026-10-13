@@ -47,11 +47,11 @@ char* localize(const wchar_t* source)
 #else
     size_t destSize=wcstombs(NULL,source,0)+1;
     if(destSize==0) return NULL;
-    char* localizedStr=(char*)trackedMalloc(sizeof(char)*destSize);
+    char* localizedStr=(char*)tMalloc(sizeof(char)*destSize);
     RETURN_IF_NULL(localizedStr,NULL,-1);
     RETURN_IF_NULL(localizedStr,NULL,-1);
     if(wcstombs(localizedStr,source,destSize)==0) {
-        trackedFree(localizedStr);
+        tFree(localizedStr);
         return NULL;
     }
     return localizedStr;
