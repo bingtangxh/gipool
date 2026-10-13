@@ -3,8 +3,8 @@
 CharMapType const CharMap[]={
      {0,L"空","Aether",VISION_OTHER,0}
      ,{1,L"荧","Lumine",VISION_OTHER,1}
-     ,{UINT_MAX-1,L"戴因斯雷布","Dainsleif",VISION_OTHER,ROLE_TYPE_EXCLUDED}
-    ,{FSD,L"","",VISION_OTHER,ROLE_TYPE_EXCLUDED}
+     ,{-1,L"戴因斯雷布","Dainsleif",VISION_OTHER,ROLE_TYPE_EXCLUDED}
+    ,{-2,L"","",VISION_OTHER,ROLE_TYPE_EXCLUDED}
     ,{2,L"安柏","Amber",PYRO,4}
     ,{3,L"凯亚","Kaeya",CRYO,4}
     ,{4,L"丽莎","Lisa",ELECTRO,4}
@@ -133,6 +133,12 @@ CharMapType const CharMap[]={
     // 因为前段时间 v2.0.0 版本，这个程序才终于允许了 id 和 index 不对应的情况，
     // 但是有些边界检测可能不是用 index<=charCount 来判断的，
     // 而是用 id<=charCount 来判断的，那就不对了，所以用这个 364 检测对不对
+
+    // 目前 choiceOneCharacter4Test 函数已经不要求 id<=charCount 了，允许 id>charCount 的情况
+    // 但是 checkIntegrity 函数还是要求 id<=charCount 的，所以在测试时要注意
+    // 另外 choiceOneCharacter4Test 要求 id>=0
+    // 所以这里记录的角色如果 id<0 ，但是 attrib 却不是 ROLE_TYPE_EXCLUDED ，那么查询单个角色卡池时，
+    // 查询结果当中会出现这个 id 是负数的角色，但是 choiceOneCharacter4Test 函数却又无法选中。
 };
 
 WishPoolType const WishPool[]={
@@ -250,7 +256,7 @@ WishPoolType const WishPool[]={
     ,{{118,81},{119,15,69},{0},7,0,1,2026,8,12,2026,9,1}
     ,{{105,102},{103,96,94},{0},7,0,2,2026,9,1,2026,9,22}
     ,{{120,121},{23,60,14},{0},7,1,1,2026,9,23,2026,10,13}
-    ,{{101,99},{FSD},{0},7,1,2,2026,10,14,2026,11,4}/*
+    ,{{101,99},{100,55,65},{0},7,1,2,2026,10,14,2026,11,4}/*
     ,{{,},{,,},{0},7,2,1,2026,11,4,2026,,}
     ,{{,},{,,},{0},7,2,2,2026,,,2026,,}
     ,{{,},{,,},{0},7,3,1,2026,12,16,2026,,}

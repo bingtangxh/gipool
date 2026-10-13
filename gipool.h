@@ -38,8 +38,8 @@ extern AllocationNode* allocatedMemoryList;
 _Bool appendAllocation(void* address);
 _Bool removeAllocation(void* address);
 _Bool isAllocationInList(const void* address);
-void* trackedMalloc(size_t size);
-void trackedFree(void* address);
+void* tMalloc(size_t size);
+void tFree(void* address);
 void freeAllTrackedAllocations(void);
 
 #define EXIT_IF_NULL(ptr,id) \
@@ -205,11 +205,11 @@ extern int* arrangedInOrderOfDays;
 extern char** localizedNames;
 extern const int maxCharactersInCharPool;
 
-extern const wchar_t singleEdge[];
-extern const wchar_t doubleEdge[];
 extern const char splitLine[];
 extern char* splitResult;
 extern size_t splitResultLength;
+extern int splitResultCurrent;
+extern _Bool useUnicodeEdge;
 
 #ifdef _WIN32
 extern CONSOLE_SCREEN_BUFFER_INFO original;

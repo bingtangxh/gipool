@@ -90,7 +90,7 @@ void initDynamicThings(void)
 
     getDaysPassedSinceLastUp();
 
-    arrangedInOrderOfDays=(int*)trackedMalloc(charCount*sizeof(int));
+    arrangedInOrderOfDays=(int*)tMalloc(charCount*sizeof(int));
     EXIT_IF_NULL(arrangedInOrderOfDays,-1);
 
     for(i=0; i<charCount; i++) {
@@ -98,11 +98,11 @@ void initDynamicThings(void)
     }
     arrangeByDaysPassedSinceLastUp();
 
-    PoolLinkLists=(PoolLinkList*)trackedMalloc(sizeof(PoolLinkList)*charCount);
+    PoolLinkLists=(PoolLinkList*)tMalloc(sizeof(PoolLinkList)*charCount);
     EXIT_IF_NULL(PoolLinkLists,-1);
     memset(PoolLinkLists,0,sizeof(PoolLinkList)*charCount);
 
-    localizedNames=(char**)trackedMalloc(charCount*sizeof(char*));
+    localizedNames=(char**)tMalloc(charCount*sizeof(char*));
     EXIT_IF_NULL(localizedNames,-1);
     memset(localizedNames,0,charCount*sizeof(char*));
     for(i=0; i<charCount; i++) {
@@ -140,11 +140,13 @@ int checkIntegrity(void)
         if(CharMap[i1].id!=(int)(i1-excludedPoolIndex)) {
             errorlevel++;
             excludedPoolIndex++;
+            continue;
         }
     }
 
     for(i=0; i+1<(int)poolCount; i++) {
         if(isPoolInOrder(i)) {
+            // 此处的函数是看时间顺序
             errorlevel++;
         }
     }
@@ -186,10 +188,10 @@ void getDaysPassedSinceLastUp(void)
 {
     size_t c=0,p=0,i=0;
     if(daysPassedSinceLastUP!=NULL) {
-        trackedFree(daysPassedSinceLastUP);
+        tFree(daysPassedSinceLastUP);
     }
 
-    daysPassedSinceLastUP=(int*)trackedMalloc(sizeof(int)*charCount);
+    daysPassedSinceLastUP=(int*)tMalloc(sizeof(int)*charCount);
     EXIT_IF_NULL(daysPassedSinceLastUP,-1);
 
     for(c=0; c<charCount; c++) {
@@ -321,10 +323,10 @@ void freeDynamicThings(void)
     PoolLinkList currentNext=NULL;
     size_t i=0;
 
-    trackedFree(daysPassedSinceLastUP);
+    tFree(daysPassedSinceLastUP);
     daysPassedSinceLastUP=NULL;
 
-    trackedFree(arrangedInOrderOfDays);
+    tFree(arrangedInOrderOfDays);
     arrangedInOrderOfDays=NULL;
 
     if(PoolLinkLists!=NULL) {
@@ -332,25 +334,25 @@ void freeDynamicThings(void)
             currentNode=PoolLinkLists[i];
             while(currentNode!=NULL) {
                 currentNext=currentNode->next;
-                trackedFree(currentNode);
+                tFree(currentNode);
                 currentNode=currentNext;
             }
         }
-        trackedFree(PoolLinkLists);
+        tFree(PoolLinkLists);
         PoolLinkLists=NULL;
     }
 
-    trackedFree(splitResult);
+    tFree(splitResult);
     splitResult=NULL;
 
     if(localizedNames!=NULL) {
         for(i=0; i<charCount; i++) {
             if(localizedNames[i]!=NULL) {
-                trackedFree(localizedNames[i]);
+                tFree(localizedNames[i]);
                 localizedNames[i]=NULL;
             }
         }
-        trackedFree(localizedNames);
+        tFree(localizedNames);
         localizedNames=NULL;
     }
 }
@@ -380,7 +382,7 @@ _Bool buildPoolLinkList(size_t index,const WishPoolType WishPools[])
 
     if(index>=charCount)
     {
-        puts("Error: index is greater that charCount. buildPoolLinkList failed.");
+        puts("Error: index is greater than charCount. buildPoolLinkList failed.");
         return 1;
     }
     RETURN_IF_NULL(WishPools,1,-1);
@@ -390,7 +392,7 @@ _Bool buildPoolLinkList(size_t index,const WishPoolType WishPools[])
         current=PoolLinkLists[index];
         while(current!=NULL) {
             currentNext=current->next;
-            trackedFree(current);
+            tFree(current);
             current=currentNext;
         }
         PoolLinkLists[index]=NULL;
@@ -438,7 +440,7 @@ _Bool buildPoolLinkList(size_t index,const WishPoolType WishPools[])
                             "Error: 'current' is NULL while building pool link list for 5-star character.\r\nPlease report this bug to the developer.\r" :
                             "Error: 'current' is NULL while building pool link list for 4-star character.\r\nPlease report this bug to the developer.\r"
                         );
-                        trackedFree(currentNext);
+                        tFree(currentNext);
                         return 1;
                     }
                 }
@@ -452,7 +454,7 @@ _Bool buildPoolLinkList(size_t index,const WishPoolType WishPools[])
 
 PoolLinkList createPoolNode(const WishPoolType WishPool1)
 {
-    PoolLinkList target=(PoolLinkList)trackedMalloc(sizeof(PoolNodeType));
+    PoolLinkList target=(PoolLinkList)tMalloc(sizeof(PoolNodeType));
     RETURN_IF_NULL(target,NULL,-1);
     target->major=WishPool1.major;
     target->minor=WishPool1.minor;

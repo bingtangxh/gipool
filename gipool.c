@@ -14,8 +14,6 @@ int* arrangedInOrderOfDays=NULL;
 char** localizedNames=NULL;
 const int maxCharactersInCharPool=2;
 
-const wchar_t singleEdge[]=L"─";
-const wchar_t doubleEdge[]=L"═";
 const char splitLine[]="-------------------------------------------------------------------------------------------------------";
 
 #ifdef _WIN32
@@ -109,7 +107,7 @@ _Bool isAllocationInList(const void* address)
     return 0;
 }
 
-void* trackedMalloc(size_t size)
+void* tMalloc(size_t size)
 {
     void* address=NULL;
 
@@ -124,7 +122,7 @@ void* trackedMalloc(size_t size)
     return address;
 }
 
-void trackedFree(void* address)
+void tFree(void* address)
 {
     if(address==NULL) {
         return;
@@ -152,11 +150,18 @@ void freeAllTrackedAllocations(void)
 
 int main(int argc,char** argv)
 {
+    int i=0;
     initConsole();
     if(argc>1) {
-        if(!strcmp(argv[1],"/?")) {
-            help();
-            return 0;
+        
+        for(i=1; i<argc; i++) {
+            if(!strcmp(argv[i],"--use-fallback-menu")) {
+                useUnicodeEdge=0;
+            }
+            if(!strcmp(argv[i],"/?")) {
+                help();
+                return 0;
+            }
         }
     }
     initDynamicThings();

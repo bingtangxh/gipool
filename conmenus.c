@@ -1,8 +1,10 @@
 ﻿#include "gipool.h"
 
 size_t splitResultLength=0;
-char* splitResultCurrent=NULL;
+char* splitResultPosition=NULL;
 char* splitResult=NULL;
+int splitResultCurrent=0;
+_Bool useUnicodeEdge=1;
 
 #define CHINESE_SPLITER ((int)(wcslen(CharMap[i].name_cn) & 31) == length)\
 &&\
@@ -11,6 +13,12 @@ char* splitResult=NULL;
 #define ENGLISH_SPLITER ((int)(strlen(CharMap[i].name) & 63) == length)\
 &&\
 (CharMap[i].attrib != ROLE_TYPE_EXCLUDED)\
+
+#define CHECK_SPRINTF_S_RESULT(splitResultCurrent) \
+    do { \
+        if((splitResultCurrent)<0) { \
+        puts("sprintf_s returned a negative value, indicating an error occurred."); \
+        tFree(splitResult); splitResult=NULL; splitResultLength=0; return -2; } } while(0)
 
 const wchar_t* mainMenuItems[]={
     L"查询所有卡池",
@@ -38,6 +46,16 @@ const wchar_t* splitByVisionType[]={
     L"火元素",
     L"冰元素",
     L"返回"
+};
+
+const char* visionTypeNames[]={
+    "Anemo",
+    "Geo",
+    "Electro",
+    "Dendro",
+    "Hydro",
+    "Pyro",
+    "Cryo"
 };
 
 void mainMenu(void)
@@ -215,15 +233,15 @@ int choiceOneCharacter4Test(void)
 {
     int result=-1;
     ENDL;
-    printf("Please type a char index number, type -1 to go back (-1-%u): ",(unsigned int)charCount-1);
+    printf("Please type a char ID, type -1 to go back: ");
     do {
-        result=readIntInRange(-1,(int)charCount-1,NULL);
+        result=readIntInRange(-1,-1,NULL);
         if(result==-1) {
             CLS;
             break;
         }
-        else if(result < 0||(unsigned int)result > charCount-1) {
-            printf("Invalid choice. Type -1 to go back. (0-%u): ",(unsigned int)charCount-1);
+        else if(result < 0) {
+            printf("ID number could not less than 0. Type -1 to go back: ");
         }
         else {
             break;
@@ -300,7 +318,7 @@ typeChineseName:
             printf("No character found with Chinese name length %d. Please try again.\n",length);
             goto typeChineseName;
         }
-        foundList=(int*)trackedMalloc(sizeof(int)*(found+1));
+        foundList=(int*)tMalloc(sizeof(int)*(found+1));
         RETURN_IF_NULL(foundList,-2,-1);
         // 这里只是筛选失败，应该返回重新询问角色名长度，不退出
         currentIndex=0;
@@ -312,12 +330,12 @@ typeChineseName:
         }
         selection=choiceOneCharacterwithSpliterBefore(foundList,(size_t)found);
         if(selection==-1) {
-            trackedFree(foundList);
+            tFree(foundList);
             foundList=NULL;
             return -2;
         }
         else {
-            trackedFree(foundList);
+            tFree(foundList);
             foundList=NULL;
             return selection;
         }
@@ -363,7 +381,7 @@ typeEnglishName:
             printf("No character found with English name length %d. Please try again.\n",length);
             goto typeEnglishName;
         }
-        foundList=(int*)trackedMalloc(sizeof(int)*(found+1));
+        foundList=(int*)tMalloc(sizeof(int)*(found+1));
         RETURN_IF_NULL(foundList,-2,-1);
         currentIndex=0;
         for(i=0; i<charCount; i++) {
@@ -373,12 +391,12 @@ typeEnglishName:
         }
         selection=choiceOneCharacterwithSpliterBefore(foundList,(size_t)found);
         if(selection==-1) {
-            trackedFree(foundList);
+            tFree(foundList);
             foundList=NULL;
             return -2;
         }
         else {
-            trackedFree(foundList);
+            tFree(foundList);
             foundList=NULL;
             return selection;
         }
@@ -393,7 +411,7 @@ int choiceOneCharacterUsingVisionType(void) {
     int sprintfResult=0;
 #endif    
     splitResultLength=getSplitResultExpectedLength();
-    splitResult=(char*)trackedMalloc(sizeof(char)*(splitResultLength+1));
+    splitResult=(char*)tMalloc(sizeof(char)*(splitResultLength+1));
     RETURN_IF_NULL(splitResult,-2,-1);
     ENDL;
     visionSelection=choiceMenu(splitByVisionType,(int)ARRAY_SIZE(splitByVisionType),L"选择一个神之眼类型");
@@ -408,7 +426,7 @@ int choiceOneCharacterUsingVisionType(void) {
     case 7: visionSelection=CRYO; break;
     case 0:
     {
-        trackedFree(splitResult);
+        tFree(splitResult);
         splitResult=NULL;
         splitResultLength=0;
         return -1;
@@ -416,51 +434,65 @@ int choiceOneCharacterUsingVisionType(void) {
     }
     // switch 语句的 break 来到这里
     CLS;
+#if 0
     SetConsoleColorByVision((uint8_t)visionSelection);
     putws(splitByVisionType[visionUserChoice-1]);
     ResetConsoleColor();
     ENDL;
+#endif
     found=0;
-    splitResultCurrent=splitResult;
+    splitResultPosition=splitResult;
     for(i=0; i<charCount; i++) {
         if(CharMap[i].vision==visionSelection) {
             // 将上面的判断条件后面加个 ||1 用来测试字符串内存空间申请的够不够长
 
-            // 待修复：如果 sprintf_s 返回的是负值，会导致指针向缓冲区之前移动
             found++;
-            splitResultCurrent+=
+
+            splitResultCurrent=
 #ifdef _MSC_VER
-                sprintf_s(splitResultCurrent,splitResultLength-(splitResultCurrent-splitResult),"%3d | ",index2Id(i));
+                sprintf_s(splitResultPosition,splitResultLength-(splitResultPosition-splitResult),"%3d | ",index2Id(i));
+            CHECK_SPRINTF_S_RESULT(splitResultCurrent);
 #else
-                snprintf(splitResultCurrent,splitResultLength-(splitResultCurrent-splitResult)-1,"%3d | ",index2Id(i));
+                snprintf(splitResultPosition,splitResultLength-(splitResultPosition-splitResult)-1,"%3d | ",index2Id(i));
 #endif
+            
+            splitResultPosition+=splitResultCurrent;
+
             for(j=0; j<localizedVisualLen(CharMap[longestChineseIndex].name_cn)-localizedVisualLen(CharMap[i].name_cn); j++) {
-                splitResultCurrent+=
+                splitResultCurrent=
 #ifdef _MSC_VER
-                    sprintf_s(splitResultCurrent,splitResultLength-(splitResultCurrent-splitResult)," ");
+                    sprintf_s(splitResultPosition,splitResultLength-(splitResultPosition-splitResult)," ");
+                CHECK_SPRINTF_S_RESULT(splitResultCurrent);
 #else
-                    snprintf(splitResultCurrent,splitResultLength-(splitResultCurrent-splitResult)-1," ");
+                    snprintf(splitResultPosition,splitResultLength-(splitResultPosition-splitResult)-1," ");
 #endif
+                splitResultPosition+=splitResultCurrent;
             }
-            splitResultCurrent+=
+
+            splitResultCurrent=
 #ifdef _MSC_VER
-                sprintf_s(splitResultCurrent,splitResultLength-(splitResultCurrent-splitResult),"%s | %s",localizedNames[i],CharMap[i].name);
+                sprintf_s(splitResultPosition,splitResultLength-(splitResultPosition-splitResult),"%s | %s",localizedNames[i],CharMap[i].name);
+            CHECK_SPRINTF_S_RESULT(splitResultCurrent);
 #else
-                snprintf(splitResultCurrent,splitResultLength-(splitResultCurrent-splitResult)-1,"%s | %s",localizedNames[i],CharMap[i].name);
+                snprintf(splitResultPosition,splitResultLength-(splitResultPosition-splitResult)-1,"%s | %s",localizedNames[i],CharMap[i].name);
 #endif
-            splitResultCurrent+=
+            splitResultPosition+=splitResultCurrent;
+
+            splitResultCurrent=
 #ifdef _MSC_VER
-                sprintf_s(splitResultCurrent,splitResultLength-(splitResultCurrent-splitResult),"\n");
+                sprintf_s(splitResultPosition,splitResultLength-(splitResultPosition-splitResult),"\n");
+            CHECK_SPRINTF_S_RESULT(splitResultCurrent);
 #else
-                snprintf(splitResultCurrent,splitResultLength-(splitResultCurrent-splitResult)-1,"\n");
+                snprintf(splitResultPosition,splitResultLength-(splitResultPosition-splitResult)-1,"\n");
 #endif
+            splitResultPosition+=splitResultCurrent;
         }
     }
     puts(splitResult);
-    trackedFree(splitResult);
+    tFree(splitResult);
     splitResult=NULL;
     splitResultLength=0;
-    foundList=(int*)trackedMalloc(sizeof(int)*(found+0));
+    foundList=(int*)tMalloc(sizeof(int)*(found+0));
     RETURN_IF_NULL(foundList,-2,-1);
     currentIndex=0;
     for(i=0; i<charCount; i++) {
@@ -468,17 +500,17 @@ int choiceOneCharacterUsingVisionType(void) {
             EXIT_IF_NULL(foundList,index2Id(i));
             if(currentIndex>=found) {
                 puts("Unexpected index out of bounds in foundList.");
-                trackedFree(foundList);
+                tFree(foundList);
                 foundList=NULL;
                 EXIT_IF_NULL(NULL,index2Id(i));
             }
             else foundList[currentIndex++]=index2Id(i);
         }
     }
-    printf("Found %zu characters.",found);
+    printf("Found %zu characters with vision type %s.",found,visionTypeNames[visionUserChoice-1]);
     ENDL;
     selection=choiceOneCharacterwithSpliterBefore(foundList,(size_t)found);
-    trackedFree(foundList);
+    tFree(foundList);
     foundList=NULL;
     if(selection==-1) { return -2; }
     else { return selection; }
