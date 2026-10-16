@@ -542,7 +542,7 @@ _Bool SetConsoleColorByCharacter(const CharMapType character)
 
 _Bool SetConsoleColorByVision(uint8_t vision)
 {
-
+#ifdef _WIN32
     if(isWindows&&useWindowsLegacyConsoleColor) {
         HANDLE hConsole=GetStdHandle(STD_OUTPUT_HANDLE);
         if(!GetConsoleScreenBufferInfo(hConsole,&original)) {
@@ -552,6 +552,9 @@ _Bool SetConsoleColorByVision(uint8_t vision)
         return 1;
     }
     else {
+#else
+    if(1){
+#endif
         printf("\033[38;5;%um",visionColor[vision]);
         return 1;
     }
@@ -560,12 +563,16 @@ _Bool SetConsoleColorByVision(uint8_t vision)
 
 _Bool ResetConsoleColor(void)
 {
+#ifdef _WIN32
     if(isWindows&&useWindowsLegacyConsoleColor) {
         HANDLE hConsole=GetStdHandle(STD_OUTPUT_HANDLE);
         SetConsoleTextAttribute(hConsole,original.wAttributes);
         return 1;
     }
     else {
+#else
+    if(1) {
+#endif
         printf("\033[0m");
         return 1;
     }

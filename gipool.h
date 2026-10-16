@@ -218,9 +218,10 @@ extern size_t splitResultLength;
 extern int splitResultCurrent;
 extern _Bool useUnicodeEdge;
 
-
+#ifdef _WIN32
 extern CONSOLE_SCREEN_BUFFER_INFO original;
 extern WORD visionColor_wincon[];
+#endif
 
 extern uint8_t visionColor[];
 
