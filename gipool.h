@@ -22,6 +22,13 @@
 #ifdef _WIN32
 #include <conio.h>
 #include <windows.h>
+#ifndef REL_XP
+#include <VersionHelpers.h>
+#endif
+#endif
+
+#ifdef _MSC_VER
+
 #endif
 
 #define DATE_LENGTH 12
@@ -211,12 +218,12 @@ extern size_t splitResultLength;
 extern int splitResultCurrent;
 extern _Bool useUnicodeEdge;
 
-#ifdef _WIN32
+
 extern CONSOLE_SCREEN_BUFFER_INFO original;
-extern WORD visionColor[];
-#else
+extern WORD visionColor_wincon[];
+
 extern uint8_t visionColor[];
-#endif
+
 
 #ifndef _WIN32
 int getche_my(void);
@@ -229,6 +236,10 @@ void pauseConsole(void);
 _Bool convertCompileTime(char* date);
 _Bool buildPoolLinkList(size_t index,const WishPoolType WishPools[]);
 void help(void);
+
+
+extern _Bool isWindows;
+extern _Bool useWindowsLegacyConsoleColor;
 
 void initConsole(void);
 void printCompileTime(void);

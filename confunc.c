@@ -2,6 +2,14 @@
 
 #define MAX_CHOICE_MENU_ITEMS 35 // 1~9,A~Z
 
+_Bool isWindows=
+#ifdef _WIN32
+1;
+#else
+0;
+#endif
+_Bool useWindowsLegacyConsoleColor=0;
+
 #ifndef _WIN32
 
 int getche_my(void) {
@@ -20,8 +28,33 @@ int getch_my(void) {
 
 void initConsole(void)
 {
+  
+#ifdef _WIN32
+    HANDLE hOut=GetStdHandle(STD_OUTPUT_HANDLE);
+    DWORD mode=0;
+#endif
 #ifndef _WIN32
     setlocale(LC_CTYPE,"");
+#endif
+#ifdef _WIN32
+    if(hOut==NULL||hOut==INVALID_HANDLE_VALUE)
+        goto noANSIsupport;
+    if(!GetConsoleMode(hOut,&mode))
+        goto noANSIsupport;
+#ifdef REL_XP
+    goto noANSIsupport;
+#else
+    if(!SetConsoleMode(
+        hOut,
+        mode|ENABLE_VIRTUAL_TERMINAL_PROCESSING))
+        goto noANSIsupport;
+#endif
+existsANSIsupport:
+    return;
+noANSIsupport:
+    useWindowsLegacyConsoleColor=1;
+    useUnicodeEdge=0;
+    return;
 #endif
 }
 
@@ -509,29 +542,33 @@ _Bool SetConsoleColorByCharacter(const CharMapType character)
 
 _Bool SetConsoleColorByVision(uint8_t vision)
 {
-#ifdef _WIN32
-    HANDLE hConsole=GetStdHandle(STD_OUTPUT_HANDLE);
-    if(!GetConsoleScreenBufferInfo(hConsole,&original)) {
-        return 0;
+
+    if(isWindows&&useWindowsLegacyConsoleColor) {
+        HANDLE hConsole=GetStdHandle(STD_OUTPUT_HANDLE);
+        if(!GetConsoleScreenBufferInfo(hConsole,&original)) {
+            return 0;
+        }
+        SetConsoleTextAttribute(hConsole,visionColor_wincon[vision]);
+        return 1;
     }
-    SetConsoleTextAttribute(hConsole,visionColor[vision]);
-    return 1;
-#else
-    printf("\033[38;5;%um",visionColor[vision]);
-    return 1;
-#endif
+    else {
+        printf("\033[38;5;%um",visionColor[vision]);
+        return 1;
+    }
+
 }
 
 _Bool ResetConsoleColor(void)
 {
-#ifdef _WIN32
-    HANDLE hConsole=GetStdHandle(STD_OUTPUT_HANDLE);
-    SetConsoleTextAttribute(hConsole,original.wAttributes);
-    return 1;
-#else
-    printf("\033[0m");
-    return 1;
-#endif
+    if(isWindows&&useWindowsLegacyConsoleColor) {
+        HANDLE hConsole=GetStdHandle(STD_OUTPUT_HANDLE);
+        SetConsoleTextAttribute(hConsole,original.wAttributes);
+        return 1;
+    }
+    else {
+        printf("\033[0m");
+        return 1;
+    }
 }
 
 size_t id2Index(int id)

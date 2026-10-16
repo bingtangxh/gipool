@@ -55,4 +55,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <Manifest Include="compatibility.manifest">
+      <Filter>资源文件</Filter>
+    </Manifest>
+  </ItemGroup>
 </Project>

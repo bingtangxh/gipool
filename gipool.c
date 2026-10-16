@@ -16,9 +16,9 @@ const int maxCharactersInCharPool=2;
 
 const char splitLine[]="-------------------------------------------------------------------------------------------------------";
 
-#ifdef _WIN32
+
 CONSOLE_SCREEN_BUFFER_INFO original;
-WORD visionColor[]={
+WORD visionColor_wincon[]={
     FOREGROUND_BLUE|FOREGROUND_GREEN|FOREGROUND_RED,
     FOREGROUND_RED|FOREGROUND_INTENSITY,
     FOREGROUND_BLUE|FOREGROUND_INTENSITY,
@@ -29,9 +29,9 @@ WORD visionColor[]={
     FOREGROUND_GREEN|FOREGROUND_RED|FOREGROUND_INTENSITY,
     FOREGROUND_BLUE|FOREGROUND_GREEN|FOREGROUND_RED
 };
-#else
+
 uint8_t visionColor[]={ 7, 9, 33, 43, 99, 46, 159, 220, 7 };
-#endif
+
 
 _Bool appendAllocation(void* address)
 {
@@ -151,6 +151,7 @@ void freeAllTrackedAllocations(void)
 int main(int argc,char** argv)
 {
     int i=0;
+
     initConsole();
     if(argc>1) {
         
@@ -158,12 +159,27 @@ int main(int argc,char** argv)
             if(!strcmp(argv[i],"--use-fallback-menu")) {
                 useUnicodeEdge=0;
             }
-            if(!strcmp(argv[i],"/?")) {
+            if(!strcmp(argv[i],"--use-windows-legacy-console-color")) {
+                useWindowsLegacyConsoleColor=1;
+            }
+            if(!strcmp(argv[i],"--use-windows-legacy-console")) {
+                useWindowsLegacyConsoleColor=1;
+                useUnicodeEdge=0;
+            }
+            if(!strcmp(argv[i],"/?")||!strcmp(argv[i],"-?")||!strcmp(argv[i],"/h")||!strcmp(argv[i],"-h")||!strcmp(argv[i],"/H")||!strcmp(argv[i],"-H")||
+                !strcmp(argv[i],"--help")
+#if defined(_WIN32) && defined(_MSC_VER)
+                ||!_stricmp(argv[i],"--help")
+#else
+                ||!strcasecmp(argv[i],"--help")
+#endif
+                ) {
                 help();
                 return 0;
             }
         }
     }
+
     initDynamicThings();
     printCompileTime();
     ENDL;
@@ -180,6 +196,14 @@ int main(int argc,char** argv)
 
 void printTestInfo(void)
 {
+#ifdef _WIN32
+    OSVERSIONINFOA osvi;
+    osvi.dwOSVersionInfoSize=sizeof(OSVERSIONINFOA);
+#pragma warning(disable: 4996)
+    GetVersionExA(&osvi);
+#pragma warning(default: 4996)
+    printf("\n\nCurrent Windows Build: %d",osvi.dwBuildNumber);
+#endif
 }
 
 void exitDuetoFatalError(const int code,const char* message,const int id)
