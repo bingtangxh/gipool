@@ -172,7 +172,7 @@ int main(int argc,char** argv)
 #if defined(_WIN32) && defined(_MSC_VER)
                 ||!_stricmp(argv[i],"--help")
 #else
-                ||!strcasecmp(argv[i],"--help")
+                // ||!strcasecmp(argv[i],"--help")
 #endif
                 ) {
                 help();
