@@ -16,8 +16,9 @@ const int maxCharactersInCharPool=2;
 
 const char splitLine[]="-------------------------------------------------------------------------------------------------------";
 
-
+#ifdef _WIN32
 CONSOLE_SCREEN_BUFFER_INFO original;
+
 WORD visionColor_wincon[]={
     FOREGROUND_BLUE|FOREGROUND_GREEN|FOREGROUND_RED,
     FOREGROUND_RED|FOREGROUND_INTENSITY,
@@ -29,7 +30,7 @@ WORD visionColor_wincon[]={
     FOREGROUND_GREEN|FOREGROUND_RED|FOREGROUND_INTENSITY,
     FOREGROUND_BLUE|FOREGROUND_GREEN|FOREGROUND_RED
 };
-
+#endif
 uint8_t visionColor[]={ 7, 9, 33, 43, 99, 46, 159, 220, 7 };
 
 
