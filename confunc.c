@@ -82,7 +82,7 @@ void putPool(const WishPoolType WishPool1)
     }
     else
     {
-          printf("%hu.%hu\tMix Pool Preview\t\t | ",
+          printf("%hu.%hu Chronicled or Lightrace Wish Preview | ",
             WishPool1.major,WishPool1.minor);
     }
     for(i=0; i<2-fiveCount&&WishPool1.half<10; i++) {
