@@ -45,12 +45,13 @@ char* localize(const wchar_t* source)
     }
     return localizedStr;
 #else
+    // wcstombs 在出现问题时，返回的是 -1
     size_t destSize=wcstombs(NULL,source,0)+1;
     if(destSize==0) return NULL;
     char* localizedStr=(char*)tMalloc(sizeof(char)*destSize);
     RETURN_IF_NULL(localizedStr,NULL,-1);
     RETURN_IF_NULL(localizedStr,NULL,-1);
-    if(wcstombs(localizedStr,source,destSize)==0) {
+    if(wcstombs(localizedStr,source,destSize)==-1) {
         tFree(localizedStr);
         return NULL;
     }

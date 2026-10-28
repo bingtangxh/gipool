@@ -111,6 +111,11 @@ typedef uint32_t RoleMeta;
 // FSD 就是 Four Star Dummy 的意思，因为原神每次前瞻会公布下一个版本的五星角色，然后等到卡池上线前一天才会公布四星角色
 // 所以我就用 FSD 来表示四星角色的占位符，在只有五星角色已公布的时期先记载五星信息，四星角色就写成 FSD，等到四星角色公布后再把 FSD 替换成真正的四星角色 ID
 
+#define MIXED_POOL_PREVIEW 20
+// 20 用于标识这是前瞻公布的混池，尚不明确具体是上半还是下半
+// 因此 isPoolInOrder() 函数不检查该卡池
+// 同时 putPool() 函数不显示该卡池的日期信息
+
 typedef enum vision {
     VISION_OTHER,
     PYRO,

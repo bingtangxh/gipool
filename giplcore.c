@@ -63,6 +63,10 @@ _Bool convertCompileTime(char* date)
 
 _Bool isPoolInOrder(int i)
 {
+    // 该函数要求 ( 0<=i && i+1<(int)poolCount )
+    // 20 用于标识这是前瞻公布的混池，尚不明确具体是上半还是下半
+    // 所以检测顺序的时候排除 half 是 20 的卡池或者下一个卡池的 half 是 20 的卡池
+    if(WishPool[i].half==MIXED_POOL_PREVIEW||WishPool[i+1].half==MIXED_POOL_PREVIEW) return 0;
     if((WishPool[i].major>WishPool[i+1].major)||
         ((WishPool[i].major==WishPool[i+1].major)&&(WishPool[i].minor>WishPool[i+1].minor))||
         ((WishPool[i].major<WishPool[i+1].major)&&(WishPool[i+1].minor>0))||
@@ -73,7 +77,8 @@ _Bool isPoolInOrder(int i)
             makeTimeFromYMDHMS(WishPool[i].endY,WishPool[i].endM,WishPool[i].endD,poolEndHour(WishPool[i].half),0,0))||
         ((makeTimeFromYMDHMS(WishPool[i].endY,WishPool[i].endM,WishPool[i].endD,poolEndHour(WishPool[i].half),0,0)>
             makeTimeFromYMDHMS(WishPool[i+1].startY,WishPool[i+1].startM,WishPool[i+1].startD,poolEndHour(WishPool[i].half),0,0))&&
-            ((WishPool[i].half%10)<(WishPool[i+1].half%10)))) {
+            ((WishPool[i].half%10)<(WishPool[i+1].half%10)))) 
+    {
         return 1;
     }
     return 0;

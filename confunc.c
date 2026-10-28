@@ -74,12 +74,17 @@ void putPool(const WishPoolType WishPool1)
             break;
         }
     }
-
-    printf("%hu.%hu.%hu\t%u.%hu.%hu\t%u.%hu.%hu\t | ",
-        WishPool1.major,WishPool1.minor,WishPool1.half,
-        WishPool1.startY,WishPool1.startM,WishPool1.startD,
-        WishPool1.endY,WishPool1.endM,WishPool1.endD);
-
+    if(WishPool1.half!=20) {
+        printf("%hu.%hu.%hu\t%u.%hu.%hu\t%u.%hu.%hu\t | ",
+            WishPool1.major,WishPool1.minor,WishPool1.half,
+            WishPool1.startY,WishPool1.startM,WishPool1.startD,
+            WishPool1.endY,WishPool1.endM,WishPool1.endD);
+    }
+    else
+    {
+          printf("%hu.%hu\tMix Pool Preview\t\t | ",
+            WishPool1.major,WishPool1.minor);
+    }
     for(i=0; i<2-fiveCount&&WishPool1.half<10; i++) {
         for(j=0; j<=localizedVisualLen(CharMap[longestChineseIndex].name_cn); j++) {
             SPACE;
