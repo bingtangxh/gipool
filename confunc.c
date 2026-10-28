@@ -74,7 +74,7 @@ void putPool(const WishPoolType WishPool1)
             break;
         }
     }
-    if(WishPool1.half!=20) {
+    if(WishPool1.half!=MIXED_POOL_PREVIEW) {
         printf("%hu.%hu.%hu\t%u.%hu.%hu\t%u.%hu.%hu\t | ",
             WishPool1.major,WishPool1.minor,WishPool1.half,
             WishPool1.startY,WishPool1.startM,WishPool1.startD,
