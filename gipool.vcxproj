@@ -501,7 +501,8 @@
   <ItemGroup>
     <ClCompile Include="confunc.c" />
     <ClCompile Include="conmenus.c" />
-    <ClCompile Include="cynojokes.c" />
+    <ClCompile Include="cynjoks.c" />
+    <ClCompile Include="dynamupd.c" />
     <ClCompile Include="giplcore.c" />
     <ClCompile Include="gipldata.c" />
     <ClCompile Include="gipool.c" />

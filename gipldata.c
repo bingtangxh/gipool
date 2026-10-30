@@ -1,5 +1,8 @@
 ﻿#include "gipool.h"
 
+// 此文件名称 gipldata.c 已被 dynamupd.c 硬编码引用，请勿修改此文件名称，否则在线更新功能将不能工作
+
+Label CHARMAP_START;
 CharMapType const CharMap[]={
      {0,L"空","Aether",VISION_OTHER,0}
      ,{1,L"荧","Lumine",VISION_OTHER,1}
@@ -140,7 +143,11 @@ CharMapType const CharMap[]={
     // 所以这里记录的角色如果 id<0 ，但是 attrib 却不是 ROLE_TYPE_EXCLUDED ，那么查询单个角色卡池时，
     // 查询结果当中会出现这个 id 是负数的角色，但是 choiceOneCharacter4Test 函数却又无法选中。
 };
+Label CHARMAP_END;
 
+CharMapType* onlineUpdatedCharMap=NULL;
+
+Label WISHPOOL_START;
 WishPoolType const WishPool[]={
      {{21},{11,7,5},{0},1,0,1,2020,9,28,2020,10,18}
     ,{{22},{15,9,13},{0},1,0,2,2020,10,20,2020,11,10}
@@ -278,6 +285,9 @@ WishPoolType const WishPool[]={
 
     ,*/
 };
+Label WISHPOOL_END;
+
+WishPoolType* onlineUpdatedWishPool=NULL;
 
 void getCharandPoolCount(void)
 {

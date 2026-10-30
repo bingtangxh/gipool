@@ -1,13 +1,12 @@
 ﻿#include "gipool.h"
 
-typedef struct cynoJoke {
-    const wchar_t* question;
-    const wchar_t* answer;
-} CynoJoke;
+// 此文件名称 cynjoks.c 已被 dynamupd.c 硬编码引用，请勿修改此文件名称，否则在线更新功能将不能工作
 
-#define CNJK(question, answer) { question, answer }
+const CynoJoke* CuCynoJokes=NULL;
+CynoJoke* onlineUpdatedCynoJokes=NULL;
+int jokeCount=0;
 
-static const CynoJoke cynojokes[]=
+const CynoJoke CynoJokes[]=
 {
      CNJK(L"提瓦特哪个国家的建筑最不牢固？", L"须弥，因为须弥墙危（须弥蔷薇）")
     ,CNJK(L"夜兰手镯摔坏了应该找谁修？", L"找琴团长，因为琴能补镯（勤能补拙）")
@@ -75,13 +74,13 @@ static const CynoJoke cynojokes[]=
 int cynoJoke(void)
 {
     int index=0,current;
-    const int jokeCount=(int)(sizeof(cynojokes)/sizeof(cynojokes[0]));
+    
     while(1) {
         const CynoJoke* joke;
         CLS;
         srand((unsigned int)time(NULL));
         index=rand()%jokeCount;
-        joke=&cynojokes[index];
+        joke=&CynoJokes[index];
         putws(joke->question);
         ENDL;
         if(joke->answer!=NULL) {
@@ -117,4 +116,8 @@ int cynoJoke(void)
         break;
     }
     return 0;
+}
+
+void getCynoJokesCount(void) {
+    jokeCount=(int)(sizeof(CynoJokes)/sizeof(CynoJokes[0]));
 }

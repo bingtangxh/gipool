@@ -199,10 +199,23 @@ typedef struct poolNode {
     struct poolNode* next;
 } PoolNodeType,* PoolLinkList,** PoolLinkListArray;
 
+typedef struct cynoJoke {
+    const wchar_t* question;
+    const wchar_t* answer;
+} CynoJoke;
+
+#define CNJK(question, answer) { question, answer }
+
 extern const CharMapType CharMap[];
 extern const WishPoolType WishPool[];
+extern const CharMapType* CuCharMap;
+extern const WishPoolType* CuWishPool;
+extern CharMapType* onlineUpdatedCharMap;
+extern WishPoolType* onlineUpdatedWishPool;
 
 void getCharandPoolCount(void);
+void mark4OnlineUpdating(char* label);
+typedef void* Label;
 
 extern PoolLinkList* PoolLinkLists;
 extern size_t charCount;
@@ -293,6 +306,15 @@ int choiceOneCharacterUsingEnglishNameLength(void);
 int choiceOneCharacterUsingVisionType(void);
 
 int cynoJoke(void);
+
+_Bool useOnlineUpdating(void);
+extern char* onlineUpdatingURLPrefix;
+
+extern const CynoJoke* CuCynoJokes;
+extern CynoJoke* onlineUpdatedCynoJokes;
+extern const CynoJoke CynoJokes[];
+extern int jokeCount;
+void getCynoJokesCount(void);
 
 #endif
 

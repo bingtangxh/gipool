@@ -6,13 +6,13 @@ char* splitResult=NULL;
 int splitResultCurrent=0;
 _Bool useUnicodeEdge=1;
 
-#define CHINESE_SPLITER ((int)(wcslen(CharMap[i].name_cn) & 31) == length)\
+#define CHINESE_SPLITER ((int)(wcslen(CuCharMap[i].name_cn) & 31) == length)\
 &&\
-(CharMap[i].attrib != ROLE_TYPE_EXCLUDED)\
+(CuCharMap[i].attrib != ROLE_TYPE_EXCLUDED)\
 
-#define ENGLISH_SPLITER ((int)(strlen(CharMap[i].name) & 63) == length)\
+#define ENGLISH_SPLITER ((int)(strlen(CuCharMap[i].name) & 63) == length)\
 &&\
-(CharMap[i].attrib != ROLE_TYPE_EXCLUDED)\
+(CuCharMap[i].attrib != ROLE_TYPE_EXCLUDED)\
 
 #define CHECK_SPRINTF_S_RESULT(splitResultCurrent) \
     do { \
@@ -106,15 +106,15 @@ void mainMenu(void)
                     puts("An invalid id sent to id2Index function. Please try again.");
                     continue;
                 }
-                if(buildPoolLinkList(choicedIndex,WishPool))
+                if(buildPoolLinkList(choicedIndex,CuWishPool))
                 {
                     // 来到这里
                     // 仅说明构建链表失败，不一定是内存申请失败，也有可能是查询的角色不是4星或5星UP角色
                     // 所以先继续运行
                 }
                 ENDL;
-                SetConsoleColorByCharacter(CharMap[choicedIndex]);
-                printf("%s: ",CharMap[choicedIndex].name);
+                SetConsoleColorByCharacter(CuCharMap[choicedIndex]);
+                printf("%s: ",CuCharMap[choicedIndex].name);
                 ResetConsoleColor();
                 printPoolLinkList(PoolLinkLists[choicedIndex]);
                 ENDL;
@@ -124,7 +124,7 @@ void mainMenu(void)
 #else
                     "The above is all %s wish pool info, press ENTER for another character.",
 #endif
-                    CharMap[choicedIndex].name);
+                    CuCharMap[choicedIndex].name);
                 ENDL;
                 PAUSE;
                 CLS;
@@ -207,7 +207,7 @@ void printAllPools(void)
     size_t i=0;
     CLS;
     for(i=0; i<poolCount; i++) {
-        putPool(WishPool[i]);
+        putPool(CuWishPool[i]);
     }
 }
 
@@ -218,9 +218,9 @@ void printDaysofAllLimited5StarCharacters(void)
     for(i=0; i<charCount; i++) {
         index=(size_t)arrangedInOrderOfDays[i];
         if((daysPassedSinceLastUP[index]!=INT_MIN)&&
-            ((CharMap[index].attrib==9)||(CharMap[index].attrib==5))) {
-            for(j=0; j<localizedVisualLen(CharMap[longestChineseIndex].name_cn)-localizedVisualLen(CharMap[index].name_cn); j++) { SPACE; }
-            SetConsoleColorByCharacter(CharMap[index]);
+            ((CuCharMap[index].attrib==9)||(CuCharMap[index].attrib==5))) {
+            for(j=0; j<localizedVisualLen(CuCharMap[longestChineseIndex].name_cn)-localizedVisualLen(CuCharMap[index].name_cn); j++) { SPACE; }
+            SetConsoleColorByCharacter(CuCharMap[index]);
             printf("%s",localizedNames[index]);
             ResetConsoleColor();
             printf(" | %d",daysPassedSinceLastUP[index]);
@@ -308,8 +308,8 @@ typeChineseName:
             if(CHINESE_SPLITER) {
                 foundAny=1;
                 found++;
-                SetConsoleColorByCharacter(CharMap[i]);
-                printf("%u\t%s\t%s",index2Id(i),localizedNames[i],CharMap[i].name);
+                SetConsoleColorByCharacter(CuCharMap[i]);
+                printf("%u\t%s\t%s",index2Id(i),localizedNames[i],CuCharMap[i].name);
                 ResetConsoleColor();
                 ENDL;
             }
@@ -371,8 +371,8 @@ typeEnglishName:
             if(ENGLISH_SPLITER) {
                 foundAny=1;
                 found++;
-                SetConsoleColorByCharacter(CharMap[i]);
-                printf("%u\t%s\t%s",index2Id(i),CharMap[i].name,localizedNames[i]);
+                SetConsoleColorByCharacter(CuCharMap[i]);
+                printf("%u\t%s\t%s",index2Id(i),CuCharMap[i].name,localizedNames[i]);
                 ResetConsoleColor();
                 ENDL;
             }
@@ -443,7 +443,7 @@ int choiceOneCharacterUsingVisionType(void) {
     found=0;
     splitResultPosition=splitResult;
     for(i=0; i<charCount; i++) {
-        if(CharMap[i].vision==visionSelection) {
+        if(CuCharMap[i].vision==visionSelection) {
             // 将上面的判断条件后面加个 ||1 用来测试字符串内存空间申请的够不够长
 
             found++;
@@ -458,7 +458,7 @@ int choiceOneCharacterUsingVisionType(void) {
             
             splitResultPosition+=splitResultCurrent;
 
-            for(j=0; j<localizedVisualLen(CharMap[longestChineseIndex].name_cn)-localizedVisualLen(CharMap[i].name_cn); j++) {
+            for(j=0; j<localizedVisualLen(CuCharMap[longestChineseIndex].name_cn)-localizedVisualLen(CuCharMap[i].name_cn); j++) {
                 splitResultCurrent=
 #ifdef _MSC_VER
                     sprintf_s(splitResultPosition,splitResultLength-(splitResultPosition-splitResult)," ");
@@ -471,10 +471,10 @@ int choiceOneCharacterUsingVisionType(void) {
 
             splitResultCurrent=
 #ifdef _MSC_VER
-                sprintf_s(splitResultPosition,splitResultLength-(splitResultPosition-splitResult),"%s | %s",localizedNames[i],CharMap[i].name);
+                sprintf_s(splitResultPosition,splitResultLength-(splitResultPosition-splitResult),"%s | %s",localizedNames[i],CuCharMap[i].name);
             CHECK_SPRINTF_S_RESULT(splitResultCurrent);
 #else
-                snprintf(splitResultPosition,splitResultLength-(splitResultPosition-splitResult)-1,"%s | %s",localizedNames[i],CharMap[i].name);
+                snprintf(splitResultPosition,splitResultLength-(splitResultPosition-splitResult)-1,"%s | %s",localizedNames[i],CuCharMap[i].name);
 #endif
             splitResultPosition+=splitResultCurrent;
 
@@ -496,7 +496,7 @@ int choiceOneCharacterUsingVisionType(void) {
     RETURN_IF_NULL(foundList,-2,-1);
     currentIndex=0;
     for(i=0; i<charCount; i++) {
-        if(CharMap[i].vision==visionSelection) {
+        if(CuCharMap[i].vision==visionSelection) {
             EXIT_IF_NULL(foundList,index2Id(i));
             if(currentIndex>=found) {
                 puts("Unexpected index out of bounds in foundList.");

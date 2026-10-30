@@ -49,6 +49,9 @@ void initConsole(void)
         mode|ENABLE_VIRTUAL_TERMINAL_PROCESSING))
         goto noANSIsupport;
 #endif
+
+    goto existsANSIsupport;
+
 existsANSIsupport:
     return;
 noANSIsupport:
@@ -86,7 +89,7 @@ void putPool(const WishPoolType WishPool1)
             WishPool1.major,WishPool1.minor);
     }
     for(i=0; i<2-fiveCount&&WishPool1.half<10; i++) {
-        for(j=0; j<=localizedVisualLen(CharMap[longestChineseIndex].name_cn); j++) {
+        for(j=0; j<=localizedVisualLen(CuCharMap[longestChineseIndex].name_cn); j++) {
             SPACE;
         }
         printf("| ");
@@ -95,12 +98,12 @@ void putPool(const WishPoolType WishPool1)
     for(i=0; i<fiveCount&&WishPool1.up5[i]!=0; i++) {
         currentIndex=id2Index(WishPool1.up5[i]);
         for(j=0;
-            j<localizedVisualLen(CharMap[longestChineseIndex].name_cn)-localizedVisualLen(CharMap[currentIndex].name_cn)&&
+            j<localizedVisualLen(CuCharMap[longestChineseIndex].name_cn)-localizedVisualLen(CuCharMap[currentIndex].name_cn)&&
             WishPool1.half<10;
             j++) {
             SPACE;
         }
-        SetConsoleColorByCharacter(CharMap[currentIndex]);
+        SetConsoleColorByCharacter(CuCharMap[currentIndex]);
         printf("%s ",localizedNames[currentIndex]==NULL ? "" : localizedNames[currentIndex]);
         ResetConsoleColor();
         if(WishPool1.half<10) {
@@ -110,12 +113,12 @@ void putPool(const WishPoolType WishPool1)
 
     for(i=0; i<fourCount&&WishPool1.up4[i]!=0; i++) {
         currentIndex=id2Index(WishPool1.up4[i]);
-        SetConsoleColorByCharacter(CharMap[currentIndex]);
+        SetConsoleColorByCharacter(CuCharMap[currentIndex]);
         printf("%s ",localizedNames[currentIndex]==NULL ? "" : localizedNames[currentIndex]);
         ResetConsoleColor();
 
-        for(j=0; j<localizedVisualLen(CharMap[longestChineseIndex].name_cn)-
-            localizedVisualLen(CharMap[currentIndex].name_cn);
+        for(j=0; j<localizedVisualLen(CuCharMap[longestChineseIndex].name_cn)-
+            localizedVisualLen(CuCharMap[currentIndex].name_cn);
             j++) {
             SPACE;
         }
@@ -587,7 +590,7 @@ size_t id2Index(int id)
 {
     size_t i=0;
     for(i=0; i<charCount; i++) {
-        if(CharMap[i].id==id) {
+        if(CuCharMap[i].id==id) {
             return i;
         }
     }
@@ -599,7 +602,7 @@ int index2Id(size_t index)
     if(index>=charCount) {
         return -1;
     }
-    return CharMap[index].id;
+    return CuCharMap[index].id;
 }
 
 void beforeTerminate(void)

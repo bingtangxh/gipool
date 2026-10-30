@@ -39,7 +39,7 @@
     <ClCompile Include="gipldata.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="cynojokes.c">
+    <ClCompile Include="cynjoks.c">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="conmenus.c">
@@ -52,6 +52,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="giplcore.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="dynamupd.c">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

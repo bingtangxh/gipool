@@ -7,8 +7,8 @@ static const char* month_table[]={
 
 unsigned short shortmonth_to_number(const char* mon);
 _Bool isPoolInOrder(int i);
-int findLongest(const CharMapType CharMap1[]);
-int findLongestEnglish(const CharMapType CharMap1[]);
+int findLongest(const CharMapType TargetCharMap[]);
+int findLongestEnglish(const CharMapType TargetCharMap[]);
 void getDaysPassedSinceLastUp(void);
 time_t makeTimeFromYMDHMS(uint16_t y,uint8_t m,uint8_t d,int hour,int min,int sec);
 int daysSinceSinglePoolEnds(const WishPoolType pool);
@@ -66,18 +66,18 @@ _Bool isPoolInOrder(int i)
     // 该函数要求 ( 0<=i && i+1<(int)poolCount )
     // 20 用于标识这是前瞻公布的混池，尚不明确具体是上半还是下半
     // 所以检测顺序的时候排除 half 是 20 的卡池或者下一个卡池的 half 是 20 的卡池
-    if(WishPool[i].half==MIXED_POOL_PREVIEW||WishPool[i+1].half==MIXED_POOL_PREVIEW) return 0;
-    if((WishPool[i].major>WishPool[i+1].major)||
-        ((WishPool[i].major==WishPool[i+1].major)&&(WishPool[i].minor>WishPool[i+1].minor))||
-        ((WishPool[i].major<WishPool[i+1].major)&&(WishPool[i+1].minor>0))||
-        (!((WishPool[i].major<WishPool[i+1].major)||
-            ((WishPool[i].major==WishPool[i+1].major)&&(WishPool[i].minor<WishPool[i+1].minor)))&&
-            ((WishPool[i].half%10)>(WishPool[i+1].half%10)))||
-        (makeTimeFromYMDHMS(WishPool[i].startY,WishPool[i].startM,WishPool[i].startD,poolEndHour(WishPool[i].half),0,0)>=
-            makeTimeFromYMDHMS(WishPool[i].endY,WishPool[i].endM,WishPool[i].endD,poolEndHour(WishPool[i].half),0,0))||
-        ((makeTimeFromYMDHMS(WishPool[i].endY,WishPool[i].endM,WishPool[i].endD,poolEndHour(WishPool[i].half),0,0)>
-            makeTimeFromYMDHMS(WishPool[i+1].startY,WishPool[i+1].startM,WishPool[i+1].startD,poolEndHour(WishPool[i].half),0,0))&&
-            ((WishPool[i].half%10)<(WishPool[i+1].half%10)))) 
+    if(CuWishPool[i].half==MIXED_POOL_PREVIEW||CuWishPool[i+1].half==MIXED_POOL_PREVIEW) return 0;
+    if((CuWishPool[i].major>CuWishPool[i+1].major)||
+        ((CuWishPool[i].major==CuWishPool[i+1].major)&&(CuWishPool[i].minor>CuWishPool[i+1].minor))||
+        ((CuWishPool[i].major<CuWishPool[i+1].major)&&(CuWishPool[i+1].minor>0))||
+        (!((CuWishPool[i].major<CuWishPool[i+1].major)||
+            ((CuWishPool[i].major==CuWishPool[i+1].major)&&(CuWishPool[i].minor<CuWishPool[i+1].minor)))&&
+            ((CuWishPool[i].half%10)>(CuWishPool[i+1].half%10)))||
+        (makeTimeFromYMDHMS(CuWishPool[i].startY,CuWishPool[i].startM,CuWishPool[i].startD,poolEndHour(CuWishPool[i].half),0,0)>=
+            makeTimeFromYMDHMS(CuWishPool[i].endY,CuWishPool[i].endM,CuWishPool[i].endD,poolEndHour(CuWishPool[i].half),0,0))||
+        ((makeTimeFromYMDHMS(CuWishPool[i].endY,CuWishPool[i].endM,CuWishPool[i].endD,poolEndHour(CuWishPool[i].half),0,0)>
+            makeTimeFromYMDHMS(CuWishPool[i+1].startY,CuWishPool[i+1].startM,CuWishPool[i+1].startD,poolEndHour(CuWishPool[i].half),0,0))&&
+            ((CuWishPool[i].half%10)<(CuWishPool[i+1].half%10)))) 
     {
         return 1;
     }
@@ -87,11 +87,23 @@ _Bool isPoolInOrder(int i)
 void initDynamicThings(void)
 {
     size_t i=0;
+    CuCharMap=CharMap;
+    CuWishPool=WishPool;
+    CuCynoJokes=CynoJokes;
     getCharandPoolCount();
-    longestChineseIndex=(size_t)findLongest(CharMap);
-    longestChineseNameLength=wcslen(CharMap[longestChineseIndex].name_cn);
-    longestEnglishIndex=(size_t)findLongestEnglish(CharMap);
-    longestEnglishNameLength=strlen(CharMap[longestEnglishIndex].name);
+    getCynoJokesCount();
+    if(useOnlineUpdating()) {
+        // 这三行也可能会是由 useOnlineUpdating() 函数内部的逻辑来执行，这里 initDynamicThings() 函数只是为了保险起见
+        CuCharMap=onlineUpdatedCharMap;
+        CuWishPool=onlineUpdatedWishPool;
+        CuCynoJokes=onlineUpdatedCynoJokes;
+    }
+
+
+    longestChineseIndex=(size_t)findLongest(CuCharMap);
+    longestChineseNameLength=wcslen(CuCharMap[longestChineseIndex].name_cn);
+    longestEnglishIndex=(size_t)findLongestEnglish(CuCharMap);
+    longestEnglishNameLength=strlen(CuCharMap[longestEnglishIndex].name);
 
     getDaysPassedSinceLastUp();
 
@@ -111,7 +123,7 @@ void initDynamicThings(void)
     EXIT_IF_NULL(localizedNames,-1);
     memset(localizedNames,0,charCount*sizeof(char*));
     for(i=0; i<charCount; i++) {
-        localizedNames[i]=localize(CharMap[i].name_cn);
+        localizedNames[i]=localize(CuCharMap[i].name_cn);
         EXIT_IF_NULL(localizedNames[i],index2Id(i));
     }
 }
@@ -120,7 +132,7 @@ size_t getSplitResultExpectedLength(void)
 {
     size_t result=0;
     result+=3+3; // 3 digits for ID, 3 for " | "
-    result+=(int)localizedMemLen(CharMap[longestChineseIndex].name_cn);
+    result+=(int)localizedMemLen(CuCharMap[longestChineseIndex].name_cn);
     result+=3; // 3 for " | "
     result+=(int)longestEnglishNameLength;
     result+=1; // 1 for "\n"
@@ -138,11 +150,11 @@ int checkIntegrity(void)
     size_t excludedPoolIndex=0;
 
     for(i1=0; i1<charCount; i1++) {
-        if(CharMap[i1].attrib==ROLE_TYPE_EXCLUDED) {
+        if(CuCharMap[i1].attrib==ROLE_TYPE_EXCLUDED) {
             excludedPoolIndex++;
             continue;
         }
-        if(CharMap[i1].id!=(int)(i1-excludedPoolIndex)) {
+        if(CuCharMap[i1].id!=(int)(i1-excludedPoolIndex)) {
             errorlevel++;
             excludedPoolIndex++;
             continue;
@@ -159,13 +171,13 @@ int checkIntegrity(void)
     return errorlevel;
 }
 
-int findLongest(const CharMapType CharMap1[])
+int findLongest(const CharMapType TargetCharMap[])
 {
     size_t currentLen=0,maxLen=0,i=0;
     int maxIndex=-1;
 
     for(i=0; i<charCount; i++) {
-        currentLen=wcslen(CharMap1[i].name_cn);
+        currentLen=wcslen(TargetCharMap[i].name_cn);
         if(currentLen>maxLen) {
             maxIndex=(int)i;
             maxLen=currentLen;
@@ -174,13 +186,13 @@ int findLongest(const CharMapType CharMap1[])
     return maxIndex;
 }
 
-int findLongestEnglish(const CharMapType CharMap1[])
+int findLongestEnglish(const CharMapType TargetCharMap[])
 {
     size_t currentLen=0,maxLen=0,i=0;
     int maxIndex=-1;
 
     for(i=0; i<charCount; i++) {
-        currentLen=strlen(CharMap1[i].name);
+        currentLen=strlen(TargetCharMap[i].name);
         if(currentLen>maxLen) {
             maxIndex=(int)i;
             maxLen=currentLen;
@@ -210,17 +222,17 @@ void getDaysPassedSinceLastUp(void)
         for(p=poolCount-1; p+1!=0; p--) {
             // 等同于循环条件写 (p--)>0,循环后操作不写，但我不喜欢写(p--)>0这样的
 
-            if(CharMap[c].attrib==5) {
-                for(i=0; i<MAX_POOL_UP5_COUNT&&WishPool[p].up5[i]!=0; i++) {
-                    if(WishPool[p].up5[i]==index2Id(c)) {
+            if(CuCharMap[c].attrib==5) {
+                for(i=0; i<MAX_POOL_UP5_COUNT&&CuWishPool[p].up5[i]!=0; i++) {
+                    if(CuWishPool[p].up5[i]==index2Id(c)) {
                         lastPoolIndex=(int)p;
                         goto FOUND;
                     }
                 }
             }
-            else if(CharMap[c].attrib==4) {
-                for(i=0; i<MAX_POOL_UP4_COUNT&&WishPool[p].up4[i]!=0; i++) {
-                    if(WishPool[p].up4[i]==index2Id(c)) {
+            else if(CuCharMap[c].attrib==4) {
+                for(i=0; i<MAX_POOL_UP4_COUNT&&CuWishPool[p].up4[i]!=0; i++) {
+                    if(CuWishPool[p].up4[i]==index2Id(c)) {
                         lastPoolIndex=(int)p;
                         goto FOUND;
                     }
@@ -233,7 +245,7 @@ void getDaysPassedSinceLastUp(void)
         }
     FOUND:
         if(lastPoolIndex>=0) {
-            daysPassedSinceLastUP[c]=daysSinceSinglePoolEnds(WishPool[lastPoolIndex]);
+            daysPassedSinceLastUP[c]=daysSinceSinglePoolEnds(CuWishPool[lastPoolIndex]);
         }
         else {
             daysPassedSinceLastUP[c]=INT_MIN;
@@ -405,7 +417,7 @@ _Bool buildPoolLinkList(size_t index,const WishPoolType WishPools[])
 
     id=index2Id(index);
 
-    if(CharMap[index].attrib!=5&&CharMap[index].attrib!=4&&(CharMap[index].attrib&3)!=3) {
+    if(CuCharMap[index].attrib!=5&&CuCharMap[index].attrib!=4&&(CuCharMap[index].attrib&3)!=3) {
         // 来到这里说明查询的角色类型不是会UP的
         // 注意刻晴是特殊的开服常驻但是海灯节被拉出来UP了一次，因为过年不能让看殡仪馆的胡桃UP
         return 1;
@@ -415,13 +427,13 @@ _Bool buildPoolLinkList(size_t index,const WishPoolType WishPools[])
         for(i=0; i<poolCount; i++) {
             for(
                 j=0;
-                CharMap[index].attrib==4 ?
+                CuCharMap[index].attrib==4 ?
                 j<fourCount&&WishPools[i].up4[j]!=0 :
                 j<fiveCount&&WishPools[i].up5[j]!=0;
                 j++
                 ) {
                 if(
-                    CharMap[index].attrib==4 ?
+                    CuCharMap[index].attrib==4 ?
                     WishPools[i].up4[j]==id :
                     WishPools[i].up5[j]==id
                     ) {
@@ -441,7 +453,7 @@ _Bool buildPoolLinkList(size_t index,const WishPoolType WishPools[])
                     }
                     else {
                         puts(
-                            CharMap[index].attrib==5 ?
+                            CuCharMap[index].attrib==5 ?
                             "Error: 'current' is NULL while building pool link list for 5-star character.\r\nPlease report this bug to the developer.\r" :
                             "Error: 'current' is NULL while building pool link list for 4-star character.\r\nPlease report this bug to the developer.\r"
                         );

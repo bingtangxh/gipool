@@ -13,6 +13,8 @@ int* daysPassedSinceLastUP=NULL;
 int* arrangedInOrderOfDays=NULL;
 char** localizedNames=NULL;
 const int maxCharactersInCharPool=2;
+const CharMapType* CuCharMap=NULL;
+const WishPoolType* CuWishPool=NULL;
 
 const char splitLine[]="-------------------------------------------------------------------------------------------------------";
 
