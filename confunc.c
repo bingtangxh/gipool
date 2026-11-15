@@ -454,7 +454,7 @@ int readIntInRange(int min,int max,const int* defaultValue)
                 // printf("EOF detected. Enter a number (%d-%d): ", min, max);
                 // continue;
                 puts("EOF detected. Consider not to type Ctrl+Z when you are using me in CLI mode. gipool will now exit.");
-                EXIT_IF_NULL(NULL,-1);
+                exitDuetoFatalError(1,"EOF detected. Consider not to type Ctrl+Z when you are using me in CLI mode. gipool will now exit.",-1);
             }
             // 如果有错误却又不是 EOF，清除错误标志并继续
             clearerr(stdin);

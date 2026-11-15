@@ -54,18 +54,23 @@ void freeAllTrackedAllocations(void);
         if ((ptr)==NULL) { \
             fprintf(stderr, "Error: %s is unexpectedly NULL at %s:%d, may be allocating memory failed\n", #ptr, __FILE__, __LINE__); \
             exitDuetoFatalError(2,"",id); \
-            exit(2); \
+            /*exit(2);*/ \
         } \
     } while (0)
 
-#define RETURN_IF_NULL(ptr,result,id) \
+#define RETURN_IF_NULL_WITH_ID(ptr,result,id) \
     do { \
         if ((ptr)==NULL) { \
-            if(id>=0){\
-                fprintf(stderr, "Error: %s is unexpectedly NULL at %s:%d, may be allocating memory failed\nThe error occurred when id is: %d. ", #ptr, __FILE__, __LINE__, id); \
-            } else { \
-                fprintf(stderr, "Error: %s is unexpectedly NULL at %s:%d, may be allocating memory failed\n", #ptr, __FILE__, __LINE__); \
-            } \
+            fprintf(stderr, "Error: %s is unexpectedly NULL at %s:%d, may be allocating memory failed\nThe error occurred when id is: %d. ", #ptr, __FILE__, __LINE__, id); \
+            fputs("gipool can still continue.\n", stderr);\
+            return (result); \
+        } \
+    } while (0)
+
+#define RETURN_IF_NULL(ptr,result) \
+    do { \
+        if ((ptr)==NULL) { \
+            fprintf(stderr, "Error: %s is unexpectedly NULL at %s:%d, may be allocating memory failed\n", #ptr, __FILE__, __LINE__);  \
             fputs("gipool can still continue.\n", stderr);\
             return (result); \
         } \

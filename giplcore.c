@@ -402,8 +402,8 @@ _Bool buildPoolLinkList(size_t index,const WishPoolType WishPools[])
         puts("Error: index is greater than charCount. buildPoolLinkList failed.");
         return 1;
     }
-    RETURN_IF_NULL(WishPools,1,-1);
-    RETURN_IF_NULL(PoolLinkLists,1,-1);
+    RETURN_IF_NULL(WishPools,1);
+    RETURN_IF_NULL(PoolLinkLists,1);
     // 如果链表不是空，那就先先清空，从头重建
     if(PoolLinkLists[index]!=NULL) {
         current=PoolLinkLists[index];
@@ -465,14 +465,14 @@ _Bool buildPoolLinkList(size_t index,const WishPoolType WishPools[])
         }
         return 0;
     }
-    // 不应该来到这里的才对
-    return 1;
+    // 不应该来到这里的才对，这个死代码会导致 C4702 警告
+    // return 1;
 }
 
 PoolLinkList createPoolNode(const WishPoolType WishPool1)
 {
     PoolLinkList target=(PoolLinkList)tMalloc(sizeof(PoolNodeType));
-    RETURN_IF_NULL(target,NULL,-1);
+    RETURN_IF_NULL(target,NULL);
     target->major=WishPool1.major;
     target->minor=WishPool1.minor;
     target->half=WishPool1.half;

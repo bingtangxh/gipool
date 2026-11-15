@@ -511,6 +511,9 @@
   <ItemGroup>
     <Manifest Include="compatibility.manifest" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="msbdgipl.cmd" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

@@ -63,4 +63,7 @@
       <Filter>资源文件</Filter>
     </Manifest>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="msbdgipl.cmd" />
+  </ItemGroup>
 </Project>

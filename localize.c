@@ -13,7 +13,7 @@ size_t localizedVisualLen(const wchar_t* source)
 {
 #ifdef _WIN32
     LPWORD widthArray=(LPWORD)tMalloc(sizeof(WORD)*(wcslen(source)+1));
-    RETURN_IF_NULL(widthArray,0,-1);
+    RETURN_IF_NULL(widthArray,0);
     if(GetStringTypeW(CT_CTYPE3,source,(int)wcslen(source),widthArray)==0) {
         tFree(widthArray);
         return 0;
@@ -38,7 +38,7 @@ char* localize(const wchar_t* source)
     int destSize=WideCharToMultiByte(CP_ACP,0,(LPCWSTR)source,-1,NULL,0,NULL,NULL);
     if(destSize==0) return NULL;
     char* localizedStr=(char*)tMalloc(sizeof(char)*(size_t)destSize);
-    RETURN_IF_NULL(localizedStr,NULL,-1);
+    RETURN_IF_NULL(localizedStr,NULL);
     if(WideCharToMultiByte(CP_ACP,0,(LPCWSTR)source,-1,localizedStr,destSize,NULL,NULL)==0) {
         tFree(localizedStr);
         return NULL;
@@ -49,8 +49,7 @@ char* localize(const wchar_t* source)
     size_t destSize=wcstombs(NULL,source,0)+1;
     if(destSize==0) return NULL;
     char* localizedStr=(char*)tMalloc(sizeof(char)*destSize);
-    RETURN_IF_NULL(localizedStr,NULL,-1);
-    RETURN_IF_NULL(localizedStr,NULL,-1);
+    RETURN_IF_NULL(localizedStr,NULL);
     if(wcstombs(localizedStr,source,destSize)==-1) {
         tFree(localizedStr);
         return NULL;

@@ -1,0 +1,1 @@
+msbuild gipool.sln /p:Configuration=Release;Platform="x64"

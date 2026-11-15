@@ -319,7 +319,7 @@ typeChineseName:
             goto typeChineseName;
         }
         foundList=(int*)tMalloc(sizeof(int)*(found+1));
-        RETURN_IF_NULL(foundList,-2,-1);
+        RETURN_IF_NULL(foundList,-2);
         // 这里只是筛选失败，应该返回重新询问角色名长度，不退出
         currentIndex=0;
         for(i=0; i<charCount; i++) {
@@ -382,7 +382,7 @@ typeEnglishName:
             goto typeEnglishName;
         }
         foundList=(int*)tMalloc(sizeof(int)*(found+1));
-        RETURN_IF_NULL(foundList,-2,-1);
+        RETURN_IF_NULL(foundList,-2);
         currentIndex=0;
         for(i=0; i<charCount; i++) {
             if(ENGLISH_SPLITER) {
@@ -408,11 +408,12 @@ int choiceOneCharacterUsingVisionType(void) {
     int* foundList=NULL;
     int visionSelection=VISION_UNKNOWN,visionUserChoice=0,selection=-1;
 #ifdef _MSC_VER
-    int sprintfResult=0;
+    // C4189: “sprintfResult”: 局部变量已初始化但不引用
+    // int sprintfResult=0;
 #endif    
     splitResultLength=getSplitResultExpectedLength();
     splitResult=(char*)tMalloc(sizeof(char)*(splitResultLength+1));
-    RETURN_IF_NULL(splitResult,-2,-1);
+    RETURN_IF_NULL(splitResult,-2);
     ENDL;
     visionSelection=choiceMenu(splitByVisionType,(int)ARRAY_SIZE(splitByVisionType),L"选择一个神之眼类型");
     visionUserChoice=visionSelection;
@@ -493,7 +494,7 @@ int choiceOneCharacterUsingVisionType(void) {
     splitResult=NULL;
     splitResultLength=0;
     foundList=(int*)tMalloc(sizeof(int)*(found+0));
-    RETURN_IF_NULL(foundList,-2,-1);
+    RETURN_IF_NULL(foundList,-2);
     currentIndex=0;
     for(i=0; i<charCount; i++) {
         if(CuCharMap[i].vision==visionSelection) {
@@ -502,7 +503,7 @@ int choiceOneCharacterUsingVisionType(void) {
                 puts("Unexpected index out of bounds in foundList.");
                 tFree(foundList);
                 foundList=NULL;
-                EXIT_IF_NULL(NULL,index2Id(i));
+                exitDuetoFatalError(2,"Unexpected index out of bounds in foundList.",index2Id(i));
             }
             else foundList[currentIndex++]=index2Id(i);
         }
