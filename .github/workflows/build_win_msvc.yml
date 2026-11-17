@@ -3,6 +3,7 @@ name: build windows msvc
 on:
    push:
      tags: ['tcapmi nihsneg*']
+#   This workflow won't be used anymore, so that here uses a impossible tag prefix. Use build_win_msbuild.yml instead.
 #   pull_request:
 #   workflow_dispatch:
 
