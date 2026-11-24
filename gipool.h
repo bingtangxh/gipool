@@ -143,6 +143,16 @@ typedef enum roleType {
     ROLE_TYPE_EXCLUDED=256
 } RoleType;
 
+typedef enum weaponType {
+    WEAPON_TYPE_SWORD,
+    WEAPON_TYPE_CATALYST,
+    WEAPON_TYPE_CLAYMORE,
+    WEAPON_TYPE_BOW,
+    WEAPON_TYPE_POLEARM,
+    WEAPON_TYPE_UNKNOWN
+    // 单手剑 法器 双手剑 弓 长柄武器
+} WeaponType;
+
 #define ENCODE_POOL_VERSION_FOR_PERMANENT_5_STAR(major, minor, half) \
     (((major) << 6) | (((minor) & 0xF) << 2) | ((half) & 0x3))
 
@@ -180,7 +190,7 @@ typedef struct weaponMap {
     const char name[40];
     const unsigned int stars;
     const uint8_t type;
-} WeaponMap;
+} WeaponMapType;
 
 typedef struct wishPool {
     int up5[MAX_POOL_UP5_COUNT];
